@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "418040100941",
+    "project_id": "recetario-mobile",
+    "storage_bucket": "recetario-mobile.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418040100941:android:c8b6c9cbe866c8c5180404",
+        "android_client_info": {
+          "package_name": "com.example.rescateanimal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvFwthBVxfpzBl1p2qDw43_EuLBTgL7CY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

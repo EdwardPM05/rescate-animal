@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rescate Animal</string>
+
+    <!-- Login Screen -->
+    <string name="login_title">¡Bienvenido de vuelta!</string>
+    <string name="login_subtitle">Continuemos salvando vidas juntos</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="login">INICIAR SESIÓN</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="no_account">¿Primera vez aquí?\nÚnete a nuestra misión</string>
+    <string name="login_footer">Cada animal merece una segunda oportunidad</string>
+
+    <!-- Register Screen -->
+    <string name="register_title">Únete a la causa</string>
+    <string name="register_subtitle">Sé parte del cambio que los animales necesitan</string>
+    <string name="display_name">Tu nombre completo</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="register">CREAR MI CUENTA</string>
+    <string name="have_account">¿Ya tienes cuenta?\nInicia sesión aquí</string>
+    <string name="register_footer">Juntos podemos hacer la diferencia</string>
+    <string name="continue_btn">CONTINUAR</string>
+
+    <!-- Hero Messages -->
+    <string name="hero_message_1">🐕 Cada reporte cuenta</string>
+    <string name="hero_message_2">🐱 Tu ayuda salva vidas</string>
+    <string name="hero_message_3">❤️ Rescatemos juntos</string>
+
+    <!-- Common -->
+    <string name="loading">Cargando...</string>
+    <string name="error_generic">Algo salió mal. Inténtalo de nuevo.</string>
+</resources>
