@@ -35,24 +35,3 @@ git clone https://github.com/tu-usuario/rescate-animal.git
 
 4. Ejecuta la aplicación en un emulador o dispositivo físico
 
-## Contribuir
-
-¡Las contribuciones son bienvenidas! Si tienes ideas para mejorar la app:
-
-1. Haz fork del proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/nueva-caracteristica`)
-3. Commit tus cambios (`git commit -am 'Añade nueva característica'`)
-4. Push a la rama (`git push origin feature/nueva-caracteristica`)
-5. Abre un Pull Request
-
-## Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
-
-## Contacto
-
-Si tienes preguntas o sugerencias, no dudes en contactarme.
-
----
-
-**Hecho con ❤️ para ayudar a nuestros amigos de cuatro patas**
