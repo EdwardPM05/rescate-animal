@@ -2,103 +2,69 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/gradient_background"
+            android:background="@android:color/white"
             android:fillViewport="true">
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="32dp"
+            android:gravity="center">
 
-        <!-- Hero Section -->
+        <!-- Logo Section -->
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="60dp"
                 android:layout_marginBottom="40dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
-            <!-- Logo/Icon -->
-            <LinearLayout
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+            <!-- Logo Image -->
+            <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/card_background"
-                    android:gravity="center"
-                    android:elevation="8dp">
+                    android:src="@drawable/rescuemal_logo"
+                    android:contentDescription="Rescuemal Logo" />
 
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🐾"
-                        android:textSize="48sp" />
-
-            </LinearLayout>
-
-            <!-- Title -->
+            <!-- Welcome Message -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/login_title"
-                    android:textColor="@color/text_white"
-                    android:textSize="28sp"
+                    android:text="¡Bienvenido de vuelta!"
+                    android:textColor="@color/text_primary"
+                    android:textSize="24sp"
                     android:textStyle="bold"
-                    android:shadowColor="@color/shadow_light"
-                    android:shadowDx="2"
-                    android:shadowDy="2"
-                    android:shadowRadius="4" />
-
-            <!-- Subtitle -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/login_subtitle"
-                    android:textColor="@color/text_white"
-                    android:textSize="16sp"
-                    android:textAlignment="center"
-                    android:alpha="0.9" />
+                    android:layout_marginBottom="8dp" />
 
         </LinearLayout>
 
-        <!-- Login Card -->
+        <!-- Login Form -->
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/card_background"
-                android:elevation="12dp"
                 android:orientation="vertical"
-                android:padding="32dp">
+                android:layout_marginBottom="24dp">
 
             <!-- Email Input -->
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="16dp"
                     android:orientation="vertical">
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/email"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
 
                 <EditText
                         android:id="@+id/etEmail"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:background="@drawable/edittext_background"
-                        android:hint="tu@email.com"
+                        android:background="@drawable/edittext_green_background"
+                        android:hint="Correo Electrónico"
                         android:inputType="textEmailAddress"
                         android:padding="16dp"
                         android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
+                        android:textColorHint="@color/text_green_hint"
                         android:textSize="16sp" />
 
             </LinearLayout>
@@ -107,87 +73,39 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginBottom="32dp"
                     android:orientation="vertical">
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/password"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
 
                 <EditText
                         android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:background="@drawable/edittext_background"
-                        android:hint="••••••••"
+                        android:background="@drawable/edittext_green_background"
+                        android:hint="Contraseña"
                         android:inputType="textPassword"
                         android:padding="16dp"
                         android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
+                        android:textColorHint="@color/text_green_hint"
                         android:textSize="16sp" />
 
             </LinearLayout>
-
-            <!-- Forgot Password -->
-            <TextView
-                    android:id="@+id/tvForgotPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginBottom="32dp"
-                    android:text="@string/forgot_password"
-                    android:textColor="@color/primary_orange"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:clickable="true"
-                    android:focusable="true" />
 
             <!-- Login Button -->
             <Button
                     android:id="@+id/btnLogin"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/button_primary"
-                    android:elevation="4dp"
-                    android:text="@string/login"
-                    android:textColor="@color/text_white"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/button_rounded_orange"
+                    android:text="INICIAR SESIÓN"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:elevation="2dp" />
 
         </LinearLayout>
 
         <!-- Register Link -->
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/card_background"
-                android:elevation="8dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="24dp">
-
-            <TextView
-                    android:id="@+id/tvRegister"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/no_account"
-                    android:textAlignment="center"
-                    android:textColor="@color/primary_orange"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:clickable="true"
-                    android:focusable="true" />
-
-        </LinearLayout>
-
-        <!-- Footer Message -->
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -197,11 +115,20 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/hero_message_1"
-                    android:textColor="@color/text_white"
+                    android:text="¿No tienes cuenta? "
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+            <TextView
+                    android:id="@+id/tvRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Regístrate"
+                    android:textColor="@color/primary_orange"
                     android:textSize="14sp"
-                    android:textAlignment="center"
-                    android:alpha="0.8" />
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true" />
 
         </LinearLayout>
 

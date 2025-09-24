@@ -1,36 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools">
-
+          package="com.example.rescateanimal">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
             android:allowBackup="true"
-            android:dataExtractionRules="@xml/data_extraction_rules"
-            android:fullBackupContent="@xml/backup_rules"
-            android:icon="@android:drawable/ic_menu_gallery"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
-            android:roundIcon="@android:drawable/ic_menu_gallery"
-            android:supportsRtl="true"
-            android:theme="@style/Theme.Rescateanimal"
-            tools:targetApi="31">
+            android:theme="@style/Theme.Rescateanimal">
 
-        <!-- SOLO LOGIN COMO PRINCIPAL -->
+        <!-- Google Maps API Key -->
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyCN0iHr8y8uMW72iQeQyQ9_bnWTz0GdPlA" />
+
+        <!-- MainActivity (Dashboard) -->
         <activity
-                android:name=".LoginActivity"
-                android:exported="true">
+                android:name=".MainActivity"
+                android:exported="true"
+                android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- SOLO REGISTER -->
+        <!-- LoginActivity -->
+        <activity
+                android:name=".LoginActivity"
+                android:exported="false"
+                android:theme="@style/Theme.Rescateanimal" />
+
+        <!-- RegisterActivity -->
         <activity
                 android:name=".RegisterActivity"
-                android:exported="false" />
+                android:exported="false"
+                android:theme="@style/Theme.Rescateanimal" />
+
+        <!-- ProfileActivity -->
+        <activity
+                android:name=".ProfileActivity"
+                android:exported="false"
+                android:theme="@style/Theme.Rescateanimal" />
+
+        <!-- EditProfileActivity -->
+        <activity
+                android:name=".EditProfileActivity"
+                android:exported="false"
+                android:theme="@style/Theme.Rescateanimal" />
+
+        <!-- MapActivity -->
+        <activity
+                android:name=".MapActivity"
+                android:exported="false"
+                android:launchMode="singleTop"
+                android:theme="@style/Theme.Rescateanimal" />
 
     </application>
-
 </manifest>
