@@ -19,6 +19,9 @@ class NavigationHelper(private val activity: Activity) {
         when (activity::class.java.simpleName) {
             "MainActivity" -> setSelectedTab(navInicio)
             "MapActivity" -> setSelectedTab(navMapa)
+            "ReportActivity" -> setSelectedTab(navReportar)
+            "AdoptActivity" -> setSelectedTab(navAdoptar) // AGREGADO
+            "ProfileActivity" -> setSelectedTab(navPerfil)
         }
 
         navInicio.setOnClickListener {
@@ -34,15 +37,22 @@ class NavigationHelper(private val activity: Activity) {
         }
 
         navReportar.setOnClickListener {
-            showToast("Reportar - Próximamente")
+            if (activity !is ReportActivity) {
+                navigateToActivity(ReportActivity::class.java)
+            }
         }
 
         navAdoptar.setOnClickListener {
-            showToast("Adoptar - Próximamente")
+            // ACTUALIZADO: Navegar a AdoptActivity en lugar de mostrar Toast
+            if (activity !is AdoptActivity) {
+                navigateToActivity(AdoptActivity::class.java)
+            }
         }
 
         navPerfil.setOnClickListener {
-            showToast("Perfil - Próximamente")
+            if (activity !is ProfileActivity) {
+                navigateToActivity(ProfileActivity::class.java)
+            }
         }
     }
 
@@ -63,13 +73,15 @@ class NavigationHelper(private val activity: Activity) {
         )
 
         tabs.forEach { tab ->
-            val textView = tab.getChildAt(1) as TextView
-            textView.setTextColor(activity.getColor(R.color.text_secondary))
+            tab?.let {
+                val textView = it.getChildAt(1) as? TextView
+                textView?.setTextColor(activity.getColor(R.color.text_secondary))
+            }
         }
 
         // Set selected tab
-        val selectedTextView = selectedTab.getChildAt(1) as TextView
-        selectedTextView.setTextColor(activity.getColor(R.color.primary_orange))
+        val selectedTextView = selectedTab.getChildAt(1) as? TextView
+        selectedTextView?.setTextColor(activity.getColor(R.color.primary_orange))
     }
 
     private fun showToast(message: String) {

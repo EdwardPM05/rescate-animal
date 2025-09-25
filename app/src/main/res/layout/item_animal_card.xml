@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="8dp"
+              android:background="@drawable/card_background"
+              android:elevation="4dp"
+              android:orientation="vertical"
+              android:clickable="true"
+              android:focusable="true">
+
+    <!-- Animal Image -->
+    <ImageView
+            android:id="@+id/ivAnimalPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="@color/surface_light"
+            android:contentDescription="Foto del animal" />
+
+    <!-- Animal Info -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        <!-- Name -->
+        <TextView
+                android:id="@+id/tvAnimalName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Max"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        <!-- Breed and Age -->
+        <TextView
+                android:id="@+id/tvAnimalDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Mestizo mediano • 2 años"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+        <!-- Location -->
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📍"
+                    android:textSize="12sp" />
+
+            <TextView
+                    android:id="@+id/tvAnimalLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Villa El Salvador"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+
+            <TextView
+                    android:id="@+id/tvAnimalDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="• 2.5 km"
+                    android:textColor="@color/primary_orange"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+            <Button
+                    android:id="@+id/btnAdopt"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/button_primary"
+                    android:text="Adoptar"
+                    android:textColor="@color/text_white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            <Button
+                    android:id="@+id/btnViewMore"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/edittext_background"
+                    android:text="Ver más"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -80,6 +80,8 @@ dependencies {
     // Firebase Analytics (opcional)
     implementation("com.google.firebase:firebase-analytics-ktx")
 
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
     // Coroutines para operaciones asíncronas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")

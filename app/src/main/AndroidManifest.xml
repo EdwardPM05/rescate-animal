@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.example.rescateanimal">
+
+    <!-- Permisos de red -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Permisos de ubicación -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Permisos para reportes (cámara y almacenamiento) -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
             android:allowBackup="true"
@@ -57,6 +66,18 @@
                 android:name=".MapActivity"
                 android:exported="false"
                 android:launchMode="singleTop"
+                android:theme="@style/Theme.Rescateanimal" />
+
+        <!-- ReportActivity -->
+        <activity
+                android:name=".ReportActivity"
+                android:exported="false"
+                android:theme="@style/Theme.Rescateanimal" />
+
+        <!-- AdoptActivity (NUEVO) -->
+        <activity
+                android:name=".AdoptActivity"
+                android:exported="false"
                 android:theme="@style/Theme.Rescateanimal" />
 
     </application>

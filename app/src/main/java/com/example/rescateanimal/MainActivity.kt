@@ -32,12 +32,15 @@ class MainActivity : AppCompatActivity() {
         // Load user data
         loadUserData()
 
-        // Setup navigation
+        // Setup navigation (comentar si tienes conflictos)
         navigationHelper = NavigationHelper(this)
         navigationHelper.setupBottomNavigation()
+    }
 
-        // Setup bottom navigation specifically for this activity
-        setupBottomNavigation()
+    override fun onResume() {
+        super.onResume()
+        // Recargar datos cuando regresamos de otras actividades
+        loadUserData()
     }
 
     private fun loadUserData() {
@@ -45,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         if (currentUser != null) {
             val tvWelcomeUser = findViewById<TextView>(R.id.tvWelcomeUser)
 
+            // Cargar datos básicos del usuario
             db.collection("users")
                 .document(currentUser.uid)
                 .get()
@@ -59,6 +63,9 @@ class MainActivity : AppCompatActivity() {
                 .addOnFailureListener {
                     tvWelcomeUser.text = "¡Hola, Usuario!"
                 }
+
+            // Aquí puedes agregar más datos si necesitas mostrar stats dinámicas
+            // Por ejemplo, cargar número de reportes reales, etc.
         }
     }
 
@@ -73,17 +80,17 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, MapActivity::class.java))
         }
 
-        // Reportar
+        // Reportar - FUNCIONA CON ReportActivity
         findViewById<LinearLayout>(R.id.navReportar).setOnClickListener {
-            Toast.makeText(this, "Reportar - Próximamente", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, ReportActivity::class.java))
         }
 
-        // Adoptar
+        // Adoptar - ACTUALIZADO para navegar a AdoptActivity
         findViewById<LinearLayout>(R.id.navAdoptar).setOnClickListener {
-            Toast.makeText(this, "Adoptar - Próximamente", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, AdoptActivity::class.java))
         }
 
-        // Perfil - NUEVA FUNCIONALIDAD
+        // Perfil - FUNCIONA CORRECTAMENTE
         findViewById<LinearLayout>(R.id.navPerfil).setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }

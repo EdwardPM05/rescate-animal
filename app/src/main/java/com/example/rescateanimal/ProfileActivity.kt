@@ -12,6 +12,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var navigationHelper: NavigationHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +23,16 @@ class ProfileActivity : AppCompatActivity() {
 
         setupViews()
         loadUserData()
-        setupBottomNavigation()
+
+        // Setup navigation usando NavigationHelper
+        navigationHelper = NavigationHelper(this)
+        navigationHelper.setupBottomNavigation()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Recargar datos cuando regresamos de EditProfile
+        loadUserData()
     }
 
     private fun setupViews() {
@@ -136,30 +146,5 @@ class ProfileActivity : AppCompatActivity() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
-    }
-
-    private fun setupBottomNavigation() {
-        // Inicio
-        findViewById<android.widget.LinearLayout>(R.id.navInicio).setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-
-        // Mapa
-        findViewById<android.widget.LinearLayout>(R.id.navMapa).setOnClickListener {
-            startActivity(Intent(this, MapActivity::class.java))
-        }
-
-        // Reportar
-        findViewById<android.widget.LinearLayout>(R.id.navReportar).setOnClickListener {
-            Toast.makeText(this, "Reportar - Próximamente", Toast.LENGTH_SHORT).show()
-        }
-
-        // Adoptar
-        findViewById<android.widget.LinearLayout>(R.id.navAdoptar).setOnClickListener {
-            Toast.makeText(this, "Adoptar - Próximamente", Toast.LENGTH_SHORT).show()
-        }
-
-        // Perfil - Ya estamos aquí, no hacer nada
     }
 }
