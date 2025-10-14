@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.example.rescateanimal">
 
     <!-- Permisos de red -->
@@ -12,14 +13,19 @@
 
     <!-- Permisos para reportes (cámara y almacenamiento) -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+                     android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+                     android:maxSdkVersion="28"
+                     tools:ignore="ScopedStorage" />
 
     <application
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Rescateanimal">
+            android:theme="@style/Theme.Rescateanimal"
+            android:supportsRtl="true"
+            tools:targetApi="31">
 
         <!-- Google Maps API Key -->
         <meta-data
@@ -74,10 +80,43 @@
                 android:exported="false"
                 android:theme="@style/Theme.Rescateanimal" />
 
-        <!-- AdoptActivity (NUEVO) -->
+        <!-- AdoptActivity - SOLO UNA VEZ -->
         <activity
                 android:name=".AdoptActivity"
                 android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal"
+                android:windowSoftInputMode="adjustResize" />
+
+        <!-- RegisterPetActivity -->
+        <activity
+                android:name=".RegisterPetActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal"
+                android:windowSoftInputMode="adjustResize" />
+
+        <!-- LocationPickerActivity -->
+        <activity
+                android:name=".LocationPickerActivity"
+                android:exported="false"
+                android:label="Seleccionar Ubicación"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal" />
+
+        <!-- AffiliateActivity -->
+        <activity
+                android:name=".AffiliateActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal"
+                android:windowSoftInputMode="adjustResize" />
+
+        <!-- AnimalDetailActivity -->
+        <activity
+                android:name=".AnimalDetailActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
                 android:theme="@style/Theme.Rescateanimal" />
 
     </application>

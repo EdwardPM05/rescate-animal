@@ -9,9 +9,12 @@
     <color name="black">#FF000000</color>
 
     <!-- Paleta principal para rescate animal -->
-    <color name="primary_orange">#FF7043</color>
+    <color name="primary_orange">#FF6B35</color>
     <color name="primary_orange_dark">#D84315</color>
     <color name="primary_orange_light">#FFAB91</color>
+
+    <color name="primary_color">#2E8B57</color>
+    <color name="primary_dark">#1F5F3F</color>
 
     <color name="secondary_green">#4CAF50</color>
     <color name="secondary_green_dark">#2E7D32</color>
@@ -19,6 +22,22 @@
 
     <color name="accent_blue">#03DAC6</color>
     <color name="accent_blue_dark">#00BCD4</color>
+    <color name="accent_color">#FF6B6B</color>
+
+    <!-- Status Colors -->
+    <color name="success_color">#28A745</color>
+    <color name="warning_color">#FFC107</color>
+    <color name="error_color">#DC3545</color>
+    <color name="info_color">#17A2B8</color>
+
+    <!-- Badge Colors -->
+    <color name="badge_vaccinated">#4CAF50</color>
+    <color name="badge_sterilized">#2196F3</color>
+
+    <!-- Status colors for affiliates -->
+    <color name="status_pending">#FFC107</color>
+    <color name="status_approved">#28A745</color>
+    <color name="status_rejected">#DC3545</color>
 
     <!-- Backgrounds -->
     <color name="background_light">#FAFAFA</color>

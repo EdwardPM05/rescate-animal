@@ -579,7 +579,7 @@
                     android:layout_marginBottom="8dp"
                     android:background="#E0E0E0" />
 
-            <!-- Otros menús -->
+            <!-- Notificaciones -->
             <LinearLayout
                     android:id="@+id/menuNotifications"
                     android:layout_width="match_parent"
@@ -615,6 +615,7 @@
 
             </LinearLayout>
 
+            <!-- Privacidad -->
             <LinearLayout
                     android:id="@+id/menuPrivacy"
                     android:layout_width="match_parent"
@@ -650,6 +651,7 @@
 
             </LinearLayout>
 
+            <!-- Ayuda -->
             <LinearLayout
                     android:id="@+id/menuHelp"
                     android:layout_width="match_parent"
@@ -675,6 +677,76 @@
                         android:text="Ayuda y soporte"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="→"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="#E0E0E0" />
+
+            <!-- AFFILIATE SECTION - Simple Option -->
+            <!-- Divider -->
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="#E0E0E0" />
+
+            <!-- AFFILIATE SECTION - Dynamic Option -->
+            <LinearLayout
+                    android:id="@+id/menuAffiliate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:background="?selectableItemBackground">
+
+                <TextView
+                        android:id="@+id/tvAffiliateIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🏢"
+                        android:textSize="18sp" />
+
+                <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                    <TextView
+                            android:id="@+id/tvAffiliateTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Afiliar mi negocio"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                    <TextView
+                            android:id="@+id/tvAffiliateSubtitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Registro para veterinarias, tiendas y albergues"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+
+                </LinearLayout>
 
                 <TextView
                         android:layout_width="wrap_content"

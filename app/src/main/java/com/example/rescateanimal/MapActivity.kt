@@ -3,6 +3,11 @@ package com.example.rescateanimal
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Typeface
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -19,8 +24,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -39,31 +47,23 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
-        // Initialize location client
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        // Initialize views
         tvLocationAddress = findViewById(R.id.tvLocationAddress)
         tvLocationCoords = findViewById(R.id.tvLocationCoords)
         locationInfoCard = findViewById(R.id.locationInfoCard)
 
-        // Check permission status
         hasLocationPermission = hasLocationPermission()
 
-        // Setup map
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        // Setup UI
         setupUI()
-
-        // Setup navigation
         setupBottomNavigation()
     }
 
     override fun onResume() {
         super.onResume()
-        // Re-check permissions when returning to activity
         val currentPermissionStatus = hasLocationPermission()
         if (currentPermissionStatus != hasLocationPermission) {
             hasLocationPermission = currentPermissionStatus
@@ -87,27 +87,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setupBottomNavigation() {
-        // Inicio
         findViewById<LinearLayout>(R.id.navInicio).setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
 
-        // Mapa - Ya estamos aquí
         findViewById<LinearLayout>(R.id.navMapa).setOnClickListener {
-            // Ya estamos en mapa, no hacer nada
+            // Ya estamos en mapa
         }
 
-        // Reportar
         findViewById<LinearLayout>(R.id.navReportar).setOnClickListener {
             startActivity(Intent(this, ReportActivity::class.java))
         }
 
-        // Adoptar
         findViewById<LinearLayout>(R.id.navAdoptar).setOnClickListener {
             Toast.makeText(this, "Adoptar - Próximamente", Toast.LENGTH_SHORT).show()
         }
 
-        // Perfil
         findViewById<LinearLayout>(R.id.navPerfil).setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
@@ -117,61 +112,40 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         map = googleMap
         mapReady = true
 
-        // Enable zoom controls and info windows
         map.uiSettings.isZoomControlsEnabled = true
         map.uiSettings.isCompassEnabled = true
 
-        // Configurar clicks en los marcadores para mostrar más información
         map.setOnMarkerClickListener { marker ->
-            // Si es el marcador de "Tu ubicación", comportamiento normal
-            if (marker.title == "Tu ubicación") {
-                return@setOnMarkerClickListener false
-            }
-
-            // Para marcadores de reportes, mostrar diálogo con información completa
             val reportInfo = marker.tag as? ReportInfo
-            if (reportInfo != null) {
-                showReportDetailsDialog(reportInfo)
-            } else {
-                // Fallback para marcadores sin información completa
-                marker.showInfoWindow()
+            val affiliateInfo = marker.tag as? AffiliateInfo
+
+            when {
+                reportInfo != null -> showReportDetailsDialog(reportInfo)
+                affiliateInfo != null -> showAffiliateDetailsDialog(affiliateInfo)
+                marker.title == "Tu ubicación" -> return@setOnMarkerClickListener false
+                else -> marker.showInfoWindow()
             }
 
-            // Centrar la cámara en el marcador seleccionado
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 16f))
-
-            true // Retornar true para manejar el click nosotros
+            true
         }
 
-        // Configurar clicks en las ventanas de información (para el snippet corto)
         map.setOnInfoWindowClickListener { marker ->
             val reportInfo = marker.tag as? ReportInfo
-            if (reportInfo != null) {
-                showReportDetailsDialog(reportInfo)
-            } else {
-                // Extraer número de teléfono del snippet si existe
-                val snippet = marker.snippet ?: ""
-                val phoneRegex = """📞 ([+]?\d+)""".toRegex()
-                val phoneMatch = phoneRegex.find(snippet)
+            val affiliateInfo = marker.tag as? AffiliateInfo
 
-                if (phoneMatch != null) {
-                    val phoneNumber = phoneMatch.groupValues[1]
-                    showCallDialog(phoneNumber, marker.title ?: "Reporte")
-                } else {
-                    showToast("No hay información adicional disponible")
-                }
+            when {
+                reportInfo != null -> showReportDetailsDialog(reportInfo)
+                affiliateInfo != null -> showAffiliateDetailsDialog(affiliateInfo)
             }
         }
 
-        // Set default location (Lima, Peru)
         val lima = LatLng(-12.0464, -77.0428)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(lima, 12f))
 
-        // Setup map location based on permissions
         setupMapLocation()
-
-        // Cargar reportes en el mapa
         loadReportsOnMap()
+        loadAffiliatesOnMap()
     }
 
     private fun setupMapLocation() {
@@ -187,7 +161,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         try {
             if (hasLocationPermission && mapReady) {
                 map.isMyLocationEnabled = true
-                map.uiSettings.isMyLocationButtonEnabled = false // We have our own button
+                map.uiSettings.isMyLocationButtonEnabled = false
             }
         } catch (e: SecurityException) {
             showToast("Error de permisos de ubicación")
@@ -252,21 +226,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (location != null) {
                     val currentLatLng = LatLng(location.latitude, location.longitude)
 
-                    // Move camera to current location
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
 
-                    // Add marker for current location
                     map.addMarker(
                         MarkerOptions()
                             .position(currentLatLng)
                             .title("Tu ubicación")
                             .snippet("Estás aquí")
-                            .icon(com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker(com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_AZURE))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                     )
 
-                    // Update location info
                     updateLocationInfo(location)
-
                 } else {
                     showToast("No se pudo obtener la ubicación")
                 }
@@ -283,10 +253,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val latitude = location.latitude
         val longitude = location.longitude
 
-        // Show coordinates
         tvLocationCoords.text = "Lat: ${String.format("%.6f", latitude)}, Lng: ${String.format("%.6f", longitude)}"
 
-        // Get address using Geocoder
         try {
             val geocoder = Geocoder(this, Locale.getDefault())
             val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
@@ -307,7 +275,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             tvLocationAddress.text = "Error al obtener dirección"
         }
 
-        // Show location info card
         locationInfoCard.visibility = LinearLayout.VISIBLE
     }
 
@@ -317,10 +284,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun showCallDialog(phoneNumber: String, reportTitle: String) {
         android.app.AlertDialog.Builder(this)
-            .setTitle("Contactar al reportador")
-            .setMessage("¿Deseas llamar al reportador de:\n$reportTitle?\n\nTéléfono: $phoneNumber")
+            .setTitle("Contactar")
+            .setMessage("¿Deseas llamar a:\n$reportTitle?\n\nTéléfono: $phoneNumber")
             .setPositiveButton("Llamar") { _, _ ->
-                val intent = android.content.Intent(android.content.Intent.ACTION_DIAL)
+                val intent = Intent(Intent.ACTION_DIAL)
                 intent.data = android.net.Uri.parse("tel:$phoneNumber")
                 startActivity(intent)
             }
@@ -355,7 +322,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             .setMessage(message)
             .setPositiveButton("Cerrar", null)
 
-        // Agregar botón de llamada si hay teléfono
         if (reportInfo.contactPhone.isNotEmpty()) {
             dialog.setNeutralButton("📞 Llamar") { _, _ ->
                 showCallDialog(reportInfo.contactPhone, reportInfo.title)
@@ -365,7 +331,89 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         dialog.show()
     }
 
-    // Clase de datos para almacenar información completa del reporte
+    private fun showAffiliateDetailsDialog(affiliateInfo: AffiliateInfo) {
+        val message = buildString {
+            append("🏢 ${affiliateInfo.businessName}\n")
+            append("📊 Tipo: ${getAffiliateTypeText(affiliateInfo.type)}\n\n")
+
+            if (affiliateInfo.description.isNotEmpty()) {
+                append("📝 Descripción:\n${affiliateInfo.description}\n\n")
+            }
+
+            append("👤 Encargado: ${affiliateInfo.contactPerson}\n")
+            append("📞 Teléfono: ${affiliateInfo.phone}\n")
+            append("📍 Dirección: ${affiliateInfo.address}\n\n")
+
+            if (affiliateInfo.hours.isNotEmpty()) {
+                append("🕐 Horario: ${affiliateInfo.hours}\n")
+            }
+
+            if (affiliateInfo.socialMedia.isNotEmpty()) {
+                append("🌐 ${affiliateInfo.socialMedia}\n")
+            }
+        }
+
+        val dialog = android.app.AlertDialog.Builder(this)
+            .setTitle(affiliateInfo.businessName)
+            .setMessage(message)
+            .setPositiveButton("Cerrar", null)
+            .setNeutralButton("📞 Llamar") { _, _ ->
+                showCallDialog(affiliateInfo.phone, affiliateInfo.businessName)
+            }
+
+        dialog.show()
+    }
+
+    // ==================== FUNCIONES PARA ICONOS PERSONALIZADOS ====================
+
+    private fun createEmojiIcon(emoji: String, backgroundColor: Int): BitmapDescriptor {
+        val size = 140
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+
+        // Sombra
+        val shadowPaint = Paint().apply {
+            color = Color.argb(80, 0, 0, 0)
+            isAntiAlias = true
+            style = Paint.Style.FILL
+        }
+        canvas.drawCircle(size / 2f + 4, size / 2f + 4, size / 2f - 10, shadowPaint)
+
+        // Fondo circular
+        val backgroundPaint = Paint().apply {
+            color = backgroundColor
+            isAntiAlias = true
+            style = Paint.Style.FILL
+        }
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f - 10, backgroundPaint)
+
+        // Borde blanco
+        val borderPaint = Paint().apply {
+            color = Color.WHITE
+            isAntiAlias = true
+            style = Paint.Style.STROKE
+            strokeWidth = 6f
+        }
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f - 13, borderPaint)
+
+        // Emoji
+        val textPaint = Paint().apply {
+            textSize = 65f
+            textAlign = Paint.Align.CENTER
+            isAntiAlias = true
+            typeface = Typeface.DEFAULT_BOLD
+        }
+
+        val x = size / 2f
+        val y = size / 2f - (textPaint.descent() + textPaint.ascent()) / 2
+
+        canvas.drawText(emoji, x, y, textPaint)
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    // ==================== DATA CLASSES ====================
+
     data class ReportInfo(
         val type: String,
         val title: String,
@@ -378,9 +426,23 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val documentId: String
     )
 
+    data class AffiliateInfo(
+        val type: String,
+        val businessName: String,
+        val contactPerson: String,
+        val phone: String,
+        val address: String,
+        val description: String,
+        val hours: String,
+        val socialMedia: String,
+        val verified: Boolean,
+        val documentId: String
+    )
+
+    // ==================== FIREBASE LOADING ====================
+
     private fun loadReportsOnMap() {
-        // Cargar reportes desde Firestore
-        val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+        val db = FirebaseFirestore.getInstance()
 
         db.collection("reports")
             .get()
@@ -388,14 +450,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 for (document in documents) {
                     val reportData = document.data
 
-                    // Obtener coordenadas del reporte
                     val latitude = reportData["latitude"] as? Double
                     val longitude = reportData["longitude"] as? Double
 
                     if (latitude != null && longitude != null) {
                         val reportLocation = LatLng(latitude, longitude)
 
-                        // Datos del reporte (usando los campos que realmente tienes)
                         val reportType = reportData["reportType"] as? String ?: "unknown"
                         val description = reportData["description"] as? String ?: ""
                         val location = reportData["location"] as? String ?: ""
@@ -404,16 +464,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         val userEmail = reportData["userEmail"] as? String ?: "Usuario"
                         val createdAt = reportData["createdAt"] as? Long
 
-                        // Formatear fecha
                         val dateString = if (createdAt != null) {
                             val date = java.util.Date(createdAt)
                             java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault()).format(date)
                         } else "Fecha desconocida"
 
-                        // Crear título del marcador (más corto para que se vea)
                         val markerTitle = getReportTypeTitle(reportType)
 
-                        // Snippet más corto para evitar truncamiento
                         val markerSnippet = buildString {
                             append("📅 ${dateString}\n")
                             append("📊 ${getStatusText(status)}")
@@ -423,7 +480,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                             append("\n💬 Toca para ver más detalles")
                         }
 
-                        // Guardar toda la información en el tag del marcador
                         val fullReportInfo = ReportInfo(
                             type = reportType,
                             title = markerTitle,
@@ -436,7 +492,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                             documentId = document.id
                         )
 
-                        // Agregar marcador al mapa con información completa
                         val marker = map.addMarker(
                             MarkerOptions()
                                 .position(reportLocation)
@@ -445,21 +500,84 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                                 .icon(getMarkerIconByReportType(reportType))
                         )
 
-                        // Asociar información completa al marcador
                         marker?.tag = fullReportInfo
                     }
                 }
 
-                if (documents.isEmpty()) {
+                if (documents.isEmpty) {
                     showToast("No hay reportes disponibles en el mapa")
-                } else {
-                    showToast("Se cargaron ${documents.size()} reportes en el mapa")
                 }
             }
             .addOnFailureListener { e ->
                 showToast("Error al cargar reportes: ${e.message}")
             }
     }
+
+    private fun loadAffiliatesOnMap() {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("affiliates")
+            .whereEqualTo("status", "approved")
+            .whereEqualTo("verified", true)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val affiliateData = document.data
+
+                    val latitude = affiliateData["latitude"] as? Double
+                    val longitude = affiliateData["longitude"] as? Double
+
+                    if (latitude != null && longitude != null) {
+                        val affiliateLocation = LatLng(latitude, longitude)
+
+                        val type = affiliateData["type"] as? String ?: "unknown"
+                        val businessName = affiliateData["businessName"] as? String ?: "Negocio"
+                        val contactPerson = affiliateData["contactPerson"] as? String ?: ""
+                        val phone = affiliateData["phone"] as? String ?: ""
+                        val address = affiliateData["address"] as? String ?: ""
+                        val description = affiliateData["description"] as? String ?: ""
+                        val hours = affiliateData["hours"] as? String ?: ""
+                        val socialMedia = affiliateData["socialMedia"] as? String ?: ""
+                        val verified = affiliateData["verified"] as? Boolean ?: false
+
+                        val markerTitle = getAffiliateTypeEmoji(type) + " " + businessName
+                        val markerSnippet = getAffiliateTypeText(type) + "\n📞 ${phone}\n💬 Toca para más detalles"
+
+                        val fullAffiliateInfo = AffiliateInfo(
+                            type = type,
+                            businessName = businessName,
+                            contactPerson = contactPerson,
+                            phone = phone,
+                            address = address,
+                            description = description,
+                            hours = hours,
+                            socialMedia = socialMedia,
+                            verified = verified,
+                            documentId = document.id
+                        )
+
+                        val marker = map.addMarker(
+                            MarkerOptions()
+                                .position(affiliateLocation)
+                                .title(markerTitle)
+                                .snippet(markerSnippet)
+                                .icon(getMarkerIconByAffiliateType(type))
+                        )
+
+                        marker?.tag = fullAffiliateInfo
+                    }
+                }
+
+                if (documents.isEmpty) {
+                    showToast("No hay negocios afiliados disponibles")
+                }
+            }
+            .addOnFailureListener { e ->
+                showToast("Error al cargar negocios: ${e.message}")
+            }
+    }
+
+    // ==================== HELPER FUNCTIONS ====================
 
     private fun getReportTypeTitle(reportType: String): String {
         return when (reportType) {
@@ -479,12 +597,41 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun getMarkerIconByReportType(reportType: String): com.google.android.gms.maps.model.BitmapDescriptor {
+    private fun getAffiliateTypeText(type: String): String {
+        return when (type) {
+            "veterinaria" -> "Veterinaria"
+            "tienda" -> "Tienda de Mascotas"
+            "albergue" -> "Albergue / Refugio"
+            else -> "Negocio"
+        }
+    }
+
+    private fun getAffiliateTypeEmoji(type: String): String {
+        return when (type) {
+            "veterinaria" -> "🏥"
+            "tienda" -> "🛍️"
+            "albergue" -> "🏠"
+            else -> "📍"
+        }
+    }
+
+    // ==================== ICONOS PERSONALIZADOS CON EMOJIS ====================
+
+    private fun getMarkerIconByReportType(reportType: String): BitmapDescriptor {
         return when (reportType) {
-            "danger" -> com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker(com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED)
-            "lost" -> com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker(com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_YELLOW)
-            "abandoned" -> com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker(com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_ORANGE)
-            else -> com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker(com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_BLUE)
+            "danger" -> createEmojiIcon("🆘", Color.parseColor("#FF5252"))
+            "lost" -> createEmojiIcon("🔍", Color.parseColor("#FFD740"))
+            "abandoned" -> createEmojiIcon("🏠", Color.parseColor("#FF9800"))
+            else -> createEmojiIcon("📍", Color.parseColor("#42A5F5"))
+        }
+    }
+
+    private fun getMarkerIconByAffiliateType(type: String): BitmapDescriptor {
+        return when (type) {
+            "veterinaria" -> createEmojiIcon("🏥", Color.parseColor("#26C6DA"))
+            "tienda" -> createEmojiIcon("🛍️", Color.parseColor("#AB47BC"))
+            "albergue" -> createEmojiIcon("🏡", Color.parseColor("#66BB6A"))
+            else -> createEmojiIcon("📍", Color.parseColor("#42A5F5"))
         }
     }
 }

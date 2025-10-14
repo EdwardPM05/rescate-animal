@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="200dp"
+        android:height="200dp"
+        android:viewportWidth="200"
+        android:viewportHeight="200">
+
+    <path
+            android:fillColor="@color/surface_light"
+            android:pathData="M0,0h200v200h-200z"/>
+
+    <!-- Paw print icon -->
+    <path
+            android:fillColor="@color/text_hint"
+            android:pathData="M100,80m-8,0a8,8 0,1 1,16 0a8,8 0,1 1,-16 0"/>
+
+    <path
+            android:fillColor="@color/text_hint"
+            android:pathData="M85,90m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"/>
+
+    <path
+            android:fillColor="@color/text_hint"
+            android:pathData="M115,90m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"/>
+
+    <path
+            android:fillColor="@color/text_hint"
+            android:pathData="M92,105m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"/>
+
+    <path
+            android:fillColor="@color/text_hint"
+            android:pathData="M108,105m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"/>
+
+    <path
+            android:fillColor="@color/text_hint"
+            android:pathData="M100,115 Q85,120 85,130 Q85,140 100,145 Q115,140 115,130 Q115,120 100,115Z"/>
+
+</vector>

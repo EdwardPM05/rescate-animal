@@ -1,6 +1,7 @@
 package com.example.rescateanimal
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -109,11 +110,22 @@ class AdoptActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        animalsAdapter = AnimalsAdapter(listOf()) { animal ->
-            // Click en "Adoptar"
-            Toast.makeText(this, "Iniciando proceso de adopción para ${animal.animal.name}", Toast.LENGTH_SHORT).show()
-            // TODO: Navegar a pantalla de detalles/adopción
-        }
+        animalsAdapter = AnimalsAdapter(
+            animals = listOf(),
+            onAnimalClick = { animalWithDistance ->
+                // Click en la tarjeta del animal - Ver detalles
+                val intent = Intent(this, AnimalDetailActivity::class.java)
+                intent.putExtra("animal", animalWithDistance.animal)
+                startActivity(intent)
+            },
+            onAdoptClick = { animalWithDistance ->
+                // Click en botón "Adoptar"
+                val intent = Intent(this, AnimalDetailActivity::class.java)
+                intent.putExtra("animal", animalWithDistance.animal)
+                intent.putExtra("showAdoptDialog", true)
+                startActivity(intent)
+            }
+        )
 
         rvAnimals.apply {
             layoutManager = GridLayoutManager(this@AdoptActivity, 2)
