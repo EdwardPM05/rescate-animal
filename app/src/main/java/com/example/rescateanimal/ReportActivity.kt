@@ -13,6 +13,7 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -20,6 +21,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,16 +51,27 @@ class ReportActivity : AppCompatActivity() {
     private var selectedPhotos = mutableListOf<Uri>()
     private var currentLocation: Location? = null
     private lateinit var photoAdapter: PhotoAdapter
+    private var currentPhotoUri: Uri? = null
 
-    // Activity Result Launchers
-    private val photoPickerLauncher = registerForActivityResult(
-        ActivityResultContracts.GetMultipleContents()
-    ) { uris ->
-        if (uris.isNotEmpty()) {
-            selectedPhotos.clear()
-            selectedPhotos.addAll(uris)
+    // Activity Result Launchers - CAMBIADO A CÁMARA
+    private val takePictureLauncher = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success && currentPhotoUri != null) {
+            selectedPhotos.add(currentPhotoUri!!)
             setupPhotoRecyclerView()
             checkFormValidity()
+            showToast("Foto agregada. Puedes tomar más fotos si lo deseas")
+        }
+    }
+
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            openCamera()
+        } else {
+            showToast("Permiso de cámara necesario para tomar fotos del reporte")
         }
     }
 
@@ -119,9 +132,9 @@ class ReportActivity : AppCompatActivity() {
             requestCurrentLocation()
         }
 
-        // Photo upload
+        // Photo upload - CAMBIADO PARA ABRIR CÁMARA
         photoUploadCard.setOnClickListener {
-            photoPickerLauncher.launch("image/*")
+            checkCameraPermissionAndOpen()
         }
 
         // Emergency phone
@@ -153,6 +166,52 @@ class ReportActivity : AppCompatActivity() {
 
         etLocation.addTextChangedListener(textWatcher)
         etDescription.addTextChangedListener(textWatcher)
+    }
+
+    // NUEVA FUNCIÓN PARA VERIFICAR PERMISO DE CÁMARA
+    private fun checkCameraPermissionAndOpen() {
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                openCamera()
+            }
+            else -> {
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    // NUEVA FUNCIÓN PARA ABRIR LA CÁMARA
+    private fun openCamera() {
+        try {
+            val photoFile = createImageFile()
+            currentPhotoUri = FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                photoFile
+            )
+            takePictureLauncher.launch(currentPhotoUri)
+        } catch (e: Exception) {
+            showToast("Error al abrir cámara: ${e.message}")
+        }
+    }
+
+    // NUEVA FUNCIÓN PARA CREAR ARCHIVO DE IMAGEN
+    private fun createImageFile(): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = getExternalFilesDir("ReportPhotos")
+
+        if (storageDir != null && !storageDir.exists()) {
+            storageDir.mkdirs()
+        }
+
+        return File.createTempFile(
+            "REPORT_${timeStamp}_",
+            ".jpg",
+            storageDir
+        )
     }
 
     private fun selectReportType(type: String, selectedLayout: LinearLayout) {

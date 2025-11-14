@@ -127,7 +127,8 @@ class ProfileActivity : AppCompatActivity() {
                 tvAffiliateTitle.text = "Registrar mascotas"
                 tvAffiliateSubtitle.text = "Publica mascotas disponibles para adopción"
                 menuAffiliate.setOnClickListener {
-                    startActivity(Intent(this, RegisterPetActivity::class.java))
+                    val intent = Intent(this, RegisterPetActivity::class.java)
+                    startActivity(intent)
                 }
             }
 
@@ -157,7 +158,8 @@ class ProfileActivity : AppCompatActivity() {
                 tvAffiliateTitle.text = "Solicitud rechazada"
                 tvAffiliateSubtitle.text = "Tu solicitud no fue aprobada. Intenta nuevamente"
                 menuAffiliate.setOnClickListener {
-                    startActivity(Intent(this, AffiliateActivity::class.java))
+                    val intent = Intent(this, AffiliateActivity::class.java)
+                    startActivity(intent)
                 }
             }
 
@@ -167,7 +169,8 @@ class ProfileActivity : AppCompatActivity() {
                 tvAffiliateTitle.text = "Afiliar mi negocio"
                 tvAffiliateSubtitle.text = "Registro para veterinarias, tiendas y albergues"
                 menuAffiliate.setOnClickListener {
-                    startActivity(Intent(this, AffiliateActivity::class.java))
+                    val intent = Intent(this, AffiliateActivity::class.java)
+                    startActivity(intent)
                 }
             }
         }

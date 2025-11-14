@@ -8,16 +8,21 @@ import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 
 class RegisterPetActivity : AppCompatActivity() {
@@ -53,11 +58,32 @@ class RegisterPetActivity : AppCompatActivity() {
     private var shelterData: Map<String, Any>? = null
     private var selectedLatitude: Double? = null
     private var selectedLongitude: Double? = null
+    private var currentPhotoUri: Uri? = null
 
     companion object {
-        private const val PICK_IMAGE_REQUEST = 1001
         private const val LOCATION_PERMISSION_REQUEST = 1002
         private const val LOCATION_PICKER_REQUEST_CODE = 2001
+    }
+
+    // Activity Result Launchers - PARA CÁMARA
+    private val takePictureLauncher = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success && currentPhotoUri != null) {
+            selectedPhotoUri = currentPhotoUri
+            tvPhotoStatus.text = "✓ Foto tomada correctamente"
+            tvPhotoStatus.setTextColor(getColor(R.color.primary_orange))
+        }
+    }
+
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            openCamera()
+        } else {
+            Toast.makeText(this, "Permiso de cámara necesario para tomar fotos", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,15 +147,61 @@ class RegisterPetActivity : AppCompatActivity() {
             openLocationPicker()
         }
 
-        // Photo upload
+        // Photo upload - CAMBIADO PARA ABRIR CÁMARA
         photoUploadContainer.setOnClickListener {
-            openImagePicker()
+            checkCameraPermissionAndOpen()
         }
 
         // Register button
         btnRegisterPet.setOnClickListener {
             validateAndRegisterPet()
         }
+    }
+
+    // NUEVA FUNCIÓN PARA VERIFICAR PERMISO DE CÁMARA
+    private fun checkCameraPermissionAndOpen() {
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                openCamera()
+            }
+            else -> {
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    // NUEVA FUNCIÓN PARA ABRIR LA CÁMARA
+    private fun openCamera() {
+        try {
+            val photoFile = createImageFile()
+            currentPhotoUri = FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                photoFile
+            )
+            takePictureLauncher.launch(currentPhotoUri)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error al abrir cámara: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // NUEVA FUNCIÓN PARA CREAR ARCHIVO DE IMAGEN
+    private fun createImageFile(): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = getExternalFilesDir("PetPhotos")
+
+        if (storageDir != null && !storageDir.exists()) {
+            storageDir.mkdirs()
+        }
+
+        return File.createTempFile(
+            "PET_${timeStamp}_",
+            ".jpg",
+            storageDir
+        )
     }
 
     private fun checkShelterStatus() {
@@ -259,13 +331,6 @@ class RegisterPetActivity : AppCompatActivity() {
         }
     }
 
-    private fun openImagePicker() {
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Selecciona una foto"), PICK_IMAGE_REQUEST)
-    }
-
     private fun openLocationPicker() {
         val intent = Intent(this, LocationPickerActivity::class.java)
 
@@ -282,33 +347,24 @@ class RegisterPetActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        when (requestCode) {
-            PICK_IMAGE_REQUEST -> {
-                if (resultCode == RESULT_OK && data != null && data.data != null) {
-                    selectedPhotoUri = data.data
-                    tvPhotoStatus.text = "✓ Foto seleccionada"
-                    tvPhotoStatus.setTextColor(getColor(R.color.primary_orange))
+        if (requestCode == LOCATION_PICKER_REQUEST_CODE) {
+            if (resultCode == RESULT_OK && data != null) {
+                selectedLatitude = data.getDoubleExtra("latitude", 0.0)
+                selectedLongitude = data.getDoubleExtra("longitude", 0.0)
+                val address = data.getStringExtra("address") ?: "Ubicación seleccionada"
+
+                // Actualizar la UI
+                etPetLocation.setText(address)
+                tvSelectedCoordinates.text = "✓ Ubicación seleccionada: Lat: ${String.format("%.6f", selectedLatitude)}, Lng: ${String.format("%.6f", selectedLongitude)}"
+                tvSelectedCoordinates.setTextColor(ContextCompat.getColor(this, R.color.primary_orange))
+
+                // Actualizar currentLocation para mantener compatibilidad
+                currentLocation = Location("selected").apply {
+                    latitude = selectedLatitude!!
+                    longitude = selectedLongitude!!
                 }
-            }
-            LOCATION_PICKER_REQUEST_CODE -> {
-                if (resultCode == RESULT_OK && data != null) {
-                    selectedLatitude = data.getDoubleExtra("latitude", 0.0)
-                    selectedLongitude = data.getDoubleExtra("longitude", 0.0)
-                    val address = data.getStringExtra("address") ?: "Ubicación seleccionada"
 
-                    // Actualizar la UI
-                    etPetLocation.setText(address)
-                    tvSelectedCoordinates.text = "✓ Ubicación seleccionada: Lat: ${String.format("%.6f", selectedLatitude)}, Lng: ${String.format("%.6f", selectedLongitude)}"
-                    tvSelectedCoordinates.setTextColor(ContextCompat.getColor(this, R.color.primary_orange))
-
-                    // Actualizar currentLocation para mantener compatibilidad
-                    currentLocation = Location("selected").apply {
-                        latitude = selectedLatitude!!
-                        longitude = selectedLongitude!!
-                    }
-
-                    Toast.makeText(this, "Ubicación guardada correctamente", Toast.LENGTH_SHORT).show()
-                }
+                Toast.makeText(this, "Ubicación guardada correctamente", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -348,7 +404,7 @@ class RegisterPetActivity : AppCompatActivity() {
         }
 
         if (selectedPhotoUri == null) {
-            Toast.makeText(this, "Por favor selecciona una foto", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Por favor toma una foto de la mascota", Toast.LENGTH_SHORT).show()
             return
         }
 

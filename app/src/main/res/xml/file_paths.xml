@@ -1,8 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Directorio para fotos de reportes -->
     <external-files-path
-            name="my_images"
-            path="Pictures" />
-    <external-path
+            name="report_photos"
+            path="ReportPhotos/" />
+
+    <!-- Directorio para fotos de mascotas -->
+    <external-files-path
+            name="pet_photos"
+            path="PetPhotos/" />
+
+    <!-- Directorio de archivos externos general -->
+    <external-files-path
             name="external_files"
+            path="." />
+
+    <!-- Directorio cache por si acaso -->
+    <cache-path
+            name="cache"
             path="." />
 </paths>
