@@ -8,14 +8,19 @@ import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
@@ -45,6 +50,11 @@ class RegisterPetActivity : AppCompatActivity() {
     private lateinit var btnRegisterPet: Button
     private lateinit var tvSelectedCoordinates: TextView
 
+    // NUEVAS VISTAS PARA RECYCLERVIEW
+    private lateinit var rvSelectedPhotos: RecyclerView
+    private val selectedPhotoUris = mutableListOf<Uri>()
+    private lateinit var photoAdapter: SelectedPhotosAdapter
+
     private lateinit var typeDog: LinearLayout
     private lateinit var typeCat: LinearLayout
     private lateinit var typeOther: LinearLayout
@@ -53,7 +63,6 @@ class RegisterPetActivity : AppCompatActivity() {
     private lateinit var checkOther: TextView
 
     private var selectedType = "perro"
-    private var selectedPhotoUri: Uri? = null
     private var currentLocation: Location? = null
     private var shelterData: Map<String, Any>? = null
     private var selectedLatitude: Double? = null
@@ -61,6 +70,7 @@ class RegisterPetActivity : AppCompatActivity() {
     private var currentPhotoUri: Uri? = null
 
     companion object {
+        private const val TAG = "RegisterPetActivity"
         private const val LOCATION_PERMISSION_REQUEST = 1002
         private const val LOCATION_PICKER_REQUEST_CODE = 2001
     }
@@ -70,9 +80,19 @@ class RegisterPetActivity : AppCompatActivity() {
         ActivityResultContracts.TakePicture()
     ) { success ->
         if (success && currentPhotoUri != null) {
-            selectedPhotoUri = currentPhotoUri
-            tvPhotoStatus.text = "✓ Foto tomada correctamente"
+            Log.d(TAG, "Foto tomada exitosamente: $currentPhotoUri")
+            // AGREGAMOS LA FOTO A LA LISTA
+            selectedPhotoUris.add(currentPhotoUri!!)
+            photoAdapter.notifyItemInserted(selectedPhotoUris.size - 1)
+
+            // MOSTRAMOS EL RECYCLERVIEW
+            rvSelectedPhotos.visibility = View.VISIBLE
+            tvPhotoStatus.text = "${selectedPhotoUris.size} foto(s) seleccionada(s)"
             tvPhotoStatus.setTextColor(getColor(R.color.primary_orange))
+
+            Toast.makeText(this, "Foto cargada correctamente", Toast.LENGTH_SHORT).show()
+        } else {
+            Log.e(TAG, "Error al tomar foto - success: $success, uri: $currentPhotoUri")
         }
     }
 
@@ -88,39 +108,88 @@ class RegisterPetActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register_pet)
+        Log.d(TAG, "onCreate iniciado")
 
-        auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance()
-        storage = FirebaseStorage.getInstance()
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        try {
+            setContentView(R.layout.activity_register_pet)
 
-        initializeViews()
-        setupUI()
-        checkShelterStatus()
-        requestLocationPermission()
+            auth = FirebaseAuth.getInstance()
+            db = FirebaseFirestore.getInstance()
+            storage = FirebaseStorage.getInstance()
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+            Log.d(TAG, "Firebase inicializado, usuario: ${auth.currentUser?.email}")
+
+            initializeViews()
+            setupUI()
+            setupPhotosRecyclerView()
+            checkShelterStatus()
+            requestLocationPermission()
+
+            Log.d(TAG, "onCreate completado exitosamente")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error en onCreate: ${e.message}", e)
+            Toast.makeText(this, "Error al iniciar: ${e.message}", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun initializeViews() {
-        etPetName = findViewById(R.id.etPetName)
-        etPetBreed = findViewById(R.id.etPetBreed)
-        etPetAge = findViewById(R.id.etPetAge)
-        spinnerPetSize = findViewById(R.id.spinnerPetSize)
-        etPetLocation = findViewById(R.id.etPetLocation)
-        cbVaccinated = findViewById(R.id.cbVaccinated)
-        cbSterilized = findViewById(R.id.cbSterilized)
-        etPetDescription = findViewById(R.id.etPetDescription)
-        photoUploadContainer = findViewById(R.id.photoUploadContainer)
-        tvPhotoStatus = findViewById(R.id.tvPhotoStatus)
-        btnRegisterPet = findViewById(R.id.btnRegisterPet)
-        tvSelectedCoordinates = findViewById(R.id.tvSelectedCoordinates)
+        try {
+            etPetName = findViewById(R.id.etPetName)
+            etPetBreed = findViewById(R.id.etPetBreed)
+            etPetAge = findViewById(R.id.etPetAge)
+            spinnerPetSize = findViewById(R.id.spinnerPetSize)
+            etPetLocation = findViewById(R.id.etPetLocation)
+            cbVaccinated = findViewById(R.id.cbVaccinated)
+            cbSterilized = findViewById(R.id.cbSterilized)
+            etPetDescription = findViewById(R.id.etPetDescription)
+            photoUploadContainer = findViewById(R.id.photoUploadContainer)
+            tvPhotoStatus = findViewById(R.id.tvPhotoStatus)
+            btnRegisterPet = findViewById(R.id.btnRegisterPet)
+            tvSelectedCoordinates = findViewById(R.id.tvSelectedCoordinates)
+            rvSelectedPhotos = findViewById(R.id.rvSelectedPhotos)
 
-        typeDog = findViewById(R.id.typeDog)
-        typeCat = findViewById(R.id.typeCat)
-        typeOther = findViewById(R.id.typeOther)
-        checkDog = findViewById(R.id.checkDog)
-        checkCat = findViewById(R.id.checkCat)
-        checkOther = findViewById(R.id.checkOther)
+            typeDog = findViewById(R.id.typeDog)
+            typeCat = findViewById(R.id.typeCat)
+            typeOther = findViewById(R.id.typeOther)
+            checkDog = findViewById(R.id.checkDog)
+            checkCat = findViewById(R.id.checkCat)
+            checkOther = findViewById(R.id.checkOther)
+
+            Log.d(TAG, "Vistas inicializadas correctamente")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al inicializar vistas: ${e.message}", e)
+            throw e
+        }
+    }
+
+    // NUEVA FUNCIÓN PARA CONFIGURAR EL RECYCLERVIEW
+    private fun setupPhotosRecyclerView() {
+        try {
+            photoAdapter = SelectedPhotosAdapter(selectedPhotoUris) { position ->
+                // Callback para eliminar foto
+                selectedPhotoUris.removeAt(position)
+                photoAdapter.notifyItemRemoved(position)
+                photoAdapter.notifyItemRangeChanged(position, selectedPhotoUris.size)
+
+                if (selectedPhotoUris.isEmpty()) {
+                    rvSelectedPhotos.visibility = View.GONE
+                    tvPhotoStatus.text = "Toma una foto de la mascota para mostrarla en adopción"
+                    tvPhotoStatus.setTextColor(getColor(R.color.text_secondary))
+                } else {
+                    tvPhotoStatus.text = "${selectedPhotoUris.size} foto(s) seleccionada(s)"
+                }
+            }
+
+            rvSelectedPhotos.apply {
+                layoutManager = GridLayoutManager(this@RegisterPetActivity, 3)
+                adapter = photoAdapter
+            }
+
+            Log.d(TAG, "RecyclerView configurado correctamente")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al configurar RecyclerView: ${e.message}", e)
+        }
     }
 
     private fun setupUI() {
@@ -134,7 +203,7 @@ class RegisterPetActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sizeOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerPetSize.adapter = adapter
-        spinnerPetSize.setSelection(1) // Default: Mediano
+        spinnerPetSize.setSelection(1)
 
         // Pet type selection
         typeDog.setOnClickListener { selectPetType("perro") }
@@ -147,7 +216,7 @@ class RegisterPetActivity : AppCompatActivity() {
             openLocationPicker()
         }
 
-        // Photo upload - CAMBIADO PARA ABRIR CÁMARA
+        // Photo upload
         photoUploadContainer.setOnClickListener {
             checkCameraPermissionAndOpen()
         }
@@ -158,7 +227,6 @@ class RegisterPetActivity : AppCompatActivity() {
         }
     }
 
-    // NUEVA FUNCIÓN PARA VERIFICAR PERMISO DE CÁMARA
     private fun checkCameraPermissionAndOpen() {
         when {
             ContextCompat.checkSelfPermission(
@@ -173,7 +241,6 @@ class RegisterPetActivity : AppCompatActivity() {
         }
     }
 
-    // NUEVA FUNCIÓN PARA ABRIR LA CÁMARA
     private fun openCamera() {
         try {
             val photoFile = createImageFile()
@@ -182,13 +249,14 @@ class RegisterPetActivity : AppCompatActivity() {
                 "${packageName}.fileprovider",
                 photoFile
             )
+            Log.d(TAG, "Abriendo cámara con URI: $currentPhotoUri")
             takePictureLauncher.launch(currentPhotoUri)
         } catch (e: Exception) {
+            Log.e(TAG, "Error al abrir cámara: ${e.message}", e)
             Toast.makeText(this, "Error al abrir cámara: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // NUEVA FUNCIÓN PARA CREAR ARCHIVO DE IMAGEN
     private fun createImageFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir = getExternalFilesDir("PetPhotos")
@@ -207,12 +275,14 @@ class RegisterPetActivity : AppCompatActivity() {
     private fun checkShelterStatus() {
         val currentUser = auth.currentUser
         if (currentUser == null) {
+            Log.e(TAG, "Usuario no autenticado")
             Toast.makeText(this, "Debes iniciar sesión", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        // Check if user has an approved shelter affiliation
+        Log.d(TAG, "Verificando estado del albergue para usuario: ${currentUser.email}")
+
         db.collection("affiliates")
             .whereEqualTo("userId", currentUser.uid)
             .whereEqualTo("type", "albergue")
@@ -220,7 +290,10 @@ class RegisterPetActivity : AppCompatActivity() {
             .limit(1)
             .get()
             .addOnSuccessListener { documents ->
+                Log.d(TAG, "Consulta completada. Documentos encontrados: ${documents.size()}")
+
                 if (documents.isEmpty) {
+                    Log.w(TAG, "Usuario no es un albergue aprobado")
                     Toast.makeText(
                         this,
                         "Solo albergues aprobados pueden registrar mascotas",
@@ -229,10 +302,10 @@ class RegisterPetActivity : AppCompatActivity() {
                     finish()
                 } else {
                     shelterData = documents.documents[0].data
-                    // Pre-fill location with shelter location
+                    Log.d(TAG, "Albergue verificado: ${shelterData?.get("businessName")}")
+
                     shelterData?.let { data ->
                         etPetLocation.setText(data["address"] as? String ?: "")
-                        // Guardar las coordenadas del albergue como valores iniciales
                         selectedLatitude = (data["latitude"] as? Double) ?: -12.0464
                         selectedLongitude = (data["longitude"] as? Double) ?: -77.0428
 
@@ -241,27 +314,24 @@ class RegisterPetActivity : AppCompatActivity() {
                             longitude = selectedLongitude!!
                         }
 
-                        // Actualizar el texto de coordenadas
                         tvSelectedCoordinates.text = "✓ Ubicación del albergue: Lat: ${String.format("%.6f", selectedLatitude)}, Lng: ${String.format("%.6f", selectedLongitude)}"
                         tvSelectedCoordinates.setTextColor(ContextCompat.getColor(this, R.color.primary_orange))
                     }
                 }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Error al verificar permisos", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error al verificar permisos: ${e.message}", e)
+                Toast.makeText(this, "Error al verificar permisos: ${e.message}", Toast.LENGTH_SHORT).show()
                 finish()
             }
     }
 
     private fun selectPetType(type: String) {
         selectedType = type
-
-        // Reset all checkboxes
         checkDog.text = "☐"
         checkCat.text = "☐"
         checkOther.text = "☐"
 
-        // Mark selected
         when (type) {
             "perro" -> checkDog.text = "☑"
             "gato" -> checkCat.text = "☑"
@@ -327,14 +397,13 @@ class RegisterPetActivity : AppCompatActivity() {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "Error al obtener dirección: ${e.message}", e)
         }
     }
 
     private fun openLocationPicker() {
         val intent = Intent(this, LocationPickerActivity::class.java)
 
-        // Si ya hay coordenadas seleccionadas, pasarlas
         if (selectedLatitude != null && selectedLongitude != null) {
             intent.putExtra("latitude", selectedLatitude!!)
             intent.putExtra("longitude", selectedLongitude!!)
@@ -353,12 +422,10 @@ class RegisterPetActivity : AppCompatActivity() {
                 selectedLongitude = data.getDoubleExtra("longitude", 0.0)
                 val address = data.getStringExtra("address") ?: "Ubicación seleccionada"
 
-                // Actualizar la UI
                 etPetLocation.setText(address)
                 tvSelectedCoordinates.text = "✓ Ubicación seleccionada: Lat: ${String.format("%.6f", selectedLatitude)}, Lng: ${String.format("%.6f", selectedLongitude)}"
                 tvSelectedCoordinates.setTextColor(ContextCompat.getColor(this, R.color.primary_orange))
 
-                // Actualizar currentLocation para mantener compatibilidad
                 currentLocation = Location("selected").apply {
                     latitude = selectedLatitude!!
                     longitude = selectedLongitude!!
@@ -377,7 +444,6 @@ class RegisterPetActivity : AppCompatActivity() {
         val location = etPetLocation.text.toString().trim()
         val description = etPetDescription.text.toString().trim()
 
-        // Validations
         if (name.isEmpty()) {
             Toast.makeText(this, "Por favor ingresa el nombre de la mascota", Toast.LENGTH_SHORT).show()
             return
@@ -403,8 +469,8 @@ class RegisterPetActivity : AppCompatActivity() {
             return
         }
 
-        if (selectedPhotoUri == null) {
-            Toast.makeText(this, "Por favor toma una foto de la mascota", Toast.LENGTH_SHORT).show()
+        if (selectedPhotoUris.isEmpty()) {
+            Toast.makeText(this, "Por favor toma al menos una foto de la mascota", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -413,15 +479,13 @@ class RegisterPetActivity : AppCompatActivity() {
             return
         }
 
-        // Show loading
         btnRegisterPet.isEnabled = false
         btnRegisterPet.text = "Registrando..."
 
-        // Upload photo and register pet
-        uploadPhotoAndRegisterPet(name, breed, age, size, location, description)
+        uploadPhotosAndRegisterPet(name, breed, age, size, location, description)
     }
 
-    private fun uploadPhotoAndRegisterPet(
+    private fun uploadPhotosAndRegisterPet(
         name: String,
         breed: String,
         age: String,
@@ -436,35 +500,47 @@ class RegisterPetActivity : AppCompatActivity() {
             return
         }
 
-        // Generate unique ID for the pet
         val petId = db.collection("animals").document().id
+        val photoUrls = mutableListOf<String>()
+        var uploadedCount = 0
+        val totalPhotos = selectedPhotoUris.size
 
-        // Upload photo to Firebase Storage
-        val photoRef = storage.reference.child("animals/$petId/photo.jpg")
-        val uploadTask = photoRef.putFile(selectedPhotoUri!!)
+        Log.d(TAG, "Iniciando subida de $totalPhotos fotos")
 
-        uploadTask.addOnSuccessListener {
-            // Get download URL
-            photoRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                // Create animal document
-                createAnimalDocument(
-                    petId,
-                    name,
-                    breed,
-                    age,
-                    size,
-                    location,
-                    description,
-                    downloadUri.toString(),
-                    currentUser.uid
-                )
-            }.addOnFailureListener { e ->
-                Toast.makeText(this, "Error al obtener URL de foto: ${e.message}", Toast.LENGTH_SHORT).show()
-                resetButton()
-            }
-        }.addOnFailureListener { e ->
-            Toast.makeText(this, "Error al subir foto: ${e.message}", Toast.LENGTH_SHORT).show()
-            resetButton()
+        selectedPhotoUris.forEachIndexed { index, photoUri ->
+            val photoRef = storage.reference.child("animals/$petId/photo_$index.jpg")
+
+            photoRef.putFile(photoUri)
+                .addOnSuccessListener {
+                    photoRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                        photoUrls.add(downloadUri.toString())
+                        uploadedCount++
+                        Log.d(TAG, "Foto $uploadedCount/$totalPhotos subida")
+
+                        if (uploadedCount == totalPhotos) {
+                            createAnimalDocument(
+                                petId,
+                                name,
+                                breed,
+                                age,
+                                size,
+                                location,
+                                description,
+                                photoUrls,
+                                currentUser.uid
+                            )
+                        }
+                    }.addOnFailureListener { e ->
+                        Log.e(TAG, "Error al obtener URL: ${e.message}", e)
+                        Toast.makeText(this, "Error al obtener URL de foto: ${e.message}", Toast.LENGTH_SHORT).show()
+                        resetButton()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error al subir foto: ${e.message}", e)
+                    Toast.makeText(this, "Error al subir foto: ${e.message}", Toast.LENGTH_SHORT).show()
+                    resetButton()
+                }
         }
     }
 
@@ -476,7 +552,7 @@ class RegisterPetActivity : AppCompatActivity() {
         size: String,
         location: String,
         description: String,
-        photoUrl: String,
+        photoUrls: List<String>,
         userId: String
     ) {
         val animalData = hashMapOf(
@@ -489,7 +565,8 @@ class RegisterPetActivity : AppCompatActivity() {
             "location" to location,
             "latitude" to (selectedLatitude ?: -12.0464),
             "longitude" to (selectedLongitude ?: -77.0428),
-            "photoUrl" to photoUrl,
+            "photoUrl" to photoUrls.firstOrNull(),
+            "photoUrls" to photoUrls,
             "status" to "available",
             "isVaccinated" to cbVaccinated.isChecked,
             "isSterilized" to cbSterilized.isChecked,
@@ -501,10 +578,13 @@ class RegisterPetActivity : AppCompatActivity() {
             "updatedAt" to System.currentTimeMillis()
         )
 
+        Log.d(TAG, "Creando documento de animal: $petId")
+
         db.collection("animals")
             .document(petId)
             .set(animalData)
             .addOnSuccessListener {
+                Log.d(TAG, "Mascota registrada exitosamente")
                 Toast.makeText(
                     this,
                     "¡Mascota registrada exitosamente!\n$name ahora está disponible para adopción",
@@ -513,6 +593,7 @@ class RegisterPetActivity : AppCompatActivity() {
                 finish()
             }
             .addOnFailureListener { e ->
+                Log.e(TAG, "Error al registrar mascota: ${e.message}", e)
                 Toast.makeText(this, "Error al registrar mascota: ${e.message}", Toast.LENGTH_SHORT).show()
                 resetButton()
             }
@@ -520,6 +601,41 @@ class RegisterPetActivity : AppCompatActivity() {
 
     private fun resetButton() {
         btnRegisterPet.isEnabled = true
-        btnRegisterPet.text = "Registrar mascota en adopción"
+        btnRegisterPet.text = "Registrar mascota"
+    }
+
+    inner class SelectedPhotosAdapter(
+        private val photos: MutableList<Uri>,
+        private val onRemoveClick: (Int) -> Unit
+    ) : RecyclerView.Adapter<SelectedPhotosAdapter.PhotoViewHolder>() {
+
+        inner class PhotoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val ivPhoto: ImageView = view.findViewById(R.id.ivPhoto)
+            val btnRemove: TextView = view.findViewById(R.id.btnRemove)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_selected_photo, parent, false)
+            return PhotoViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
+            Glide.with(holder.itemView.context)
+                .load(photos[position])
+                .centerCrop()
+                .placeholder(R.drawable.ic_image_placeholder)
+                .error(R.drawable.ic_image_error)
+                .into(holder.ivPhoto)
+
+            holder.btnRemove.setOnClickListener {
+                val adapterPosition = holder.adapterPosition
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    onRemoveClick(adapterPosition)
+                }
+            }
+        }
+
+        override fun getItemCount() = photos.size
     }
 }

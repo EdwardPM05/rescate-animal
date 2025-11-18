@@ -437,7 +437,7 @@
 
             </LinearLayout>
 
-            <!-- Photo Upload - ACTUALIZADO PARA CÁMARA -->
+            <!-- Photo Upload Section - ACTUALIZADO -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -492,6 +492,14 @@
 
             </LinearLayout>
 
+            <!-- ✅ NUEVO: RecyclerView para mostrar fotos seleccionadas -->
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvSelectedPhotos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:visibility="gone" />
+
             <!-- Description -->
             <TextView
                     android:layout_width="wrap_content"
@@ -524,7 +532,7 @@
                     android:layout_height="56dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/button_rounded_orange"
-                    android:text="Registrar mascota en adopción"
+                    android:text="Registrar mascota"
                     android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />

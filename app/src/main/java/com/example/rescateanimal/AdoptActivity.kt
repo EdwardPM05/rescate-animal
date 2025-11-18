@@ -31,10 +31,14 @@ class AdoptActivity : AppCompatActivity() {
     private lateinit var tvDistanceValue: TextView
     private lateinit var rvAnimals: RecyclerView
     private lateinit var emptyState: LinearLayout
+    private lateinit var tvResultCount: TextView
 
     private lateinit var tabPerros: LinearLayout
     private lateinit var tabGatos: LinearLayout
     private lateinit var tabOtros: LinearLayout
+    private lateinit var tvTabPerros: TextView
+    private lateinit var tvTabGatos: TextView
+    private lateinit var tvTabOtros: TextView
 
     private lateinit var animalsAdapter: AnimalsAdapter
     private var allAnimals = listOf<Animal>()
@@ -69,10 +73,15 @@ class AdoptActivity : AppCompatActivity() {
         tvDistanceValue = findViewById(R.id.tvDistanceValue)
         rvAnimals = findViewById(R.id.rvAnimals)
         emptyState = findViewById(R.id.emptyState)
+        tvResultCount = findViewById(R.id.tvResultCount)
 
         tabPerros = findViewById(R.id.tabPerros)
         tabGatos = findViewById(R.id.tabGatos)
         tabOtros = findViewById(R.id.tabOtros)
+
+        tvTabPerros = findViewById(R.id.tvTabPerros)
+        tvTabGatos = findViewById(R.id.tvTabGatos)
+        tvTabOtros = findViewById(R.id.tvTabOtros)
     }
 
     private fun setupUI() {
@@ -107,6 +116,9 @@ class AdoptActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.btnFilter).setOnClickListener {
             showAdvancedFilters()
         }
+
+        // Seleccionar "Perros" por defecto
+        selectCategory("perro")
     }
 
     private fun setupRecyclerView() {
@@ -116,13 +128,6 @@ class AdoptActivity : AppCompatActivity() {
                 // Click en la tarjeta del animal - Ver detalles
                 val intent = Intent(this, AnimalDetailActivity::class.java)
                 intent.putExtra("animal", animalWithDistance.animal)
-                startActivity(intent)
-            },
-            onAdoptClick = { animalWithDistance ->
-                // Click en botón "Adoptar"
-                val intent = Intent(this, AnimalDetailActivity::class.java)
-                intent.putExtra("animal", animalWithDistance.animal)
-                intent.putExtra("showAdoptDialog", true)
                 startActivity(intent)
             }
         )
@@ -136,31 +141,32 @@ class AdoptActivity : AppCompatActivity() {
     private fun selectCategory(category: String) {
         currentCategory = category
 
-        // Reset tabs visual state
-        resetTabsVisualState()
+        // Reset todas las pestañas a estado no seleccionado
+        tabPerros.setBackgroundResource(R.drawable.tab_unselected)
+        tabGatos.setBackgroundResource(R.drawable.tab_unselected)
+        tabOtros.setBackgroundResource(R.drawable.tab_unselected)
 
-        // Highlight selected tab
+        tvTabPerros.setTextColor(getColor(R.color.text_secondary))
+        tvTabGatos.setTextColor(getColor(R.color.text_secondary))
+        tvTabOtros.setTextColor(getColor(R.color.text_secondary))
+
+        // Aplicar estilo seleccionado
         when (category) {
-            "perro" -> highlightTab(tabPerros)
-            "gato" -> highlightTab(tabGatos)
-            "otro" -> highlightTab(tabOtros)
+            "perro" -> {
+                tabPerros.setBackgroundResource(R.drawable.tab_selected)
+                tvTabPerros.setTextColor(getColor(android.R.color.white))
+            }
+            "gato" -> {
+                tabGatos.setBackgroundResource(R.drawable.tab_selected)
+                tvTabGatos.setTextColor(getColor(android.R.color.white))
+            }
+            "otro" -> {
+                tabOtros.setBackgroundResource(R.drawable.tab_selected)
+                tvTabOtros.setTextColor(getColor(android.R.color.white))
+            }
         }
 
         filterAnimalsAndUpdate()
-    }
-
-    private fun resetTabsVisualState() {
-        listOf(tabPerros, tabGatos, tabOtros).forEach { tab ->
-            val textView = tab.getChildAt(1) as TextView
-            textView.setTextColor(getColor(R.color.text_secondary))
-            textView.setTypeface(null, android.graphics.Typeface.NORMAL)
-        }
-    }
-
-    private fun highlightTab(selectedTab: LinearLayout) {
-        val textView = selectedTab.getChildAt(1) as TextView
-        textView.setTextColor(getColor(R.color.primary_orange))
-        textView.setTypeface(null, android.graphics.Typeface.BOLD)
     }
 
     private fun checkLocationPermissionAndLoad() {
@@ -280,12 +286,21 @@ class AdoptActivity : AppCompatActivity() {
         } else {
             hideEmptyState()
             animalsAdapter.updateAnimals(filteredAnimals)
+
+            // Actualizar contador de resultados
+            val categoryName = when(currentCategory) {
+                "perro" -> "perros"
+                "gato" -> "gatos"
+                else -> "mascotas"
+            }
+            tvResultCount.text = "Encontramos ${filteredAnimals.size} $categoryName para ti"
         }
     }
 
     private fun showEmptyState() {
         emptyState.visibility = View.VISIBLE
         rvAnimals.visibility = View.GONE
+        tvResultCount.text = "No hay mascotas disponibles"
     }
 
     private fun hideEmptyState() {
