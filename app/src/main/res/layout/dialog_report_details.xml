@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:background="@drawable/dialog_background"
+              android:padding="0dp">
+
+    <!-- Título del Dialog -->
+    <TextView
+            android:id="@+id/tvDialogTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Título del Reporte"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#2C3E50"
+            android:padding="20dp"
+            android:background="#F8F9FA"
+            android:gravity="center_vertical" />
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:maxHeight="500dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+            <!-- Contenedor de Fotos (ViewPager2) -->
+            <LinearLayout
+                    android:id="@+id/photoContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:background="@drawable/photo_container_background"
+                    android:padding="10dp"
+                    android:layout_marginBottom="20dp">
+
+                <!-- ViewPager2 para galería de fotos -->
+                <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="4dp">
+
+                    <androidx.viewpager2.widget.ViewPager2
+                            android:id="@+id/viewPagerPhotos"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Indicador de foto (1/3) -->
+                <TextView
+                        android:id="@+id/tvPhotoIndicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:text="1 / 1"
+                        android:textSize="14sp"
+                        android:textColor="#7F8C8D"
+                        android:background="@drawable/indicator_background"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="6dp" />
+
+            </LinearLayout>
+
+            <!-- Información del Reporte -->
+            <TextView
+                    android:id="@+id/tvDialogInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Información del reporte"
+                    android:textSize="15sp"
+                    android:textColor="#34495E"
+                    android:lineSpacingExtra="4dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Botones de acción -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:background="#F8F9FA"
+            android:gravity="end">
+
+        <TextView
+                android:id="@+id/btnCall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📞 Llamar"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/button_call_background"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="12dp"
+                android:layout_marginEnd="12dp"
+                android:clickable="true"
+                android:focusable="true" />
+
+        <TextView
+                android:id="@+id/btnClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cerrar"
+                android:textSize="16sp"
+                android:textColor="#7F8C8D"
+                android:background="@drawable/button_close_background"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="12dp"
+                android:clickable="true"
+                android:focusable="true" />
+
+    </LinearLayout>
+
+</LinearLayout>

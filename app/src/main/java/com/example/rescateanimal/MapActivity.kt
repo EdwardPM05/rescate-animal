@@ -12,12 +12,18 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -29,6 +35,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import java.util.*
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -100,7 +107,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         findViewById<LinearLayout>(R.id.navAdoptar).setOnClickListener {
-            Toast.makeText(this, "Adoptar - Próximamente", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, AdoptActivity::class.java))
         }
 
         findViewById<LinearLayout>(R.id.navPerfil).setOnClickListener {
@@ -283,7 +290,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showCallDialog(phoneNumber: String, reportTitle: String) {
-        android.app.AlertDialog.Builder(this)
+        AlertDialog.Builder(this)
             .setTitle("Contactar")
             .setMessage("¿Deseas llamar a:\n$reportTitle?\n\nTéléfono: $phoneNumber")
             .setPositiveButton("Llamar") { _, _ ->
@@ -296,6 +303,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showReportDetailsDialog(reportInfo: ReportInfo) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_report_details, null)
+
+        val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
+        val tvInfo = dialogView.findViewById<TextView>(R.id.tvDialogInfo)
+        val viewPager = dialogView.findViewById<ViewPager2>(R.id.viewPagerPhotos)
+        val photoIndicator = dialogView.findViewById<TextView>(R.id.tvPhotoIndicator)
+        val photoContainer = dialogView.findViewById<LinearLayout>(R.id.photoContainer)
+        val btnCall = dialogView.findViewById<TextView>(R.id.btnCall)
+        val btnClose = dialogView.findViewById<TextView>(R.id.btnClose)
+
+        tvTitle.text = reportInfo.title
+
         val message = buildString {
             append("📅 Fecha: ${reportInfo.dateString}\n")
             append("📊 Estado: ${getStatusText(reportInfo.status)}\n\n")
@@ -311,27 +330,66 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             append("👤 Reportado por: ${reportInfo.userEmail.substringBefore("@")}\n")
 
             if (reportInfo.contactPhone.isNotEmpty()) {
-                append("📞 Teléfono: ${reportInfo.contactPhone}\n")
+                append("📞 Teléfono: ${reportInfo.contactPhone}")
             } else {
-                append("📧 Sin teléfono de contacto\n")
+                append("📧 Sin teléfono de contacto")
             }
         }
 
-        val dialog = android.app.AlertDialog.Builder(this)
-            .setTitle(reportInfo.title)
-            .setMessage(message)
-            .setPositiveButton("Cerrar", null)
+        tvInfo.text = message
+
+        // Cargar fotos desde Firebase Storage o Firestore
+        loadReportPhotos(reportInfo.photoUrls, reportInfo.documentId) { photoUrls ->
+            if (photoUrls.isNotEmpty()) {
+                photoContainer.visibility = View.VISIBLE
+                val adapter = PhotoPagerAdapter(photoUrls)
+                viewPager.adapter = adapter
+
+                photoIndicator.text = "1 / ${photoUrls.size}"
+
+                viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        photoIndicator.text = "${position + 1} / ${photoUrls.size}"
+                    }
+                })
+            } else {
+                photoContainer.visibility = View.GONE
+            }
+        }
 
         if (reportInfo.contactPhone.isNotEmpty()) {
-            dialog.setNeutralButton("📞 Llamar") { _, _ ->
+            btnCall.visibility = View.VISIBLE
+            btnCall.setOnClickListener {
                 showCallDialog(reportInfo.contactPhone, reportInfo.title)
             }
+        } else {
+            btnCall.visibility = View.GONE
+        }
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        btnClose.setOnClickListener {
+            dialog.dismiss()
         }
 
         dialog.show()
     }
 
     private fun showAffiliateDetailsDialog(affiliateInfo: AffiliateInfo) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_report_details, null)
+
+        val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
+        val tvInfo = dialogView.findViewById<TextView>(R.id.tvDialogInfo)
+        val viewPager = dialogView.findViewById<ViewPager2>(R.id.viewPagerPhotos)
+        val photoIndicator = dialogView.findViewById<TextView>(R.id.tvPhotoIndicator)
+        val photoContainer = dialogView.findViewById<LinearLayout>(R.id.photoContainer)
+        val btnCall = dialogView.findViewById<TextView>(R.id.btnCall)
+        val btnClose = dialogView.findViewById<TextView>(R.id.btnClose)
+
+        tvTitle.text = affiliateInfo.businessName
+
         val message = buildString {
             append("🏢 ${affiliateInfo.businessName}\n")
             append("📊 Tipo: ${getAffiliateTypeText(affiliateInfo.type)}\n\n")
@@ -349,19 +407,150 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             if (affiliateInfo.socialMedia.isNotEmpty()) {
-                append("🌐 ${affiliateInfo.socialMedia}\n")
+                append("🌐 ${affiliateInfo.socialMedia}")
             }
         }
 
-        val dialog = android.app.AlertDialog.Builder(this)
-            .setTitle(affiliateInfo.businessName)
-            .setMessage(message)
-            .setPositiveButton("Cerrar", null)
-            .setNeutralButton("📞 Llamar") { _, _ ->
-                showCallDialog(affiliateInfo.phone, affiliateInfo.businessName)
+        tvInfo.text = message
+
+        // Cargar fotos desde Firebase Storage (carpeta photos/)
+        loadAffiliatePhotos(affiliateInfo.documentId) { photoUrls ->
+            if (photoUrls.isNotEmpty()) {
+                photoContainer.visibility = View.VISIBLE
+                val adapter = PhotoPagerAdapter(photoUrls)
+                viewPager.adapter = adapter
+
+                photoIndicator.text = "1 / ${photoUrls.size}"
+
+                viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        photoIndicator.text = "${position + 1} / ${photoUrls.size}"
+                    }
+                })
+            } else {
+                photoContainer.visibility = View.GONE
             }
+        }
+
+        btnCall.visibility = View.VISIBLE
+        btnCall.setOnClickListener {
+            showCallDialog(affiliateInfo.phone, affiliateInfo.businessName)
+        }
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
 
         dialog.show()
+    }
+
+    // ==================== CARGAR FOTOS DESDE FIREBASE ====================
+
+    private fun loadReportPhotos(photoUrls: List<String>, documentId: String, callback: (List<String>) -> Unit) {
+        if (photoUrls.isNotEmpty()) {
+            callback(photoUrls)
+            return
+        }
+
+        // Si no hay URLs en Firestore, buscar en Storage
+        val storage = FirebaseStorage.getInstance()
+        val reportsRef = storage.reference.child("reports/$documentId")
+
+        reportsRef.listAll()
+            .addOnSuccessListener { listResult ->
+                val urls = mutableListOf<String>()
+                var processedCount = 0
+
+                if (listResult.items.isEmpty()) {
+                    callback(emptyList())
+                    return@addOnSuccessListener
+                }
+
+                listResult.items.forEach { item ->
+                    item.downloadUrl.addOnSuccessListener { uri ->
+                        urls.add(uri.toString())
+                        processedCount++
+
+                        if (processedCount == listResult.items.size) {
+                            callback(urls.sorted())
+                        }
+                    }.addOnFailureListener {
+                        processedCount++
+                        if (processedCount == listResult.items.size) {
+                            callback(urls.sorted())
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener {
+                callback(emptyList())
+            }
+    }
+
+    private fun loadAffiliatePhotos(documentId: String, callback: (List<String>) -> Unit) {
+        val storage = FirebaseStorage.getInstance()
+        val affiliateRef = storage.reference.child("affiliates/$documentId/photos")
+
+        affiliateRef.listAll()
+            .addOnSuccessListener { listResult ->
+                val urls = mutableListOf<String>()
+                var processedCount = 0
+
+                if (listResult.items.isEmpty()) {
+                    callback(emptyList())
+                    return@addOnSuccessListener
+                }
+
+                listResult.items.forEach { item ->
+                    item.downloadUrl.addOnSuccessListener { uri ->
+                        urls.add(uri.toString())
+                        processedCount++
+
+                        if (processedCount == listResult.items.size) {
+                            callback(urls.sorted())
+                        }
+                    }.addOnFailureListener {
+                        processedCount++
+                        if (processedCount == listResult.items.size) {
+                            callback(urls.sorted())
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener {
+                callback(emptyList())
+            }
+    }
+
+    // ==================== ADAPTER PARA VIEWPAGER2 ====================
+
+    inner class PhotoPagerAdapter(private val photoUrls: List<String>) :
+        androidx.recyclerview.widget.RecyclerView.Adapter<PhotoPagerAdapter.PhotoViewHolder>() {
+
+        inner class PhotoViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+            val imageView: ImageView = view.findViewById(R.id.imageViewPhoto)
+        }
+
+        override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): PhotoViewHolder {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_photo_page, parent, false)
+            return PhotoViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
+            Glide.with(holder.itemView.context)
+                .load(photoUrls[position])
+                .placeholder(R.drawable.ic_image_placeholder)
+                .error(R.drawable.ic_image_error)
+                .centerCrop()
+                .into(holder.imageView)
+        }
+
+        override fun getItemCount(): Int = photoUrls.size
     }
 
     // ==================== FUNCIONES PARA ICONOS PERSONALIZADOS ====================
@@ -423,7 +612,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val status: String,
         val userEmail: String,
         val dateString: String,
-        val documentId: String
+        val documentId: String,
+        val photoUrls: List<String> = emptyList()
     )
 
     data class AffiliateInfo(
@@ -463,6 +653,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         val status = reportData["status"] as? String ?: "pending"
                         val userEmail = reportData["userEmail"] as? String ?: "Usuario"
                         val createdAt = reportData["createdAt"] as? Long
+                        val photoUrls = (reportData["photoUrls"] as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
 
                         val dateString = if (createdAt != null) {
                             val date = java.util.Date(createdAt)
@@ -489,7 +680,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                             status = status,
                             userEmail = userEmail,
                             dateString = dateString,
-                            documentId = document.id
+                            documentId = document.id,
+                            photoUrls = photoUrls
                         )
 
                         val marker = map.addMarker(

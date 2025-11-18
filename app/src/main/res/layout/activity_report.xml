@@ -244,44 +244,137 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-            <!-- Location Section -->
+            <!-- Location Section - MODIFICADO PARA SOLO UBICACIÓN ACTUAL -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Ubicación"
+                    android:text="Ubicación actual"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-            <!-- Location Input -->
-            <EditText
-                    android:id="@+id/etLocation"
+            <!-- Info sobre ubicación obligatoria -->
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="Ingresa la dirección o usa tu ubicación actual"
-                    android:inputType="textPostalAddress"
-                    android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="14sp"
-                    android:drawableStart="@drawable/ic_location"
-                    android:drawablePadding="12dp" />
+                    android:background="@drawable/info_location_background"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
 
-            <!-- Use Current Location Button -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ℹ️"
+                        android:textSize="18sp"
+                        android:layout_marginEnd="8dp" />
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Para garantizar la autenticidad, solo se usará tu ubicación actual del GPS"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:lineSpacingExtra="2dp" />
+
+            </LinearLayout>
+
+            <!-- Current Location Display (Read-only) -->
+            <LinearLayout
+                    android:id="@+id/locationDisplayCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/location_display_background"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                <!-- Loading State -->
+                <LinearLayout
+                        android:id="@+id/locationLoadingState"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                    <ProgressBar
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="12dp"
+                            style="?android:attr/progressBarStyleSmall" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Obteniendo ubicación..."
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <!-- Location Loaded State -->
+                <LinearLayout
+                        android:id="@+id/locationLoadedState"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="8dp">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="📍"
+                                android:textSize="18sp"
+                                android:layout_marginEnd="8dp" />
+
+                        <TextView
+                                android:id="@+id/tvLocationAddress"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Calle Example 123, Lima"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <TextView
+                            android:id="@+id/tvLocationCoords"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Lat: -12.046374, Lng: -77.042793"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Refresh Location Button -->
             <TextView
-                    android:id="@+id/btnCurrentLocation"
+                    android:id="@+id/btnRefreshLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:text="📍 Usar mi ubicación actual"
+                    android:text="🔄 Actualizar ubicación"
                     android:textColor="@color/primary_orange"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:padding="8dp" />
 
             <!-- Description Section -->
             <TextView
@@ -314,7 +407,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Teléfono de contacto (opcional)"
+                    android:text="Teléfono de contacto (obligatorio)"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -354,7 +447,7 @@
                     android:textSize="12sp"
                     android:textStyle="italic" />
 
-            <!-- Photos Upload Card - ARREGLADO -->
+            <!-- Photos Upload Card -->
             <LinearLayout
                     android:id="@+id/photoUploadCard"
                     android:layout_width="match_parent"

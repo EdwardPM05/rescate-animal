@@ -3,12 +3,14 @@ package com.example.rescateanimal
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -37,8 +39,12 @@ class ReportActivity : AppCompatActivity() {
     private lateinit var reportTypeDanger: LinearLayout
     private lateinit var reportTypeLost: LinearLayout
     private lateinit var reportTypeAbandoned: LinearLayout
-    private lateinit var etLocation: EditText
-    private lateinit var btnCurrentLocation: TextView
+    private lateinit var locationDisplayCard: LinearLayout
+    private lateinit var locationLoadingState: LinearLayout
+    private lateinit var locationLoadedState: LinearLayout
+    private lateinit var tvLocationAddress: TextView
+    private lateinit var tvLocationCoords: TextView
+    private lateinit var btnRefreshLocation: TextView
     private lateinit var etDescription: EditText
     private lateinit var etPhone: EditText
     private lateinit var photoUploadCard: LinearLayout
@@ -50,10 +56,11 @@ class ReportActivity : AppCompatActivity() {
     private var selectedReportType = ""
     private var selectedPhotos = mutableListOf<Uri>()
     private var currentLocation: Location? = null
+    private var currentLocationAddress: String = ""
     private lateinit var photoAdapter: PhotoAdapter
     private var currentPhotoUri: Uri? = null
 
-    // Activity Result Launchers - CAMBIADO A CÁMARA
+    // Activity Result Launchers
     private val takePictureLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { success ->
@@ -81,7 +88,9 @@ class ReportActivity : AppCompatActivity() {
         if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
             getCurrentLocation()
         } else {
-            showToast("Permiso de ubicación necesario para usar ubicación actual")
+            showToast("Permiso de ubicación necesario. No se puede crear reporte sin ubicación actual.")
+            // Deshabilitar botón de envío si no hay permisos
+            btnSubmitReport.isEnabled = false
         }
     }
 
@@ -100,14 +109,21 @@ class ReportActivity : AppCompatActivity() {
         setupUI()
         setupNavigation()
         checkFormValidity()
+
+        // Solicitar ubicación automáticamente al iniciar
+        requestCurrentLocation()
     }
 
     private fun initializeViews() {
         reportTypeDanger = findViewById(R.id.reportTypeDanger)
         reportTypeLost = findViewById(R.id.reportTypeLost)
         reportTypeAbandoned = findViewById(R.id.reportTypeAbandoned)
-        etLocation = findViewById(R.id.etLocation)
-        btnCurrentLocation = findViewById(R.id.btnCurrentLocation)
+        locationDisplayCard = findViewById(R.id.locationDisplayCard)
+        locationLoadingState = findViewById(R.id.locationLoadingState)
+        locationLoadedState = findViewById(R.id.locationLoadedState)
+        tvLocationAddress = findViewById(R.id.tvLocationAddress)
+        tvLocationCoords = findViewById(R.id.tvLocationCoords)
+        btnRefreshLocation = findViewById(R.id.btnRefreshLocation)
         etDescription = findViewById(R.id.etDescription)
         etPhone = findViewById(R.id.etPhone)
         photoUploadCard = findViewById(R.id.photoUploadCard)
@@ -127,12 +143,12 @@ class ReportActivity : AppCompatActivity() {
         reportTypeLost.setOnClickListener { selectReportType("lost", reportTypeLost) }
         reportTypeAbandoned.setOnClickListener { selectReportType("abandoned", reportTypeAbandoned) }
 
-        // Current location button
-        btnCurrentLocation.setOnClickListener {
+        // Refresh location button
+        btnRefreshLocation.setOnClickListener {
             requestCurrentLocation()
         }
 
-        // Photo upload - CAMBIADO PARA ABRIR CÁMARA
+        // Photo upload - Abrir cámara
         photoUploadCard.setOnClickListener {
             checkCameraPermissionAndOpen()
         }
@@ -151,7 +167,7 @@ class ReportActivity : AppCompatActivity() {
             }
         }
 
-        // Text watchers for form validation
+        // Text watcher for description validation
         setupTextWatchers()
     }
 
@@ -164,11 +180,10 @@ class ReportActivity : AppCompatActivity() {
             }
         }
 
-        etLocation.addTextChangedListener(textWatcher)
         etDescription.addTextChangedListener(textWatcher)
+        etPhone.addTextChangedListener(textWatcher)
     }
 
-    // NUEVA FUNCIÓN PARA VERIFICAR PERMISO DE CÁMARA
     private fun checkCameraPermissionAndOpen() {
         when {
             ContextCompat.checkSelfPermission(
@@ -183,7 +198,6 @@ class ReportActivity : AppCompatActivity() {
         }
     }
 
-    // NUEVA FUNCIÓN PARA ABRIR LA CÁMARA
     private fun openCamera() {
         try {
             val photoFile = createImageFile()
@@ -198,7 +212,6 @@ class ReportActivity : AppCompatActivity() {
         }
     }
 
-    // NUEVA FUNCIÓN PARA CREAR ARCHIVO DE IMAGEN
     private fun createImageFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir = getExternalFilesDir("ReportPhotos")
@@ -228,6 +241,7 @@ class ReportActivity : AppCompatActivity() {
     }
 
     private fun requestCurrentLocation() {
+        // Verificar permisos
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -246,20 +260,69 @@ class ReportActivity : AppCompatActivity() {
     }
 
     private fun getCurrentLocation() {
+        // Mostrar estado de carga
+        locationLoadingState.visibility = View.VISIBLE
+        locationLoadedState.visibility = View.GONE
+
         try {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
                     currentLocation = location
-                    etLocation.setText("Ubicación actual: ${location.latitude}, ${location.longitude}")
+
+                    // Obtener dirección desde coordenadas
+                    getAddressFromLocation(location.latitude, location.longitude)
+
+                    // Mostrar coordenadas
+                    tvLocationCoords.text = "Lat: ${String.format("%.6f", location.latitude)}, " +
+                            "Lng: ${String.format("%.6f", location.longitude)}"
+
+                    // Mostrar estado cargado
+                    locationLoadingState.visibility = View.GONE
+                    locationLoadedState.visibility = View.VISIBLE
+
                     showToast("Ubicación obtenida correctamente")
+                    checkFormValidity()
                 } else {
-                    showToast("No se pudo obtener la ubicación actual")
+                    showToast("No se pudo obtener la ubicación. Intenta de nuevo.")
+                    locationLoadingState.visibility = View.GONE
                 }
-            }.addOnFailureListener {
-                showToast("Error al obtener ubicación: ${it.message}")
+            }.addOnFailureListener { e ->
+                showToast("Error al obtener ubicación: ${e.message}")
+                locationLoadingState.visibility = View.GONE
             }
         } catch (e: SecurityException) {
             showToast("Error de permisos de ubicación")
+            locationLoadingState.visibility = View.GONE
+        }
+    }
+
+    private fun getAddressFromLocation(latitude: Double, longitude: Double) {
+        try {
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+
+            if (!addresses.isNullOrEmpty()) {
+                val address = addresses[0]
+                val addressText = buildString {
+                    if (address.thoroughfare != null) append("${address.thoroughfare}, ")
+                    if (address.subLocality != null) append("${address.subLocality}, ")
+                    if (address.locality != null) append("${address.locality}")
+                }
+
+                currentLocationAddress = if (addressText.isNotEmpty()) {
+                    addressText
+                } else {
+                    "Ubicación: $latitude, $longitude"
+                }
+
+                tvLocationAddress.text = currentLocationAddress
+            } else {
+                currentLocationAddress = "Ubicación: $latitude, $longitude"
+                tvLocationAddress.text = currentLocationAddress
+            }
+        } catch (e: Exception) {
+            currentLocationAddress = "Ubicación: $latitude, $longitude"
+            tvLocationAddress.text = currentLocationAddress
         }
     }
 
@@ -291,7 +354,7 @@ class ReportActivity : AppCompatActivity() {
 
     private fun isFormValid(): Boolean {
         return selectedReportType.isNotEmpty() &&
-                etLocation.text.isNotEmpty() &&
+                currentLocation != null &&  // Ubicación GPS obligatoria
                 etDescription.text.isNotEmpty() &&
                 etDescription.text.length >= 10 &&
                 selectedPhotos.isNotEmpty()
@@ -300,6 +363,11 @@ class ReportActivity : AppCompatActivity() {
     private fun submitReport() {
         if (!isFormValid()) {
             showToast("Por favor completa todos los campos obligatorios")
+            return
+        }
+
+        if (currentLocation == null) {
+            showToast("Debes obtener tu ubicación actual para enviar el reporte")
             return
         }
 
@@ -351,16 +419,22 @@ class ReportActivity : AppCompatActivity() {
             return
         }
 
+        if (currentLocation == null) {
+            showToast("Error: No hay ubicación disponible")
+            resetSubmitButton()
+            return
+        }
+
         val reportData = hashMapOf(
             "userId" to currentUser.uid,
             "userEmail" to currentUser.email,
             "reportType" to selectedReportType,
-            "location" to etLocation.text.toString(),
+            "location" to currentLocationAddress,  // Dirección formateada
             "description" to etDescription.text.toString(),
             "contactPhone" to etPhone.text.toString(),
             "photoUrls" to photoUrls,
-            "latitude" to currentLocation?.latitude,
-            "longitude" to currentLocation?.longitude,
+            "latitude" to currentLocation!!.latitude,   // Coordenadas GPS exactas
+            "longitude" to currentLocation!!.longitude, // Coordenadas GPS exactas
             "status" to "pending",
             "createdAt" to System.currentTimeMillis(),
             "reviewedAt" to null,
@@ -371,8 +445,6 @@ class ReportActivity : AppCompatActivity() {
             .add(reportData)
             .addOnSuccessListener { documentReference ->
                 showToast("¡Reporte enviado exitosamente!")
-
-                // Show success dialog and navigate back
                 showSuccessDialog(documentReference.id)
             }
             .addOnFailureListener { e ->
@@ -383,10 +455,12 @@ class ReportActivity : AppCompatActivity() {
 
     private fun showSuccessDialog(reportId: String) {
         android.app.AlertDialog.Builder(this)
-            .setTitle("Reporte Enviado")
-            .setMessage("Tu reporte ha sido enviado correctamente.\n\nID: ${reportId.take(8)}\n\nNuestro equipo lo revisará en las próximas 2 horas.")
+            .setTitle("✅ Reporte Enviado")
+            .setMessage("Tu reporte ha sido enviado correctamente.\n\n" +
+                    "📍 Ubicación verificada por GPS\n" +
+                    "ID: ${reportId.take(8)}\n\n" +
+                    "Nuestro equipo lo revisará en las próximas 2 horas.")
             .setPositiveButton("Entendido") { _, _ ->
-                // Navigate back to main activity
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)
