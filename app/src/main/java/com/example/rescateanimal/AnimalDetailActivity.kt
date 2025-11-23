@@ -19,7 +19,6 @@ class AnimalDetailActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var animal: Animal
     private var distance: Float = -1f
-    private var startAdoption: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,15 +33,9 @@ class AnimalDetailActivity : AppCompatActivity() {
             return
         }
         distance = intent.getFloatExtra("distance", -1f)
-        startAdoption = intent.getBooleanExtra("startAdoption", false)
 
         setupUI()
         loadAnimalData()
-
-        if (startAdoption) {
-            // Auto-scroll o mostrar diálogo de adopción
-            showAdoptionDialog()
-        }
     }
 
     private fun setupUI() {
@@ -56,11 +49,6 @@ class AnimalDetailActivity : AppCompatActivity() {
             shareAnimal()
         }
 
-        // Adopt button
-        findViewById<Button>(R.id.btnAdoptNow).setOnClickListener {
-            showAdoptionDialog()
-        }
-
         // Contact shelter button
         findViewById<Button>(R.id.btnContactShelter).setOnClickListener {
             contactShelter()
@@ -68,6 +56,10 @@ class AnimalDetailActivity : AppCompatActivity() {
     }
 
     private fun loadAnimalData() {
+
+        android.util.Log.d("AnimalDetail", "Animal: ${animal.name}")
+        android.util.Log.d("AnimalDetail", "isVaccinated: ${animal.isVaccinated}")
+        android.util.Log.d("AnimalDetail", "isSterilized: ${animal.isSterilized}")
         // Load photo
         Glide.with(this)
             .load(animal.photoUrl)
@@ -96,10 +88,10 @@ class AnimalDetailActivity : AppCompatActivity() {
         }
 
         // Type
-        val typeText = when (animal.type) {
+        val typeText = when (animal.type.lowercase()) {
             "perro" -> "🐕 Perro"
-            "gato" -> "🐈 Gato"
-            else -> "🐾 Otra mascota"
+            "gato" -> "🐱 Gato"
+            else -> "🐹 Otra mascota"
         }
         findViewById<TextView>(R.id.tvAnimalType).text = typeText
 
@@ -107,6 +99,7 @@ class AnimalDetailActivity : AppCompatActivity() {
         val vaccineIcon = findViewById<LinearLayout>(R.id.iconVaccinated)
         val sterilizedIcon = findViewById<LinearLayout>(R.id.iconSterilized)
 
+        // Health status - Usar isVaccinated e isSterilized
         if (animal.isVaccinated) {
             vaccineIcon.visibility = View.VISIBLE
             findViewById<TextView>(R.id.tvVaccinatedStatus).text = "Vacunado"
@@ -128,23 +121,36 @@ class AnimalDetailActivity : AppCompatActivity() {
         }
 
         // Description
-        findViewById<TextView>(R.id.tvDescription).text = animal.description
-
-        // Shelter info
-        if (animal.shelterName.isNotEmpty()) {
-            findViewById<TextView>(R.id.tvShelterName).text = animal.shelterName
-            findViewById<LinearLayout>(R.id.layoutShelterInfo).visibility = View.VISIBLE
+        findViewById<TextView>(R.id.tvDescription).text = if (animal.description.isNotEmpty()) {
+            animal.description
         } else {
-            findViewById<LinearLayout>(R.id.layoutShelterInfo).visibility = View.GONE
+            "Sin descripción disponible"
         }
+
+        // Shelter info - Por ahora ocultamos hasta tener esta data
+        findViewById<LinearLayout>(R.id.layoutShelterInfo).visibility = View.GONE
     }
 
-    private fun showAdoptionDialog() {
+    private fun contactShelter() {
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            Toast.makeText(this, "Debes iniciar sesión para contactar", Toast.LENGTH_SHORT).show()
+            // Redirigir al login
+            startActivity(Intent(this, LoginActivity::class.java))
+            return
+        }
+
+        // Por ahora mostrar mensaje genérico
+        // TODO: Implementar contacto real con el albergue
+        showContactOptions()
+    }
+
+    private fun showContactOptions() {
         val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-        builder.setTitle("Solicitar Adopción")
-        builder.setMessage("¿Estás seguro que quieres solicitar la adopción de ${animal.name}?\n\nSe contactará al albergue con tus datos.")
-        builder.setPositiveButton("Sí, adoptar") { dialog, _ ->
-            requestAdoption()
+        builder.setTitle("Contactar con el albergue")
+        builder.setMessage("¿Estás interesado en adoptar a ${animal.name}?\n\nSe enviará tu información de contacto al albergue para que se comuniquen contigo.")
+        builder.setPositiveButton("Sí, estoy interesado") { dialog, _ ->
+            sendAdoptionRequest()
             dialog.dismiss()
         }
         builder.setNegativeButton("Cancelar") { dialog, _ ->
@@ -153,69 +159,36 @@ class AnimalDetailActivity : AppCompatActivity() {
         builder.show()
     }
 
-    private fun requestAdoption() {
-        val currentUser = auth.currentUser
-        if (currentUser == null) {
-            Toast.makeText(this, "Debes iniciar sesión para adoptar", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // TODO: Create adoption request in Firebase
-        // For now, just contact the shelter
+    private fun sendAdoptionRequest() {
+        // TODO: Implementar envío de solicitud a Firebase
         Toast.makeText(
             this,
-            "¡Solicitud enviada! El albergue se pondrá en contacto contigo",
+            "¡Solicitud enviada! El albergue se pondrá en contacto contigo pronto",
             Toast.LENGTH_LONG
         ).show()
 
-        // Optionally contact shelter directly
-        contactShelter()
-    }
-
-    private fun contactShelter() {
-        if (animal.shelterPhone.isEmpty()) {
-            Toast.makeText(this, "No hay teléfono de contacto disponible", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Open WhatsApp or phone dialer
-        val message = "Hola, estoy interesado en adoptar a ${animal.name}. ¿Podemos hablar?"
-        val encodedMessage = Uri.encode(message)
-
-        // Try WhatsApp first
-        try {
-            val whatsappIntent = Intent(Intent.ACTION_VIEW)
-            val phone = animal.shelterPhone.replace("+", "").replace(" ", "")
-            whatsappIntent.data = Uri.parse("https://wa.me/$phone?text=$encodedMessage")
-            startActivity(whatsappIntent)
-        } catch (e: Exception) {
-            // Fallback to phone dialer
-            try {
-                val phoneIntent = Intent(Intent.ACTION_DIAL)
-                phoneIntent.data = Uri.parse("tel:${animal.shelterPhone}")
-                startActivity(phoneIntent)
-            } catch (e: Exception) {
-                Toast.makeText(this, "No se puede abrir la aplicación", Toast.LENGTH_SHORT).show()
-            }
-        }
+        // Opcional: Volver a la pantalla anterior
+        finish()
     }
 
     private fun shareAnimal() {
         val shareText = """
             ¡Ayuda a ${animal.name} a encontrar un hogar!
             
-            🐾 ${animal.breed}
-            📍 ${animal.location}
-            ⏰ ${animal.age}
+            🐾 Raza: ${animal.breed}
+            📍 Ubicación: ${animal.location}
+            ⏰ Edad: ${animal.age}
+            📏 Tamaño: ${animal.size}
             
             ${animal.description}
             
-            Descarga RescateAnimal para más información.
+            Descarga RescateAnimal para más información sobre adopciones.
         """.trimIndent()
 
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
-        startActivity(Intent.createChooser(shareIntent, "Compartir ${animal.name}"))
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Adopta a ${animal.name}")
+        startActivity(Intent.createChooser(shareIntent, "Compartir a ${animal.name}"))
     }
 }

@@ -63,7 +63,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         findViewById<LinearLayout>(R.id.menuMyReports).setOnClickListener {
-            Toast.makeText(this, "Mis Reportes - Próximamente", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, MyReportsActivity::class.java))
         }
 
         findViewById<LinearLayout>(R.id.menuNotifications).setOnClickListener {

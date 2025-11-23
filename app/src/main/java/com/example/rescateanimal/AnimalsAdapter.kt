@@ -71,9 +71,9 @@ class AnimalsAdapter(
                 else -> "🐹 Otro"
             }
 
-            // Ocultar badges de salud por ahora (hasta que se agreguen al modelo)
-            layoutVaccinated.visibility = View.GONE
-            layoutSterilized.visibility = View.GONE
+            // Mostrar/ocultar badges de salud según el estado del animal
+            layoutVaccinated.visibility = if (animal.isVaccinated) View.VISIBLE else View.GONE
+            layoutSterilized.visibility = if (animal.isSterilized) View.VISIBLE else View.GONE
 
             // Distance
             if (animalWithDistance.distance >= 0) {

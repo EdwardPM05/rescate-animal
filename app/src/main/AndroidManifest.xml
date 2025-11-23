@@ -97,6 +97,21 @@
                 android:theme="@style/Theme.Rescateanimal"
                 android:windowSoftInputMode="adjustResize" />
 
+        <!-- MyReportsActivity - NUEVO -->
+        <activity
+                android:name=".MyReportsActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal"
+                android:windowSoftInputMode="adjustResize" />
+
+        <!-- ReportDetailActivity - NUEVO -->
+        <activity
+                android:name=".ReportDetailActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal" />
+
         <!-- AdoptActivity -->
         <activity
                 android:name=".AdoptActivity"
