@@ -26,7 +26,7 @@ Una aplicación Android desarrollada con Kotlin y Jetpack Compose para ayudar en
 
 1. Clona el repositorio:
 ```bash
-git clone https://github.com/tu-usuario/rescate-animal.git
+git clone https://github.com/EdwardPM05/rescate-animal.git
 ```
 
 2. Abre el proyecto en Android Studio
