@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -22,7 +23,7 @@ class ReportDetailActivity : AppCompatActivity() {
     private lateinit var reportId: String
 
     private lateinit var loadingState: LinearLayout
-    private lateinit var contentState: LinearLayout
+    private lateinit var contentState: ScrollView
     private lateinit var tvReportType: TextView
     private lateinit var tvReportIcon: TextView
     private lateinit var tvReportStatus: TextView
@@ -62,27 +63,33 @@ class ReportDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        loadingState = findViewById(R.id.loadingState)
-        contentState = findViewById(R.id.contentState)
+        try {
+            loadingState = findViewById(R.id.loadingState)
+            contentState = findViewById(R.id.contentState)
 
-        tvReportType = findViewById(R.id.tvReportType)
-        tvReportIcon = findViewById(R.id.tvReportIcon)
-        tvReportStatus = findViewById(R.id.tvReportStatus)
-        tvReportDate = findViewById(R.id.tvReportDate)
-        tvDescription = findViewById(R.id.tvDescription)
-        tvLocation = findViewById(R.id.tvLocation)
-        tvPhone = findViewById(R.id.tvPhone)
-        tvCoordinates = findViewById(R.id.tvCoordinates)
-        rvPhotos = findViewById(R.id.rvPhotos)
-        btnDelete = findViewById(R.id.btnDelete)
-        btnCallPhone = findViewById(R.id.btnCallPhone)
-        btnOpenMap = findViewById(R.id.btnOpenMap)
+            tvReportType = findViewById(R.id.tvReportType)
+            tvReportIcon = findViewById(R.id.tvReportIcon)
+            tvReportStatus = findViewById(R.id.tvReportStatus)
+            tvReportDate = findViewById(R.id.tvReportDate)
+            tvDescription = findViewById(R.id.tvDescription)
+            tvLocation = findViewById(R.id.tvLocation)
+            tvPhone = findViewById(R.id.tvPhone)
+            tvCoordinates = findViewById(R.id.tvCoordinates)
+            rvPhotos = findViewById(R.id.rvPhotos)
+            btnDelete = findViewById(R.id.btnDelete)
+            btnCallPhone = findViewById(R.id.btnCallPhone)
+            btnOpenMap = findViewById(R.id.btnOpenMap)
 
-        // Setup RecyclerView for photos
-        rvPhotos.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            // Setup RecyclerView for photos
+            rvPhotos.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        btnDelete.setOnClickListener {
-            showDeleteConfirmation()
+            btnDelete.setOnClickListener {
+                showDeleteConfirmation()
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("ReportDetailActivity", "Error in setupViews: ${e.message}")
+            Toast.makeText(this, "Error al configurar vistas: ${e.message}", Toast.LENGTH_LONG).show()
+            finish()
         }
     }
 
@@ -207,8 +214,15 @@ class ReportDetailActivity : AppCompatActivity() {
         if (report.photoUrls.isNotEmpty()) {
             findViewById<TextView>(R.id.tvNoPhotos).visibility = View.GONE
             rvPhotos.visibility = View.VISIBLE
-            val adapter = ReportPhotosAdapter(report.photoUrls)
-            rvPhotos.adapter = adapter
+
+            try {
+                val adapter = ReportPhotosAdapter(report.photoUrls)
+                rvPhotos.adapter = adapter
+            } catch (e: Exception) {
+                android.util.Log.e("ReportDetailActivity", "Error loading photos: ${e.message}")
+                findViewById<TextView>(R.id.tvNoPhotos).visibility = View.VISIBLE
+                rvPhotos.visibility = View.GONE
+            }
         } else {
             findViewById<TextView>(R.id.tvNoPhotos).visibility = View.VISIBLE
             rvPhotos.visibility = View.GONE

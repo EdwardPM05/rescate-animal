@@ -33,6 +33,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -49,6 +50,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
     private var hasLocationPermission = false
     private var mapReady = false
+
+    // Lista para guardar marcadores de reportes
+    private val reportMarkers = mutableListOf<Marker>()
+    private val affiliateMarkers = mutableListOf<Marker>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +83,21 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 setupMapLocation()
             }
         }
+
+        // Recargar reportes cada vez que vuelves al mapa
+        if (mapReady) {
+            reloadReports()
+        }
+    }
+
+    // Nueva función para recargar reportes
+    private fun reloadReports() {
+        // Eliminar marcadores de reportes existentes
+        reportMarkers.forEach { it.remove() }
+        reportMarkers.clear()
+
+        // Cargar reportes actualizados
+        loadReportsOnMap()
     }
 
     private fun setupUI() {
@@ -338,7 +358,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         tvInfo.text = message
 
-        // Cargar fotos desde Firebase Storage o Firestore
         loadReportPhotos(reportInfo.photoUrls, reportInfo.documentId) { photoUrls ->
             if (photoUrls.isNotEmpty()) {
                 photoContainer.visibility = View.VISIBLE
@@ -413,7 +432,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         tvInfo.text = message
 
-        // Cargar fotos desde Firebase Storage (carpeta photos/)
         loadAffiliatePhotos(affiliateInfo.documentId) { photoUrls ->
             if (photoUrls.isNotEmpty()) {
                 photoContainer.visibility = View.VISIBLE
@@ -448,15 +466,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         dialog.show()
     }
 
-    // ==================== CARGAR FOTOS DESDE FIREBASE ====================
-
     private fun loadReportPhotos(photoUrls: List<String>, documentId: String, callback: (List<String>) -> Unit) {
         if (photoUrls.isNotEmpty()) {
             callback(photoUrls)
             return
         }
 
-        // Si no hay URLs en Firestore, buscar en Storage
         val storage = FirebaseStorage.getInstance()
         val reportsRef = storage.reference.child("reports/$documentId")
 
@@ -526,8 +541,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
     }
 
-    // ==================== ADAPTER PARA VIEWPAGER2 ====================
-
     inner class PhotoPagerAdapter(private val photoUrls: List<String>) :
         androidx.recyclerview.widget.RecyclerView.Adapter<PhotoPagerAdapter.PhotoViewHolder>() {
 
@@ -553,14 +566,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         override fun getItemCount(): Int = photoUrls.size
     }
 
-    // ==================== FUNCIONES PARA ICONOS PERSONALIZADOS ====================
-
     private fun createEmojiIcon(emoji: String, backgroundColor: Int): BitmapDescriptor {
         val size = 140
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
-        // Sombra
         val shadowPaint = Paint().apply {
             color = Color.argb(80, 0, 0, 0)
             isAntiAlias = true
@@ -568,7 +578,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         canvas.drawCircle(size / 2f + 4, size / 2f + 4, size / 2f - 10, shadowPaint)
 
-        // Fondo circular
         val backgroundPaint = Paint().apply {
             color = backgroundColor
             isAntiAlias = true
@@ -576,7 +585,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         canvas.drawCircle(size / 2f, size / 2f, size / 2f - 10, backgroundPaint)
 
-        // Borde blanco
         val borderPaint = Paint().apply {
             color = Color.WHITE
             isAntiAlias = true
@@ -585,7 +593,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         canvas.drawCircle(size / 2f, size / 2f, size / 2f - 13, borderPaint)
 
-        // Emoji
         val textPaint = Paint().apply {
             textSize = 65f
             textAlign = Paint.Align.CENTER
@@ -600,8 +607,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
-
-    // ==================== DATA CLASSES ====================
 
     data class ReportInfo(
         val type: String,
@@ -628,8 +633,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val verified: Boolean,
         val documentId: String
     )
-
-    // ==================== FIREBASE LOADING ====================
 
     private fun loadReportsOnMap() {
         val db = FirebaseFirestore.getInstance()
@@ -693,11 +696,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         )
 
                         marker?.tag = fullReportInfo
-                    }
-                }
 
-                if (documents.isEmpty) {
-                    showToast("No hay reportes disponibles en el mapa")
+                        // Guardar referencia al marcador
+                        marker?.let { reportMarkers.add(it) }
+                    }
                 }
             }
             .addOnFailureListener { e ->
@@ -757,19 +759,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         )
 
                         marker?.tag = fullAffiliateInfo
-                    }
-                }
 
-                if (documents.isEmpty) {
-                    showToast("No hay negocios afiliados disponibles")
+                        // Guardar referencia al marcador
+                        marker?.let { affiliateMarkers.add(it) }
+                    }
                 }
             }
             .addOnFailureListener { e ->
                 showToast("Error al cargar negocios: ${e.message}")
             }
     }
-
-    // ==================== HELPER FUNCTIONS ====================
 
     private fun getReportTypeTitle(reportType: String): String {
         return when (reportType) {
@@ -806,8 +805,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             else -> "📍"
         }
     }
-
-    // ==================== ICONOS PERSONALIZADOS CON EMOJIS ====================
 
     private fun getMarkerIconByReportType(reportType: String): BitmapDescriptor {
         return when (reportType) {
