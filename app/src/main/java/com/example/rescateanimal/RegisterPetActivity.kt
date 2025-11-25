@@ -64,7 +64,8 @@ class RegisterPetActivity : AppCompatActivity() {
 
     private var selectedType = "perro"
     private var currentLocation: Location? = null
-    private var shelterData: Map<String, Any>? = null
+    private var affiliateData: Map<String, Any>? = null  // CAMBIO: de shelterData a affiliateData
+    private var affiliateType: String? = null  // NUEVO: para saber si es albergue o veterinaria
     private var selectedLatitude: Double? = null
     private var selectedLongitude: Double? = null
     private var currentPhotoUri: Uri? = null
@@ -123,7 +124,7 @@ class RegisterPetActivity : AppCompatActivity() {
             initializeViews()
             setupUI()
             setupPhotosRecyclerView()
-            checkShelterStatus()
+            checkAffiliateStatus()  // CAMBIO: de checkShelterStatus a checkAffiliateStatus
             requestLocationPermission()
 
             Log.d(TAG, "onCreate completado exitosamente")
@@ -272,7 +273,8 @@ class RegisterPetActivity : AppCompatActivity() {
         )
     }
 
-    private fun checkShelterStatus() {
+    // ========== FUNCIÓN ACTUALIZADA PARA ALBERGUES Y VETERINARIAS ==========
+    private fun checkAffiliateStatus() {
         val currentUser = auth.currentUser
         if (currentUser == null) {
             Log.e(TAG, "Usuario no autenticado")
@@ -281,11 +283,10 @@ class RegisterPetActivity : AppCompatActivity() {
             return
         }
 
-        Log.d(TAG, "Verificando estado del albergue para usuario: ${currentUser.email}")
+        Log.d(TAG, "Verificando permisos para usuario: ${currentUser.email}")
 
         db.collection("affiliates")
             .whereEqualTo("userId", currentUser.uid)
-            .whereEqualTo("type", "albergue")
             .whereEqualTo("status", "approved")
             .limit(1)
             .get()
@@ -293,28 +294,45 @@ class RegisterPetActivity : AppCompatActivity() {
                 Log.d(TAG, "Consulta completada. Documentos encontrados: ${documents.size()}")
 
                 if (documents.isEmpty) {
-                    Log.w(TAG, "Usuario no es un albergue aprobado")
+                    Log.w(TAG, "Usuario no tiene negocio aprobado")
                     Toast.makeText(
                         this,
-                        "Solo albergues aprobados pueden registrar mascotas",
+                        "Solo veterinarias y albergues aprobados pueden registrar mascotas",
                         Toast.LENGTH_LONG
                     ).show()
                     finish()
                 } else {
-                    shelterData = documents.documents[0].data
-                    Log.d(TAG, "Albergue verificado: ${shelterData?.get("businessName")}")
+                    val document = documents.documents[0]
+                    affiliateData = document.data
+                    affiliateType = document.getString("type")
 
-                    shelterData?.let { data ->
+                    Log.d(TAG, "Negocio verificado - Tipo: $affiliateType, Nombre: ${affiliateData?.get("businessName")}")
+
+                    // Verificar que sea veterinaria o albergue
+                    if (affiliateType != "veterinaria" && affiliateType != "albergue") {
+                        Log.w(TAG, "Tipo de negocio no autorizado: $affiliateType")
+                        Toast.makeText(
+                            this,
+                            "Solo veterinarias y albergues pueden registrar mascotas",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        finish()
+                        return@addOnSuccessListener
+                    }
+
+                    // Cargar datos del negocio
+                    affiliateData?.let { data ->
                         etPetLocation.setText(data["address"] as? String ?: "")
                         selectedLatitude = (data["latitude"] as? Double) ?: -12.0464
                         selectedLongitude = (data["longitude"] as? Double) ?: -77.0428
 
-                        currentLocation = Location("shelter").apply {
+                        currentLocation = Location("affiliate").apply {
                             latitude = selectedLatitude!!
                             longitude = selectedLongitude!!
                         }
 
-                        tvSelectedCoordinates.text = "✓ Ubicación del albergue: Lat: ${String.format("%.6f", selectedLatitude)}, Lng: ${String.format("%.6f", selectedLongitude)}"
+                        val businessType = if (affiliateType == "veterinaria") "veterinaria" else "albergue"
+                        tvSelectedCoordinates.text = "✓ Ubicación de tu $businessType: Lat: ${String.format("%.6f", selectedLatitude)}, Lng: ${String.format("%.6f", selectedLongitude)}"
                         tvSelectedCoordinates.setTextColor(ContextCompat.getColor(this, R.color.primary_orange))
                     }
                 }
@@ -572,8 +590,9 @@ class RegisterPetActivity : AppCompatActivity() {
             "isSterilized" to cbSterilized.isChecked,
             "description" to description,
             "shelterId" to userId,
-            "shelterName" to (shelterData?.get("businessName") as? String ?: ""),
-            "shelterPhone" to (shelterData?.get("phone") as? String ?: ""),
+            "shelterName" to (affiliateData?.get("businessName") as? String ?: ""),  // CAMBIO: de shelterData a affiliateData
+            "shelterPhone" to (affiliateData?.get("phone") as? String ?: ""),  // CAMBIO: de shelterData a affiliateData
+            "affiliateType" to (affiliateType ?: "albergue"),  // NUEVO: guardar tipo de negocio
             "createdAt" to System.currentTimeMillis(),
             "updatedAt" to System.currentTimeMillis()
         )

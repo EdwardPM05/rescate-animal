@@ -11,13 +11,16 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- Permisos para reportes (cámara y almacenamiento) -->
+    <!-- Permisos para reportes y foto de perfil (cámara y almacenamiento) -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
                      android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
                      android:maxSdkVersion="28"
                      tools:ignore="ScopedStorage" />
+
+    <!-- Permiso para Android 13+ (API 33+) para acceder a imágenes -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <!-- Features -->
     <uses-feature android:name="android.hardware.camera" android:required="false" />
@@ -36,7 +39,7 @@
                 android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyCN0iHr8y8uMW72iQeQyQ9_bnWTz0GdPlA" />
 
-        <!-- FileProvider para compartir archivos de fotos de la cámara -->
+        <!-- FileProvider para compartir archivos de fotos de la cámara y perfil -->
         <provider
                 android:name="androidx.core.content.FileProvider"
                 android:authorities="com.example.rescateanimal.fileprovider"
@@ -51,7 +54,8 @@
         <activity
                 android:name=".MainActivity"
                 android:exported="true"
-                android:launchMode="singleTop">
+                android:launchMode="singleTop"
+                android:theme="@style/Theme.Rescateanimal.NoAnimation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -74,30 +78,31 @@
         <activity
                 android:name=".ProfileActivity"
                 android:exported="false"
-                android:theme="@style/Theme.Rescateanimal" />
+                android:theme="@style/Theme.Rescateanimal.NoAnimation" />
 
         <!-- EditProfileActivity -->
         <activity
                 android:name=".EditProfileActivity"
                 android:exported="false"
-                android:theme="@style/Theme.Rescateanimal" />
+                android:theme="@style/Theme.Rescateanimal"
+                android:windowSoftInputMode="adjustResize" />
 
         <!-- MapActivity -->
         <activity
                 android:name=".MapActivity"
                 android:exported="false"
                 android:launchMode="singleTop"
-                android:theme="@style/Theme.Rescateanimal" />
+                android:theme="@style/Theme.Rescateanimal.NoAnimation" />
 
         <!-- ReportActivity -->
         <activity
                 android:name=".ReportActivity"
                 android:exported="false"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme.Rescateanimal"
+                android:theme="@style/Theme.Rescateanimal.NoAnimation"
                 android:windowSoftInputMode="adjustResize" />
 
-        <!-- MyReportsActivity - NUEVO -->
+        <!-- MyReportsActivity -->
         <activity
                 android:name=".MyReportsActivity"
                 android:exported="false"
@@ -105,7 +110,7 @@
                 android:theme="@style/Theme.Rescateanimal"
                 android:windowSoftInputMode="adjustResize" />
 
-        <!-- ReportDetailActivity - NUEVO -->
+        <!-- ReportDetailActivity -->
         <activity
                 android:name=".ReportDetailActivity"
                 android:exported="false"
@@ -117,7 +122,7 @@
                 android:name=".AdoptActivity"
                 android:exported="false"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme.Rescateanimal"
+                android:theme="@style/Theme.Rescateanimal.NoAnimation"
                 android:windowSoftInputMode="adjustResize" />
 
         <!-- RegisterPetActivity -->

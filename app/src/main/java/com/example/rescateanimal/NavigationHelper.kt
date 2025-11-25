@@ -2,9 +2,11 @@ package com.example.rescateanimal
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Typeface
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 
 class NavigationHelper(private val activity: Activity) {
 
@@ -20,7 +22,7 @@ class NavigationHelper(private val activity: Activity) {
             "MainActivity" -> setSelectedTab(navInicio)
             "MapActivity" -> setSelectedTab(navMapa)
             "ReportActivity" -> setSelectedTab(navReportar)
-            "AdoptActivity" -> setSelectedTab(navAdoptar) // AGREGADO
+            "AdoptActivity" -> setSelectedTab(navAdoptar)
             "ProfileActivity" -> setSelectedTab(navPerfil)
         }
 
@@ -43,7 +45,6 @@ class NavigationHelper(private val activity: Activity) {
         }
 
         navAdoptar.setOnClickListener {
-            // ACTUALIZADO: Navegar a AdoptActivity en lugar de mostrar Toast
             if (activity !is AdoptActivity) {
                 navigateToActivity(AdoptActivity::class.java)
             }
@@ -60,10 +61,11 @@ class NavigationHelper(private val activity: Activity) {
         val intent = Intent(activity, targetActivity)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         activity.startActivity(intent)
+        activity.overridePendingTransition(0, 0) // Sin animación
     }
 
     private fun setSelectedTab(selectedTab: LinearLayout) {
-        // Reset all tabs
+        // Lista de todos los tabs con sus IDs
         val tabs = listOf(
             activity.findViewById<LinearLayout>(R.id.navInicio),
             activity.findViewById<LinearLayout>(R.id.navMapa),
@@ -72,19 +74,38 @@ class NavigationHelper(private val activity: Activity) {
             activity.findViewById<LinearLayout>(R.id.navPerfil)
         )
 
+        // Reset all tabs (color gris)
         tabs.forEach { tab ->
             tab?.let {
+                // Cambiar color del ImageView (icono)
+                val iconView = it.getChildAt(0) as? ImageView
+                iconView?.setColorFilter(
+                    ContextCompat.getColor(activity, R.color.text_secondary)
+                )
+
+                // Cambiar color y estilo del TextView (texto)
                 val textView = it.getChildAt(1) as? TextView
-                textView?.setTextColor(activity.getColor(R.color.text_secondary))
+                textView?.apply {
+                    setTextColor(ContextCompat.getColor(activity, R.color.text_secondary))
+                    setTypeface(null, Typeface.NORMAL)
+                }
             }
         }
 
-        // Set selected tab
-        val selectedTextView = selectedTab.getChildAt(1) as? TextView
-        selectedTextView?.setTextColor(activity.getColor(R.color.primary_orange))
-    }
+        // Set selected tab (color naranja y bold)
+        selectedTab.let {
+            // Cambiar color del ImageView seleccionado
+            val selectedIcon = it.getChildAt(0) as? ImageView
+            selectedIcon?.setColorFilter(
+                ContextCompat.getColor(activity, R.color.primary_orange)
+            )
 
-    private fun showToast(message: String) {
-        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+            // Cambiar color y estilo del TextView seleccionado
+            val selectedTextView = it.getChildAt(1) as? TextView
+            selectedTextView?.apply {
+                setTextColor(ContextCompat.getColor(activity, R.color.primary_orange))
+                setTypeface(null, Typeface.BOLD)
+            }
+        }
     }
 }

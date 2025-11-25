@@ -51,6 +51,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var hasLocationPermission = false
     private var mapReady = false
 
+    // NUEVAS VARIABLES PARA COORDENADAS DEL INTENT
+    private var targetLatitude: Double? = null
+    private var targetLongitude: Double? = null
+    private var targetName: String? = null
+    private var reportType: String? = null
+
     // Lista para guardar marcadores de reportes
     private val reportMarkers = mutableListOf<Marker>()
     private val affiliateMarkers = mutableListOf<Marker>()
@@ -59,6 +65,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
+        NavigationHelper(this).setupBottomNavigation()
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         tvLocationAddress = findViewById(R.id.tvLocationAddress)
@@ -66,6 +74,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         locationInfoCard = findViewById(R.id.locationInfoCard)
 
         hasLocationPermission = hasLocationPermission()
+
+        // RECIBIR COORDENADAS DEL INTENT
+        targetLatitude = intent.getDoubleExtra("latitude", 0.0).takeIf { it != 0.0 }
+        targetLongitude = intent.getDoubleExtra("longitude", 0.0).takeIf { it != 0.0 }
+        targetName = intent.getStringExtra("businessName")
+            ?: intent.getStringExtra("animalName")
+                    ?: "Ubicación seleccionada"
+        reportType = intent.getStringExtra("reportType")
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -167,12 +183,83 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        val lima = LatLng(-12.0464, -77.0428)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(lima, 12f))
+        // VERIFICAR SI HAY COORDENADAS ESPECÍFICAS PARA MOSTRAR
+        if (targetLatitude != null && targetLongitude != null) {
+            // Si hay coordenadas específicas, centrar ahí primero
+            showSpecificLocation(targetLatitude!!, targetLongitude!!, targetName ?: "Ubicación")
+        } else {
+            // Si no, mostrar Lima por defecto
+            val lima = LatLng(-12.0464, -77.0428)
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(lima, 12f))
+        }
 
         setupMapLocation()
         loadReportsOnMap()
         loadAffiliatesOnMap()
+    }
+
+    // NUEVA FUNCIÓN PARA MOSTRAR UBICACIÓN ESPECÍFICA
+    private fun showSpecificLocation(lat: Double, lng: Double, title: String) {
+        val location = LatLng(lat, lng)
+
+        // Determinar el ícono según el tipo de reporte
+        val markerIcon = when (reportType) {
+            "lost" -> createEmojiIcon("🔍", Color.parseColor("#FFD740"))
+            "danger" -> createEmojiIcon("🆘", Color.parseColor("#FF5252"))
+            "abandoned" -> createEmojiIcon("🏠", Color.parseColor("#FF9800"))
+            else -> createEmojiIcon("📍", Color.parseColor("#FF6B35")) // Naranja para negocios
+        }
+
+        // Agregar marcador destacado
+        val marker = map.addMarker(
+            MarkerOptions()
+                .position(location)
+                .title(title)
+                .snippet("📍 Toca para más información")
+                .icon(markerIcon)
+        )
+
+        // Mostrar la ventana de información automáticamente
+        marker?.showInfoWindow()
+
+        // Animar la cámara hacia esa ubicación con zoom cercano
+        map.animateCamera(
+            CameraUpdateFactory.newLatLngZoom(location, 17f),
+            1000, // duración de la animación
+            object : GoogleMap.CancelableCallback {
+                override fun onFinish() {
+                    // Animación completada
+                }
+                override fun onCancel() {
+                    // Animación cancelada
+                }
+            }
+        )
+
+        // Actualizar la información de ubicación en la tarjeta
+        tvLocationCoords.text = "Lat: ${String.format("%.6f", lat)}, Lng: ${String.format("%.6f", lng)}"
+
+        // Obtener dirección si es posible
+        try {
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val addresses: List<Address>? = geocoder.getFromLocation(lat, lng, 1)
+
+            if (!addresses.isNullOrEmpty()) {
+                val address = addresses[0]
+                val addressText = buildString {
+                    if (address.thoroughfare != null) append("${address.thoroughfare}, ")
+                    if (address.subLocality != null) append("${address.subLocality}, ")
+                    if (address.locality != null) append("${address.locality}")
+                }
+                tvLocationAddress.text = if (addressText.isNotEmpty()) addressText else title
+            } else {
+                tvLocationAddress.text = title
+            }
+        } catch (e: Exception) {
+            tvLocationAddress.text = title
+        }
+
+        locationInfoCard.visibility = LinearLayout.VISIBLE
     }
 
     private fun setupMapLocation() {

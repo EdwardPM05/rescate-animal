@@ -54,6 +54,8 @@ class AdoptActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_adopt)
 
+        NavigationHelper(this).setupBottomNavigation()
+
         db = FirebaseFirestore.getInstance()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 

@@ -2,11 +2,14 @@ package com.example.rescateanimal
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -16,17 +19,20 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var navigationHelper: NavigationHelper
 
+    private lateinit var ivProfileImage: ImageView
     private lateinit var menuAffiliate: LinearLayout
     private lateinit var tvAffiliateTitle: TextView
     private lateinit var tvAffiliateSubtitle: TextView
     private lateinit var tvAffiliateIcon: TextView
 
-    private var userAffiliateStatus: String? = null // null, "pending", "approved", "rejected"
-    private var userAffiliateType: String? = null // null, "veterinaria", "tienda", "albergue"
+    private var userAffiliateStatus: String? = null
+    private var userAffiliateType: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+
+        NavigationHelper(this).setupBottomNavigation()
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
@@ -35,19 +41,20 @@ class ProfileActivity : AppCompatActivity() {
         loadUserData()
         checkAffiliateStatus()
 
-        // Setup navigation usando NavigationHelper
         navigationHelper = NavigationHelper(this)
         navigationHelper.setupBottomNavigation()
     }
 
     override fun onResume() {
         super.onResume()
-        // Recargar datos cuando regresamos
         loadUserData()
         checkAffiliateStatus()
     }
 
     private fun setupViews() {
+        // Profile Image
+        ivProfileImage = findViewById(R.id.ivProfileImage)
+
         // Back Button
         findViewById<TextView>(R.id.btnBack).setOnClickListener {
             finish()
@@ -78,14 +85,12 @@ class ProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Ayuda - Próximamente", Toast.LENGTH_SHORT).show()
         }
 
-        // AFFILIATE OPTION - Setup views
+        // AFFILIATE OPTION
         menuAffiliate = findViewById(R.id.menuAffiliate)
-        tvAffiliateIcon = menuAffiliate.findViewById<TextView>(R.id.tvAffiliateIcon)
+        tvAffiliateIcon = menuAffiliate.findViewById(R.id.tvAffiliateIcon)
         val affiliateTextContainer = menuAffiliate.getChildAt(1) as LinearLayout
         tvAffiliateTitle = affiliateTextContainer.getChildAt(0) as TextView
         tvAffiliateSubtitle = affiliateTextContainer.getChildAt(1) as TextView
-
-        // Click will be set after checking affiliate status
 
         // Logout
         findViewById<TextView>(R.id.btnLogout).setOnClickListener {
@@ -97,14 +102,12 @@ class ProfileActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         if (currentUser == null) return
 
-        // Check if user has any affiliate registration
         db.collection("affiliates")
             .whereEqualTo("userId", currentUser.uid)
             .limit(1)
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
-                    // No affiliate registration - Show register option
                     setupAffiliateButton(null, null)
                 } else {
                     val affiliateDoc = documents.documents[0]
@@ -114,15 +117,14 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener {
-                // On error, show default affiliate button
                 setupAffiliateButton(null, null)
             }
     }
 
     private fun setupAffiliateButton(status: String?, type: String?) {
         when {
-            // Approved shelter - Show "Register Pets" button
-            status == "approved" && type == "albergue" -> {
+            // ALBERGUES Y VETERINARIAS pueden registrar mascotas
+            status == "approved" && (type == "albergue" || type == "veterinaria") -> {
                 tvAffiliateIcon.text = "🐾"
                 tvAffiliateTitle.text = "Registrar mascotas"
                 tvAffiliateSubtitle.text = "Publica mascotas disponibles para adopción"
@@ -132,7 +134,7 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
 
-            // Approved (non-shelter) - Show status
+            // Otros negocios aprobados (tiendas)
             status == "approved" -> {
                 tvAffiliateIcon.text = "✓"
                 tvAffiliateTitle.text = "Negocio afiliado"
@@ -142,7 +144,6 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
 
-            // Pending approval
             status == "pending" -> {
                 tvAffiliateIcon.text = "⏳"
                 tvAffiliateTitle.text = "Solicitud en revisión"
@@ -152,7 +153,6 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
 
-            // Rejected
             status == "rejected" -> {
                 tvAffiliateIcon.text = "✗"
                 tvAffiliateTitle.text = "Solicitud rechazada"
@@ -163,7 +163,6 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
 
-            // No registration - Default
             else -> {
                 tvAffiliateIcon.text = "🏢"
                 tvAffiliateTitle.text = "Afiliar mi negocio"
@@ -202,24 +201,48 @@ class ProfileActivity : AppCompatActivity() {
                         }
                     }
                 }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Error al cargar datos básicos: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
 
-            // Obtener datos del perfil extendido
+            // Obtener datos del perfil extendido (INCLUYENDO FOTO)
             db.collection("user_profiles").document(currentUser.uid)
                 .get()
                 .addOnSuccessListener { profileDocument ->
                     if (profileDocument.exists()) {
                         updateUIWithProfileData(profileDocument.data!!)
+
+                        // CARGAR FOTO DE PERFIL
+                        val photoUrl = profileDocument.getString("profilePhotoUrl")
+                        loadProfileImage(photoUrl)
                     } else {
                         setDefaultProfileData()
+                        loadProfileImage(null)
                     }
                 }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Error al cargar perfil: ${e.message}", Toast.LENGTH_SHORT).show()
+                .addOnFailureListener {
                     setDefaultProfileData()
+                    loadProfileImage(null)
                 }
+        }
+    }
+
+    private fun loadProfileImage(photoUrl: String?) {
+        if (!photoUrl.isNullOrEmpty()) {
+            // Cargar imagen desde Firebase Storage
+            Glide.with(this)
+                .load(photoUrl)
+                .apply(
+                    RequestOptions()
+                        .placeholder(R.drawable.ic_profile_placeholder)
+                        .error(R.drawable.ic_profile_placeholder)
+                        .circleCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                )
+                .into(ivProfileImage)
+        } else {
+            // Mostrar placeholder si no hay foto
+            Glide.with(this)
+                .load(R.drawable.ic_profile_placeholder)
+                .apply(RequestOptions().circleCrop())
+                .into(ivProfileImage)
         }
     }
 
