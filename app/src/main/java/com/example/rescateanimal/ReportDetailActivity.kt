@@ -134,23 +134,23 @@ class ReportDetailActivity : AppCompatActivity() {
     }
 
     private fun displayReportDetails(report: Report) {
-        // Icon and Type
+        // Type and Icon
         when (report.type) {
             "danger" -> {
-                tvReportIcon.text = "⚠️"
                 tvReportType.text = "Animal en peligro"
+                tvReportIcon.text = "⚠️ Reporte urgente"
             }
             "lost" -> {
-                tvReportIcon.text = "💔"
                 tvReportType.text = "Animal perdido"
+                tvReportIcon.text = "💔 Búsqueda activa"
             }
             "abandoned" -> {
-                tvReportIcon.text = "🏠"
                 tvReportType.text = "Animal abandonado"
+                tvReportIcon.text = "🏠 Necesita hogar"
             }
             else -> {
-                tvReportIcon.text = "📍"
                 tvReportType.text = "Reporte"
+                tvReportIcon.text = "📍 Reporte general"
             }
         }
 
@@ -175,7 +175,7 @@ class ReportDetailActivity : AppCompatActivity() {
         }
 
         // Date
-        tvReportDate.text = formatDate(report.createdAt)
+        tvReportDate.text = "Reportado ${formatDate(report.createdAt)}"
 
         // Description
         tvDescription.text = report.description.ifEmpty { "Sin descripción" }
@@ -183,17 +183,20 @@ class ReportDetailActivity : AppCompatActivity() {
         // Location
         tvLocation.text = report.address.ifEmpty { "Ubicación no disponible" }
 
+        // Coordinates
+        tvCoordinates.text = "Lat: ${report.latitude}, Lng: ${report.longitude}"
+
         // Phone
         tvPhone.text = report.phone.ifEmpty { "No disponible" }
+
         btnCallPhone.setOnClickListener {
             if (report.phone.isNotEmpty()) {
                 val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${report.phone}"))
                 startActivity(intent)
+            } else {
+                Toast.makeText(this, "Teléfono no disponible", Toast.LENGTH_SHORT).show()
             }
         }
-
-        // Coordinates
-        tvCoordinates.text = "Lat: ${report.latitude}, Lng: ${report.longitude}"
 
         // Open in Maps
         btnOpenMap.setOnClickListener {
@@ -203,7 +206,6 @@ class ReportDetailActivity : AppCompatActivity() {
             if (intent.resolveActivity(packageManager) != null) {
                 startActivity(intent)
             } else {
-                // Si no tiene Google Maps, usar navegador
                 val browserIntent = Intent(Intent.ACTION_VIEW,
                     Uri.parse("https://www.google.com/maps/search/?api=1&query=${report.latitude},${report.longitude}"))
                 startActivity(browserIntent)
@@ -253,9 +255,27 @@ class ReportDetailActivity : AppCompatActivity() {
     }
 
     private fun formatDate(timestamp: Long): String {
+        if (timestamp == 0L) return "fecha no disponible"
+
         val date = java.util.Date(timestamp)
-        val format = java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy 'a las' HH:mm", java.util.Locale("es", "ES"))
-        return format.format(date)
+        val now = java.util.Date()
+        val diff = now.time - date.time
+
+        val seconds = diff / 1000
+        val minutes = seconds / 60
+        val hours = minutes / 60
+        val days = hours / 24
+
+        return when {
+            days > 7 -> {
+                val format = java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", java.util.Locale("es", "ES"))
+                format.format(date)
+            }
+            days > 0 -> "hace ${days.toInt()} día${if (days.toInt() > 1) "s" else ""}"
+            hours > 0 -> "hace ${hours.toInt()} hora${if (hours.toInt() > 1) "s" else ""}"
+            minutes > 0 -> "hace ${minutes.toInt()} minuto${if (minutes.toInt() > 1) "s" else ""}"
+            else -> "hace un momento"
+        }
     }
 
     private fun showLoading() {

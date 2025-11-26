@@ -21,9 +21,9 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var ivProfileImage: ImageView
     private lateinit var menuAffiliate: LinearLayout
+    private lateinit var ivAffiliateIcon: ImageView
     private lateinit var tvAffiliateTitle: TextView
     private lateinit var tvAffiliateSubtitle: TextView
-    private lateinit var tvAffiliateIcon: TextView
 
     private var userAffiliateStatus: String? = null
     private var userAffiliateType: String? = null
@@ -31,8 +31,6 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-
-        NavigationHelper(this).setupBottomNavigation()
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
@@ -56,7 +54,7 @@ class ProfileActivity : AppCompatActivity() {
         ivProfileImage = findViewById(R.id.ivProfileImage)
 
         // Back Button
-        findViewById<TextView>(R.id.btnBack).setOnClickListener {
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             finish()
         }
 
@@ -66,7 +64,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         findViewById<LinearLayout>(R.id.menuMyAdoptions).setOnClickListener {
-            Toast.makeText(this, "Mis Adopciones - Próximamente", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, MyAdoptionsActivity::class.java))
         }
 
         findViewById<LinearLayout>(R.id.menuMyReports).setOnClickListener {
@@ -81,19 +79,14 @@ class ProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Privacidad - Próximamente", Toast.LENGTH_SHORT).show()
         }
 
-        findViewById<LinearLayout>(R.id.menuHelp).setOnClickListener {
-            Toast.makeText(this, "Ayuda - Próximamente", Toast.LENGTH_SHORT).show()
-        }
-
-        // AFFILIATE OPTION
+        // AFFILIATE OPTION - Ahora con elementos del XML
         menuAffiliate = findViewById(R.id.menuAffiliate)
-        tvAffiliateIcon = menuAffiliate.findViewById(R.id.tvAffiliateIcon)
-        val affiliateTextContainer = menuAffiliate.getChildAt(1) as LinearLayout
-        tvAffiliateTitle = affiliateTextContainer.getChildAt(0) as TextView
-        tvAffiliateSubtitle = affiliateTextContainer.getChildAt(1) as TextView
+        ivAffiliateIcon = findViewById(R.id.ivAffiliateIcon)
+        tvAffiliateTitle = findViewById(R.id.tvAffiliateTitle)
+        tvAffiliateSubtitle = findViewById(R.id.tvAffiliateSubtitle)
 
         // Logout
-        findViewById<TextView>(R.id.btnLogout).setOnClickListener {
+        findViewById<LinearLayout>(R.id.btnLogout).setOnClickListener {
             logout()
         }
     }
@@ -123,9 +116,9 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun setupAffiliateButton(status: String?, type: String?) {
         when {
-            // ALBERGUES Y VETERINARIAS pueden registrar mascotas
+            // ALBERGUES Y VETERINARIAS APROBADOS pueden registrar mascotas
             status == "approved" && (type == "albergue" || type == "veterinaria") -> {
-                tvAffiliateIcon.text = "🐾"
+                ivAffiliateIcon.setImageResource(R.drawable.ic_adoptions)
                 tvAffiliateTitle.text = "Registrar mascotas"
                 tvAffiliateSubtitle.text = "Publica mascotas disponibles para adopción"
                 menuAffiliate.setOnClickListener {
@@ -134,9 +127,19 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
 
-            // Otros negocios aprobados (tiendas)
+            // TIENDAS APROBADAS - Solo aparecen en el mapa
+            status == "approved" && type == "tienda" -> {
+                ivAffiliateIcon.setImageResource(R.drawable.ic_check)
+                tvAffiliateTitle.text = "Tienda afiliada"
+                tvAffiliateSubtitle.text = "Tu tienda está aprobada y aparece en el mapa"
+                menuAffiliate.setOnClickListener {
+                    Toast.makeText(this, "Tu tienda ya está visible en el mapa para todos los usuarios", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            // Cualquier tipo APROBADO (por si hay más tipos en el futuro)
             status == "approved" -> {
-                tvAffiliateIcon.text = "✓"
+                ivAffiliateIcon.setImageResource(R.drawable.ic_check)
                 tvAffiliateTitle.text = "Negocio afiliado"
                 tvAffiliateSubtitle.text = "Tu ${getAffiliateTypeText(type)} está aprobada"
                 menuAffiliate.setOnClickListener {
@@ -144,29 +147,32 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
 
+            // PENDIENTE DE APROBACIÓN
             status == "pending" -> {
-                tvAffiliateIcon.text = "⏳"
+                ivAffiliateIcon.setImageResource(R.drawable.ic_pending)
                 tvAffiliateTitle.text = "Solicitud en revisión"
-                tvAffiliateSubtitle.text = "Tu solicitud está siendo revisada (2-3 días hábiles)"
+                tvAffiliateSubtitle.text = "Revisaremos tu solicitud en 2-3 días hábiles"
                 menuAffiliate.setOnClickListener {
-                    Toast.makeText(this, "Tu solicitud está en proceso de revisión", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Tu solicitud está siendo revisada por nuestro equipo", Toast.LENGTH_LONG).show()
                 }
             }
 
+            // RECHAZADO - Puede volver a intentar
             status == "rejected" -> {
-                tvAffiliateIcon.text = "✗"
+                ivAffiliateIcon.setImageResource(R.drawable.ic_error)
                 tvAffiliateTitle.text = "Solicitud rechazada"
-                tvAffiliateSubtitle.text = "Tu solicitud no fue aprobada. Intenta nuevamente"
+                tvAffiliateSubtitle.text = "Puedes volver a solicitar la afiliación"
                 menuAffiliate.setOnClickListener {
                     val intent = Intent(this, AffiliateActivity::class.java)
                     startActivity(intent)
                 }
             }
 
+            // NUEVO USUARIO - Sin afiliación
             else -> {
-                tvAffiliateIcon.text = "🏢"
+                ivAffiliateIcon.setImageResource(R.drawable.ic_affiliate)
                 tvAffiliateTitle.text = "Afiliar mi negocio"
-                tvAffiliateSubtitle.text = "Registro para veterinarias, tiendas y albergues"
+                tvAffiliateSubtitle.text = "Registra tu veterinaria, tienda o albergue"
                 menuAffiliate.setOnClickListener {
                     val intent = Intent(this, AffiliateActivity::class.java)
                     startActivity(intent)
@@ -196,7 +202,6 @@ class ProfileActivity : AppCompatActivity() {
                         user?.let {
                             findViewById<TextView>(R.id.tvUserName).text = it.displayName
                             findViewById<TextView>(R.id.tvEmail).text = it.email
-                            findViewById<TextView>(R.id.tvMemberSince).text = "Rescatista Desde ${formatDate(it.createdAt)}"
                             findViewById<TextView>(R.id.tvJoinDate).text = formatDate(it.createdAt)
                         }
                     }
@@ -250,19 +255,11 @@ class ProfileActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvPhone).text = profileData["phone"] as? String ?: "+51 999 999 999"
         findViewById<TextView>(R.id.tvLocation).text =
             (profileData["address"] as? String)?.split(",")?.take(2)?.joinToString(", ") ?: "Lima, Perú"
-
-        findViewById<TextView>(R.id.tvReportCount).text = "0"
-        findViewById<TextView>(R.id.tvRescueCount).text = "0"
-        findViewById<TextView>(R.id.tvPointsCount).text = "100"
     }
 
     private fun setDefaultProfileData() {
         findViewById<TextView>(R.id.tvPhone).text = "No configurado"
         findViewById<TextView>(R.id.tvLocation).text = "Lima, Perú"
-
-        findViewById<TextView>(R.id.tvReportCount).text = "0"
-        findViewById<TextView>(R.id.tvRescueCount).text = "0"
-        findViewById<TextView>(R.id.tvPointsCount).text = "100"
     }
 
     private fun formatDate(timestamp: Long): String {

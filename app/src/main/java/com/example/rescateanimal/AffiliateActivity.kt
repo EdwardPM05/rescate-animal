@@ -3,11 +3,15 @@ package com.example.rescateanimal
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -21,6 +25,9 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.example.rescateanimal.LocationPickerActivity // Asegúrate que esta clase exista
+import java.io.ByteArrayOutputStream
 import java.util.*
 
 class AffiliateActivity : AppCompatActivity() {
@@ -116,6 +123,22 @@ class AffiliateActivity : AppCompatActivity() {
     private fun selectAffiliateType(type: String) {
         selectedAffiliateType = type
 
+        // --- LÓGICA DE FONDO Y MARCAS (CORREGIDA EN EL XML) ---
+        val vetLayout = findViewById<LinearLayout>(R.id.affiliateTypeVet)
+        val storeLayout = findViewById<LinearLayout>(R.id.affiliateTypeStore)
+        val shelterLayout = findViewById<LinearLayout>(R.id.affiliateTypeShelter)
+
+        vetLayout.setBackgroundResource(R.drawable.report_type_unselected)
+        storeLayout.setBackgroundResource(R.drawable.report_type_unselected)
+        shelterLayout.setBackgroundResource(R.drawable.report_type_unselected)
+
+        when (type) {
+            "veterinaria" -> vetLayout.setBackgroundResource(R.drawable.report_type_selected)
+            "tienda" -> storeLayout.setBackgroundResource(R.drawable.report_type_selected)
+            "albergue" -> shelterLayout.setBackgroundResource(R.drawable.report_type_selected)
+        }
+
+        // --- LÓGICA DE TEXTO Y MARCAS ---
         val typeDisplay = findViewById<TextView>(R.id.tvAffiliateBusinessType)
         typeDisplay.text = when (type) {
             "veterinaria" -> "🏥 Veterinaria"
@@ -125,16 +148,30 @@ class AffiliateActivity : AppCompatActivity() {
         }
         typeDisplay.setTextColor(getColor(android.R.color.black))
 
-        // Update checkboxes
         updateAffiliateTypeCheckboxes(type)
 
         Toast.makeText(this, "Tipo seleccionado: ${getAffiliateTypeText(type)}", Toast.LENGTH_SHORT).show()
     }
 
     private fun updateAffiliateTypeCheckboxes(selected: String) {
-        findViewById<TextView>(R.id.checkVet).text = if (selected == "veterinaria") "☑" else "☐"
-        findViewById<TextView>(R.id.checkStore).text = if (selected == "tienda") "☑" else "☐"
-        findViewById<TextView>(R.id.checkShelter).text = if (selected == "albergue") "☑" else "☐"
+        // Usamos ContextCompat para resolver colores si R.color.primary_orange falla
+        val colorSecondary = ContextCompat.getColor(this, R.color.text_secondary)
+        val colorPrimary = try { ContextCompat.getColor(this, R.color.primary_orange) } catch (e: Exception) { colorSecondary }
+
+        // Veterinaria
+        val checkVet = findViewById<TextView>(R.id.checkVet)
+        checkVet.text = if (selected == "veterinaria") "☑" else "☐"
+        checkVet.setTextColor(if (selected == "veterinaria") colorPrimary else colorSecondary)
+
+        // Tienda
+        val checkStore = findViewById<TextView>(R.id.checkStore)
+        checkStore.text = if (selected == "tienda") "☑" else "☐"
+        checkStore.setTextColor(if (selected == "tienda") colorPrimary else colorSecondary)
+
+        // Albergue
+        val checkShelter = findViewById<TextView>(R.id.checkShelter)
+        checkShelter.text = if (selected == "albergue") "☑" else "☐"
+        checkShelter.setTextColor(if (selected == "albergue") colorPrimary else colorSecondary)
     }
 
     private fun openLocationPicker() {
@@ -305,59 +342,9 @@ class AffiliateActivity : AppCompatActivity() {
         val hours = findViewById<EditText>(R.id.etAffiliateHours).text.toString().trim()
         val social = findViewById<EditText>(R.id.etAffiliateSocial).text.toString().trim()
 
-        // Validate
-        if (businessName.isEmpty()) {
-            Toast.makeText(this, "Por favor ingresa el nombre del negocio", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (selectedAffiliateType.isEmpty()) {
-            Toast.makeText(this, "Por favor selecciona un tipo de negocio", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (contactPerson.isEmpty()) {
-            Toast.makeText(this, "Por favor ingresa el nombre del encargado", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (phone.isEmpty()) {
-            Toast.makeText(this, "Por favor ingresa un teléfono de contacto", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (address.isEmpty()) {
-            Toast.makeText(this, "Por favor ingresa la dirección", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (description.isEmpty()) {
-            Toast.makeText(this, "Por favor ingresa una descripción del negocio", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (hours.isEmpty()) {
-            Toast.makeText(this, "Por favor ingresa el horario de atención", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (selectedPhotos.isEmpty()) {
-            Toast.makeText(this, "Por favor sube al menos una foto del lugar", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (selectedLicense == null) {
-            Toast.makeText(this, "Por favor sube la licencia de funcionamiento", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (selectedStaffLicenses == null) {
-            Toast.makeText(this, "Por favor sube las licencias de los trabajadores", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (selectedLatitude == null || selectedLongitude == null) {
-            Toast.makeText(this, "Por favor selecciona la ubicación en el mapa", Toast.LENGTH_SHORT).show()
+        // Validate (tu código de validación)
+        if (businessName.isEmpty() || selectedAffiliateType.isEmpty() || contactPerson.isEmpty() || phone.isEmpty() || address.isEmpty() || description.isEmpty() || hours.isEmpty() || selectedPhotos.isEmpty() || selectedLicense == null || selectedStaffLicenses == null || selectedLatitude == null || selectedLongitude == null) {
+            Toast.makeText(this, "Por favor completa todos los campos obligatorios", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -367,6 +354,46 @@ class AffiliateActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * FUNCIÓN CLAVE DE OPTIMIZACIÓN: Comprime la imagen seleccionada y sube los bytes.
+     */
+    private fun uploadCompressedImage(
+        imageUri: Uri,
+        storageRef: StorageReference,
+        onSuccess: (String) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val bitmap: Bitmap?
+        try {
+            // Obtener el Bitmap
+            bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
+        } catch (e: Exception) {
+            onFailure(e)
+            return
+        }
+
+        val baos = ByteArrayOutputStream()
+        // Compresión al 70% de calidad JPEG (CLAVE PARA VELOCIDAD!)
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+        val data = baos.toByteArray()
+
+        storageRef.putBytes(data) // Subir bytes comprimidos
+            .addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+                    onSuccess(uri.toString())
+                }.addOnFailureListener { e ->
+                    onFailure(e)
+                }
+            }.addOnFailureListener { e ->
+                onFailure(e)
+            }
+    }
+
+
+    /**
+     * MODIFICADO: Sube la foto principal comprimida, espera la URL y guarda el documento
+     * con esa URL. Las fotos restantes se suben en segundo plano.
+     */
     private fun uploadAffiliateData(
         businessName: String,
         contactPerson: String,
@@ -383,15 +410,72 @@ class AffiliateActivity : AppCompatActivity() {
         }
 
         val affiliateId = db.collection("affiliates").document().id
+        val firstPhotoUri = selectedPhotos.firstOrNull()
 
-        // Show loading
-        Toast.makeText(this, "Enviando solicitud...", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Enviando solicitud y comprimiendo foto...", Toast.LENGTH_LONG).show()
 
-        // Upload photos
-        selectedPhotos.forEachIndexed { index, uri ->
-            val ref = storage.reference.child("affiliates/$affiliateId/photos/photo_$index")
+        if (firstPhotoUri == null) {
+            Toast.makeText(this, "Error: La foto principal es necesaria.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // 1. Subir la primera foto (COMPRIMIDA) y esperar la URL
+        val firstPhotoRef = storage.reference.child("affiliates/$affiliateId/photos/main_photo")
+
+        uploadCompressedImage(
+            imageUri = firstPhotoUri,
+            storageRef = firstPhotoRef,
+            onSuccess = { mainPhotoUrl ->
+
+                // 2. Crear el documento de Firestore con la URL principal
+                val affiliateData = hashMapOf(
+                    "id" to affiliateId,
+                    "type" to selectedAffiliateType,
+                    "businessName" to businessName,
+                    "contactPerson" to contactPerson,
+                    "phone" to phone,
+                    "address" to address,
+                    "description" to description,
+                    "hours" to hours,
+                    "socialMedia" to social,
+                    "latitude" to (selectedLatitude ?: -12.0464),
+                    "longitude" to (selectedLongitude ?: -77.0428),
+                    "userId" to currentUser.uid,
+                    "userEmail" to currentUser.email,
+                    "status" to "pending",
+                    "createdAt" to System.currentTimeMillis(),
+                    "verified" to false,
+                    "mainPhotoUrl" to mainPhotoUrl // <-- ¡CAMPO CLAVE AÑADIDO/RESTAURADO!
+                )
+
+                db.collection("affiliates").document(affiliateId)
+                    .set(affiliateData)
+                    .addOnSuccessListener {
+                        Log.d("AffiliateDebug", "SUCCESS: Documento de Firestore creado con URL.")
+                        // 3. Subir el resto de los archivos en segundo plano
+                        uploadRemainingFiles(affiliateId)
+
+                        Toast.makeText(this, "¡Solicitud enviada exitosamente!\nSerá revisada en 2-3 días hábiles", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("AffiliateDebug", "ERROR: al crear documento en Firestore: ${e.message}")
+                        Toast.makeText(this, "Error al enviar solicitud: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            },
+            onFailure = { e ->
+                Log.e("AffiliateDebug", "ERROR: al subir foto principal o obtener URL: ${e.message}")
+                Toast.makeText(this, "Error al subir foto principal: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    private fun uploadRemainingFiles(affiliateId: String) {
+        // Subir el resto de fotos (saltando la primera que es la principal)
+        selectedPhotos.drop(1).forEachIndexed { index, uri ->
+            val ref = storage.reference.child("affiliates/$affiliateId/photos/extra_photo_$index")
             ref.putFile(uri).addOnFailureListener { e ->
-                Toast.makeText(this, "Error al subir foto $index: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("AffiliateUpload", "Error subiendo foto extra $index: ${e.message}")
             }
         }
 
@@ -399,7 +483,7 @@ class AffiliateActivity : AppCompatActivity() {
         selectedLicense?.let { uri ->
             val licenseRef = storage.reference.child("affiliates/$affiliateId/license")
             licenseRef.putFile(uri).addOnFailureListener { e ->
-                Toast.makeText(this, "Error al subir licencia: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("AffiliateUpload", "Error subiendo licencia: ${e.message}")
             }
         }
 
@@ -407,39 +491,9 @@ class AffiliateActivity : AppCompatActivity() {
         selectedStaffLicenses?.let { uri ->
             val staffRef = storage.reference.child("affiliates/$affiliateId/staff_licenses")
             staffRef.putFile(uri).addOnFailureListener { e ->
-                Toast.makeText(this, "Error al subir licencias: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("AffiliateUpload", "Error subiendo licencias de staff: ${e.message}")
             }
         }
-
-        // Create affiliate document
-        val affiliateData = hashMapOf(
-            "id" to affiliateId,
-            "type" to selectedAffiliateType,
-            "businessName" to businessName,
-            "contactPerson" to contactPerson,
-            "phone" to phone,
-            "address" to address,
-            "description" to description,
-            "hours" to hours,
-            "socialMedia" to social,
-            "latitude" to (selectedLatitude ?: -12.0464),
-            "longitude" to (selectedLongitude ?: -77.0428),
-            "userId" to currentUser.uid,
-            "userEmail" to currentUser.email,
-            "status" to "pending",
-            "createdAt" to System.currentTimeMillis(),
-            "verified" to false
-        )
-
-        db.collection("affiliates").document(affiliateId)
-            .set(affiliateData)
-            .addOnSuccessListener {
-                Toast.makeText(this, "¡Solicitud enviada exitosamente!\nSerá revisada en 2-3 días hábiles", Toast.LENGTH_LONG).show()
-                finish()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error al enviar solicitud: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
     }
 
     override fun onRequestPermissionsResult(

@@ -16,36 +16,17 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
-        <!-- Report Photo/Icon Container -->
-        <FrameLayout
+        <!-- Pet Photo -->
+        <ImageView
+                android:id="@+id/ivPetPhoto"
                 android:layout_width="100dp"
-                android:layout_height="100dp">
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/rounded_corner_16"
+                android:clipToOutline="true"
+                android:src="@drawable/ic_pet_placeholder" />
 
-            <!-- ImageView for Photo -->
-            <ImageView
-                    android:id="@+id/ivReportPhoto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/rounded_corner_16"
-                    android:clipToOutline="true"
-                    android:contentDescription="Foto del reporte" />
-
-            <!-- TextView for Icon (when no photo) -->
-            <TextView
-                    android:id="@+id/tvReportIcon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="⚠️"
-                    android:textSize="48sp"
-                    android:gravity="center"
-                    android:background="@drawable/rounded_corner_16"
-                    android:backgroundTint="#FFF3E0"
-                    android:visibility="visible" />
-
-        </FrameLayout>
-
-        <!-- Report Info -->
+        <!-- Pet Info -->
         <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -54,24 +35,24 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp">
 
-            <!-- Report Type -->
+            <!-- Pet Name -->
             <TextView
-                    android:id="@+id/tvReportType"
+                    android:id="@+id/tvPetName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Animal en peligro"
+                    android:text="Nombre de la mascota"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:maxLines="1"
                     android:ellipsize="end" />
 
-            <!-- Report Details -->
+            <!-- Pet Details -->
             <TextView
-                    android:id="@+id/tvReportInfo"
+                    android:id="@+id/tvPetInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="⚠️ Urgente"
+                    android:text="🐕 Labrador • 2 años • Macho"
                     android:textSize="14sp"
                     android:textColor="@color/text_secondary"
                     android:layout_marginTop="4dp"
@@ -80,10 +61,10 @@
 
             <!-- Location -->
             <TextView
-                    android:id="@+id/tvReportLocation"
+                    android:id="@+id/tvPetLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📍 Av. Javier Prado 123, San Isidro"
+                    android:text="📍 Lima, Perú"
                     android:textSize="12sp"
                     android:textColor="@color/text_secondary"
                     android:layout_marginTop="4dp"
@@ -100,13 +81,13 @@
 
                 <!-- Status Badge -->
                 <TextView
-                        android:id="@+id/tvReportStatus"
+                        android:id="@+id/tvPetStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="⏳ Pendiente"
+                        android:text="✅ Disponible"
                         android:textSize="11sp"
                         android:textColor="@color/white"
-                        android:background="@drawable/status_badge_pending"
+                        android:background="@drawable/status_badge_available"
                         android:paddingStart="8dp"
                         android:paddingEnd="8dp"
                         android:paddingTop="4dp"
@@ -114,7 +95,7 @@
 
                 <!-- Date -->
                 <TextView
-                        android:id="@+id/tvReportDate"
+                        android:id="@+id/tvPetDate"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -130,7 +111,7 @@
 
         <!-- Delete Button -->
         <TextView
-                android:id="@+id/btnDeleteReport"
+                android:id="@+id/btnDeleteAdoption"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:text="🗑️"
