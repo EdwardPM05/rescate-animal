@@ -1,108 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="12dp"
-              android:background="@drawable/card_white_elevated"
-              android:orientation="vertical"
-              android:padding="16dp"
-              android:clickable="true"
-              android:focusable="true">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:layout_marginBottom="16dp"
+                                   app:cardCornerRadius="16dp"
+                                   app:cardElevation="4dp"
+                                   android:clickable="true"
+                                   android:focusable="true"
+                                   android:foreground="?attr/selectableItemBackground">
 
-    <!-- Header with Icon and Type -->
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="16dp">
 
-        <TextView
-                android:id="@+id/tvReportIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:text="⚠️"
-                android:textSize="24sp" />
+        <!-- Report Photo/Icon Container -->
+        <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp">
 
+            <!-- ImageView for Photo -->
+            <ImageView
+                    android:id="@+id/ivReportPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/rounded_corner_16"
+                    android:clipToOutline="true"
+                    android:contentDescription="Foto del reporte" />
+
+            <!-- TextView for Icon (when no photo) -->
+            <TextView
+                    android:id="@+id/tvReportIcon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="⚠️"
+                    android:textSize="48sp"
+                    android:gravity="center"
+                    android:background="@drawable/rounded_corner_16"
+                    android:backgroundTint="#FFF3E0"
+                    android:visibility="visible" />
+
+        </FrameLayout>
+
+        <!-- Report Info -->
         <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp">
 
+            <!-- Report Type -->
             <TextView
                     android:id="@+id/tvReportType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Animal en peligro"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:maxLines="1"
+                    android:ellipsize="end" />
 
+            <!-- Report Details -->
             <TextView
-                    android:id="@+id/tvReportDate"
+                    android:id="@+id/tvReportInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="Hace 2 días"
+                    android:text="⚠️ Urgente"
+                    android:textSize="14sp"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    android:layout_marginTop="4dp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+            <!-- Location -->
+            <TextView
+                    android:id="@+id/tvReportLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📍 Av. Javier Prado 123, San Isidro"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="4dp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+            <!-- Status and Date Container -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical">
+
+                <!-- Status Badge -->
+                <TextView
+                        android:id="@+id/tvReportStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⏳ Pendiente"
+                        android:textSize="11sp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/status_badge_pending"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp" />
+
+                <!-- Date -->
+                <TextView
+                        android:id="@+id/tvReportDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Hace 2 días"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_tertiary"
+                        android:layout_marginStart="8dp"
+                        android:gravity="end" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <TextView
-                android:id="@+id/tvReportStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/status_badge_pending"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp"
-                android:text="⏳ Pendiente"
-                android:textColor="@android:color/white"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <!-- Location -->
-    <TextView
-            android:id="@+id/tvReportLocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="📍 Av. Javier Prado 123, San Isidro"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp" />
-
-    <!-- Divider -->
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="12dp"
-            android:background="#E0E0E0" />
-
-    <!-- Actions -->
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:orientation="horizontal">
-
+        <!-- Delete Button -->
         <TextView
                 android:id="@+id/btnDeleteReport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text="🗑️ Eliminar"
-                android:textColor="#FF5722"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:background="?selectableItemBackground" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="🗑️"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_gravity="center_vertical" />
 
     </LinearLayout>
 
-</LinearLayout>
+</androidx.cardview.widget.CardView>

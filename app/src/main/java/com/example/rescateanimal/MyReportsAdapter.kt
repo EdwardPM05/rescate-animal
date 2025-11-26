@@ -3,8 +3,12 @@ package com.example.rescateanimal
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -15,31 +19,57 @@ class MyReportsAdapter(
 ) : RecyclerView.Adapter<MyReportsAdapter.ReportViewHolder>() {
 
     inner class ReportViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvReportType: TextView = itemView.findViewById(R.id.tvReportType)
+        val ivReportPhoto: ImageView = itemView.findViewById(R.id.ivReportPhoto)
         val tvReportIcon: TextView = itemView.findViewById(R.id.tvReportIcon)
+        val tvReportType: TextView = itemView.findViewById(R.id.tvReportType)
+        val tvReportInfo: TextView = itemView.findViewById(R.id.tvReportInfo)
         val tvReportDate: TextView = itemView.findViewById(R.id.tvReportDate)
         val tvReportLocation: TextView = itemView.findViewById(R.id.tvReportLocation)
         val tvReportStatus: TextView = itemView.findViewById(R.id.tvReportStatus)
         val btnDelete: TextView = itemView.findViewById(R.id.btnDeleteReport)
 
         fun bind(report: Report) {
+            // Load photo or show icon
+            if (report.photoUrls.isNotEmpty() && report.photoUrls[0].isNotEmpty()) {
+                // Show photo
+                tvReportIcon.visibility = View.GONE
+                ivReportPhoto.visibility = View.VISIBLE
+
+                android.util.Log.d("MyReportsAdapter", "Cargando foto: ${report.photoUrls[0]}")
+
+                Glide.with(itemView.context)
+                    .load(report.photoUrls[0])
+                    .transform(CenterCrop(), RoundedCorners(24))
+                    .placeholder(R.drawable.ic_pet_placeholder)
+                    .error(R.drawable.ic_pet_placeholder)
+                    .into(ivReportPhoto)
+            } else {
+                // Show icon
+                ivReportPhoto.visibility = View.GONE
+                tvReportIcon.visibility = View.VISIBLE
+            }
+
             // Set icon and type based on report type
             when (report.type) {
                 "danger" -> {
                     tvReportIcon.text = "⚠️"
                     tvReportType.text = "Animal en peligro"
+                    tvReportInfo.text = "⚠️ Urgente"
                 }
                 "lost" -> {
                     tvReportIcon.text = "💔"
                     tvReportType.text = "Animal perdido"
+                    tvReportInfo.text = "💔 Búsqueda activa"
                 }
                 "abandoned" -> {
                     tvReportIcon.text = "🏠"
                     tvReportType.text = "Animal abandonado"
+                    tvReportInfo.text = "🏠 Necesita hogar"
                 }
                 else -> {
                     tvReportIcon.text = "📍"
                     tvReportType.text = "Reporte"
+                    tvReportInfo.text = "📍 Reporte general"
                 }
             }
 
@@ -51,11 +81,23 @@ class MyReportsAdapter(
             tvReportLocation.text = "📍 $locationText"
 
             // Status
-            tvReportStatus.text = when (report.status) {
-                "pending" -> "⏳ Pendiente"
-                "in_progress" -> "🔄 En proceso"
-                "resolved" -> "✅ Resuelto"
-                else -> "⏳ Pendiente"
+            when (report.status) {
+                "pending" -> {
+                    tvReportStatus.text = "⏳ Pendiente"
+                    tvReportStatus.setBackgroundResource(R.drawable.status_badge_pending)
+                }
+                "in_progress" -> {
+                    tvReportStatus.text = "🔄 En proceso"
+                    tvReportStatus.setBackgroundResource(R.drawable.status_badge_in_progress)
+                }
+                "resolved" -> {
+                    tvReportStatus.text = "✅ Resuelto"
+                    tvReportStatus.setBackgroundResource(R.drawable.status_badge_resolved)
+                }
+                else -> {
+                    tvReportStatus.text = "⏳ Pendiente"
+                    tvReportStatus.setBackgroundResource(R.drawable.status_badge_pending)
+                }
             }
 
             // Delete button
@@ -83,6 +125,8 @@ class MyReportsAdapter(
     override fun getItemCount() = reports.size
 
     private fun formatDate(timestamp: Long): String {
+        if (timestamp == 0L) return "Fecha no disponible"
+
         val date = Date(timestamp)
         val now = Date()
         val diff = now.time - date.time

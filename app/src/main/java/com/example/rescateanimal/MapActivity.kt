@@ -117,8 +117,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setupUI() {
-        val btnBack = findViewById<TextView>(R.id.btnBack)
-        val btnMyLocation = findViewById<TextView>(R.id.btnMyLocation)
+        val btnBack = findViewById<ImageView>(R.id.btnBack)
+        val btnMyLocation = findViewById<ImageView>(R.id.btnMyLocation)
 
         btnBack.setOnClickListener {
             finish()
