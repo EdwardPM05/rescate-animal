@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,21 +37,22 @@ class ReportActivity : AppCompatActivity() {
     private lateinit var navigationHelper: NavigationHelper
 
     // UI Components
-    private lateinit var reportTypeDanger: LinearLayout
-    private lateinit var reportTypeLost: LinearLayout
-    private lateinit var reportTypeAbandoned: LinearLayout
-    private lateinit var locationDisplayCard: LinearLayout
+    private lateinit var btnBack: ImageView
+    private lateinit var reportTypeDanger: CardView
+    private lateinit var reportTypeLost: CardView
+    private lateinit var reportTypeAbandoned: CardView
+    private lateinit var locationDisplayCard: CardView
     private lateinit var locationLoadingState: LinearLayout
     private lateinit var locationLoadedState: LinearLayout
     private lateinit var tvLocationAddress: TextView
     private lateinit var tvLocationCoords: TextView
-    private lateinit var btnRefreshLocation: TextView
+    private lateinit var btnRefreshLocation: LinearLayout
     private lateinit var etDescription: EditText
     private lateinit var etPhone: EditText
-    private lateinit var photoUploadCard: LinearLayout
+    private lateinit var photoUploadCard: CardView
     private lateinit var rvSelectedPhotos: RecyclerView
     private lateinit var btnSubmitReport: Button
-    private lateinit var emergencyPhone: TextView
+    private lateinit var emergencyPhone: LinearLayout
 
     // State variables
     private var selectedReportType = ""
@@ -89,7 +91,6 @@ class ReportActivity : AppCompatActivity() {
             getCurrentLocation()
         } else {
             showToast("Permiso de ubicación necesario. No se puede crear reporte sin ubicación actual.")
-            // Deshabilitar botón de envío si no hay permisos
             btnSubmitReport.isEnabled = false
         }
     }
@@ -97,8 +98,6 @@ class ReportActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report)
-
-        NavigationHelper(this).setupBottomNavigation()
 
         // Initialize Firebase
         auth = FirebaseAuth.getInstance()
@@ -117,6 +116,7 @@ class ReportActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
+        btnBack = findViewById(R.id.btnBack)
         reportTypeDanger = findViewById(R.id.reportTypeDanger)
         reportTypeLost = findViewById(R.id.reportTypeLost)
         reportTypeAbandoned = findViewById(R.id.reportTypeAbandoned)
@@ -136,7 +136,7 @@ class ReportActivity : AppCompatActivity() {
 
     private fun setupUI() {
         // Back button
-        findViewById<TextView>(R.id.btnBack).setOnClickListener {
+        btnBack.setOnClickListener {
             finish()
         }
 
@@ -229,21 +229,33 @@ class ReportActivity : AppCompatActivity() {
         )
     }
 
-    private fun selectReportType(type: String, selectedLayout: LinearLayout) {
+    private fun selectReportType(type: String, selectedCard: CardView) {
         // Reset all backgrounds
-        reportTypeDanger.setBackgroundResource(R.drawable.report_type_unselected)
-        reportTypeLost.setBackgroundResource(R.drawable.report_type_unselected)
-        reportTypeAbandoned.setBackgroundResource(R.drawable.report_type_unselected)
+        reportTypeDanger.setCardBackgroundColor(ContextCompat.getColor(this, android.R.color.white))
+        reportTypeLost.setCardBackgroundColor(ContextCompat.getColor(this, android.R.color.white))
+        reportTypeAbandoned.setCardBackgroundColor(ContextCompat.getColor(this, android.R.color.white))
 
-        // Set selected background
-        selectedLayout.setBackgroundResource(R.drawable.report_type_selected)
+        // Set selected background color based on type
+        val selectedColor = when(type) {
+            "danger" -> ContextCompat.getColor(this, android.R.color.holo_orange_light)
+            "lost" -> ContextCompat.getColor(this, android.R.color.holo_blue_light)
+            "abandoned" -> ContextCompat.getColor(this, android.R.color.holo_purple)
+            else -> ContextCompat.getColor(this, android.R.color.white)
+        }
+
+        selectedCard.setCardBackgroundColor(selectedColor)
+        selectedCard.cardElevation = 8f
+
+        // Reset elevation for others
+        if (selectedCard != reportTypeDanger) reportTypeDanger.cardElevation = 0f
+        if (selectedCard != reportTypeLost) reportTypeLost.cardElevation = 0f
+        if (selectedCard != reportTypeAbandoned) reportTypeAbandoned.cardElevation = 0f
+
         selectedReportType = type
-
         checkFormValidity()
     }
 
     private fun requestCurrentLocation() {
-        // Verificar permisos
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -262,7 +274,6 @@ class ReportActivity : AppCompatActivity() {
     }
 
     private fun getCurrentLocation() {
-        // Mostrar estado de carga
         locationLoadingState.visibility = View.VISIBLE
         locationLoadedState.visibility = View.GONE
 
@@ -271,14 +282,11 @@ class ReportActivity : AppCompatActivity() {
                 if (location != null) {
                     currentLocation = location
 
-                    // Obtener dirección desde coordenadas
                     getAddressFromLocation(location.latitude, location.longitude)
 
-                    // Mostrar coordenadas
                     tvLocationCoords.text = "Lat: ${String.format("%.6f", location.latitude)}, " +
                             "Lng: ${String.format("%.6f", location.longitude)}"
 
-                    // Mostrar estado cargado
                     locationLoadingState.visibility = View.GONE
                     locationLoadedState.visibility = View.VISIBLE
 
@@ -356,7 +364,7 @@ class ReportActivity : AppCompatActivity() {
 
     private fun isFormValid(): Boolean {
         return selectedReportType.isNotEmpty() &&
-                currentLocation != null &&  // Ubicación GPS obligatoria
+                currentLocation != null &&
                 etDescription.text.isNotEmpty() &&
                 etDescription.text.length >= 10 &&
                 selectedPhotos.isNotEmpty()
@@ -376,7 +384,6 @@ class ReportActivity : AppCompatActivity() {
         btnSubmitReport.isEnabled = false
         btnSubmitReport.text = "Enviando..."
 
-        // Upload photos first, then create report
         uploadPhotos { photoUrls ->
             createReport(photoUrls)
         }
@@ -431,12 +438,12 @@ class ReportActivity : AppCompatActivity() {
             "userId" to currentUser.uid,
             "userEmail" to currentUser.email,
             "reportType" to selectedReportType,
-            "location" to currentLocationAddress,  // Dirección formateada
+            "location" to currentLocationAddress,
             "description" to etDescription.text.toString(),
             "contactPhone" to etPhone.text.toString(),
             "photoUrls" to photoUrls,
-            "latitude" to currentLocation!!.latitude,   // Coordenadas GPS exactas
-            "longitude" to currentLocation!!.longitude, // Coordenadas GPS exactas
+            "latitude" to currentLocation!!.latitude,
+            "longitude" to currentLocation!!.longitude,
             "status" to "pending",
             "createdAt" to System.currentTimeMillis(),
             "reviewedAt" to null,
@@ -488,7 +495,6 @@ class ReportActivity : AppCompatActivity() {
     }
 }
 
-// Adapter for photo RecyclerView
 class PhotoAdapter(
     private val photos: MutableList<Uri>,
     private val onRemoveClick: (Int) -> Unit
