@@ -2,6 +2,8 @@ package com.example.rescateanimal
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -13,11 +15,22 @@ import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.example.rescateanimal.data.models.Animal
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
+
+// --- Asegúrate que todas estas clases existan en tu proyecto ---
+import com.example.rescateanimal.data.models.Animal
+import com.example.rescateanimal.LoginActivity
+import com.example.rescateanimal.ProfileActivity
+import com.example.rescateanimal.MapActivity
+import com.example.rescateanimal.AnimalDetailActivity
+import com.example.rescateanimal.NavigationHelper
+import com.example.rescateanimal.RegisterPetActivity
+import com.example.rescateanimal.AffiliateActivity
+import android.location.Location
+import com.example.rescateanimal.LocationPickerActivity // Necesaria para el Intent
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,6 +47,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sectionAffiliateTitle: TextView
     private lateinit var bannerImage: ImageView
 
+    // VARIABLES PARA LOADING (Placeholder animado)
+    private lateinit var loadingPlaceholder: View
+    private lateinit var contentScrollView: View
+    private lateinit var ivAnimalLoading: ImageView
+
+    private var tasksCompleted = 0
+    private val totalTasks = 5 // UserData, AffiliateStatus, NewAffiliates, LostAnimals, AdoptionAnimals
+
+    // LISTA DE RECURSOS PARA EL CARRUSEL DE CARGA (Usando tus imágenes)
+    private val animalPlaceholders = listOf(
+        R.drawable.loading_perro_real,
+        R.drawable.loading_gato_real,
+        R.drawable.loading_hamster_real
+    )
+    private var currentAnimalIndex = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -43,7 +72,6 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        // Check if user is logged in
         if (auth.currentUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
@@ -51,13 +79,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         initializeViews()
+
+        // 1. Iniciar las 5 tareas de carga (todas asíncronas)
         loadUserData()
         checkAffiliateStatus()
-        loadNewAffiliates()
-        loadLostAnimalsReports()
-        loadRecentAdoptionAnimals()
+        loadNewAffiliates() // OPTIMIZADO
+        loadLostAnimalsReports() // Se optimizará cuando RegisterPetActivity y ReportActivity se corrijan
+        loadRecentAdoptionAnimals() // Se optimizará cuando RegisterPetActivity y ReportActivity se corrijan
 
-        // Setup navigation
         navigationHelper = NavigationHelper(this)
         navigationHelper.setupBottomNavigation()
     }
@@ -72,29 +101,91 @@ class MainActivity : AppCompatActivity() {
         sectionAffiliateTitle = findViewById(R.id.sectionAffiliateTitle)
         bannerImage = findViewById(R.id.bannerImage)
 
-        // Click en foto de perfil -> ir a ProfileActivity
+        // VISTAS DE LOADING
+        loadingPlaceholder = findViewById(R.id.loadingPlaceholder)
+        contentScrollView = findViewById(R.id.contentScrollView)
+        ivAnimalLoading = findViewById(R.id.ivAnimalLoading)
+
+        // Iniciar el carrusel de perritos
+        startLoadingAnimation()
+
         ivProfileHeader.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
     }
 
+    // =======================================================
+    // LÓGICA DE CARGA Y ANIMACIÓN (Placeholder)
+    // =======================================================
+
+    private fun startLoadingAnimation() {
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = object : Runnable {
+            override fun run() {
+                // Rota las imágenes de animales (carrusel)
+                currentAnimalIndex = (currentAnimalIndex + 1) % animalPlaceholders.size
+                ivAnimalLoading.setImageResource(animalPlaceholders[currentAnimalIndex])
+
+                if (tasksCompleted < totalTasks) {
+                    handler.postDelayed(this, 800) // Cambia cada 0.8 segundos
+                }
+            }
+        }
+        handler.post(runnable)
+    }
+
+    private fun taskCompleted() {
+        tasksCompleted++
+        // Si las 5 tareas completaron, ocultar el placeholder y mostrar el contenido
+        if (tasksCompleted >= totalTasks) {
+            showContent()
+        }
+    }
+
+    private fun showContent() {
+        // Ocultar placeholder con fade-out
+        loadingPlaceholder.animate()
+            .alpha(0f)
+            .setDuration(300)
+            .withEndAction {
+                loadingPlaceholder.visibility = View.GONE
+            }
+
+        // Mostrar contenido principal con fade-in
+        contentScrollView.alpha = 0f
+        contentScrollView.visibility = View.VISIBLE
+        contentScrollView.animate()
+            .alpha(1f)
+            .setDuration(300)
+            .start()
+    }
+
+    // =======================================================
+    // FUNCIONES DE CARGA DE DATOS (Cada función llama a taskCompleted)
+    // =======================================================
+
     private fun loadUserData() {
         val currentUser = auth.currentUser ?: return
 
-        // Cargar nombre del usuario
         db.collection("users").document(currentUser.uid)
             .get()
             .addOnSuccessListener { document ->
                 val displayName = document.getString("displayName") ?: currentUser.email?.split("@")?.get(0) ?: "Usuario"
                 tvWelcomeUser.text = "Hola, $displayName!"
-            }
 
-        // Cargar foto de perfil
-        db.collection("user_profiles").document(currentUser.uid)
-            .get()
-            .addOnSuccessListener { profileDoc ->
-                val photoUrl = profileDoc.getString("profilePhotoUrl")
-                loadProfileImage(photoUrl)
+                db.collection("user_profiles").document(currentUser.uid)
+                    .get()
+                    .addOnSuccessListener { profileDoc ->
+                        val photoUrl = profileDoc.getString("profilePhotoUrl")
+                        loadProfileImage(photoUrl)
+                        taskCompleted() // Tarea 1 completada
+                    }
+                    .addOnFailureListener {
+                        taskCompleted() // Tarea 1 completada
+                    }
+            }
+            .addOnFailureListener {
+                taskCompleted() // Tarea 1 completada
             }
     }
 
@@ -122,7 +213,6 @@ class MainActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
-                    // NO TIENE NEGOCIO - Mostrar banner de afiliación
                     showAffiliateBanner()
                 } else {
                     val affiliateDoc = documents.documents[0]
@@ -130,30 +220,25 @@ class MainActivity : AppCompatActivity() {
                     val type = affiliateDoc.getString("type")
 
                     when {
-                        // VETERINARIA O ALBERGUE APROBADO - Mostrar "Registra Mascotas"
                         status == "approved" && (type == "veterinaria" || type == "albergue") -> {
                             showRegisterPetsBanner()
                         }
-
-                        // TIENDA U OTRO NEGOCIO - Ocultar toda la sección
                         status == "approved" -> {
                             hideAffiliateSection()
                         }
-
-                        // PENDIENTE O RECHAZADO - Ocultar por ahora
                         else -> {
                             hideAffiliateSection()
                         }
                     }
                 }
+                taskCompleted() // Tarea 2 completada
             }
             .addOnFailureListener {
-                // En caso de error, mostrar banner por defecto
                 showAffiliateBanner()
+                taskCompleted() // Tarea 2 completada
             }
     }
 
-    // Mostrar banner para afiliar negocio
     private fun showAffiliateBanner() {
         sectionAffiliateTitle.text = "Afilia tu Local"
         sectionAffiliateTitle.visibility = View.VISIBLE
@@ -165,7 +250,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Mostrar banner para registrar mascotas
     private fun showRegisterPetsBanner() {
         sectionAffiliateTitle.text = "Registra Mascotas"
         sectionAffiliateTitle.visibility = View.VISIBLE
@@ -177,13 +261,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Ocultar toda la sección
     private fun hideAffiliateSection() {
         sectionAffiliateTitle.visibility = View.GONE
         bannerAffiliateYourBusiness.visibility = View.GONE
     }
 
-    // ========== SECCIÓN 1: NUEVAS CLÍNICAS Y ALBERGUES ==========
+    // ========== SECCIÓN 1: NUEVAS CLÍNICAS Y ALBERGUES (OPTIMIZADA) ==========
     private fun loadNewAffiliates() {
         db.collection("affiliates")
             .whereEqualTo("status", "approved")
@@ -196,6 +279,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (documents.isEmpty) {
                     showEmptyState(containerAffiliates, "No hay negocios nuevos")
+                    taskCompleted() // Tarea 3 completada
                     return@addOnSuccessListener
                 }
 
@@ -204,16 +288,21 @@ class MainActivity : AppCompatActivity() {
                     val type = document.getString("type") ?: ""
                     val businessName = document.getString("businessName") ?: "Negocio"
                     val address = document.getString("address") ?: ""
-                    val phone = document.getString("phone") ?: ""
                     val latitude = document.getDouble("latitude") ?: 0.0
                     val longitude = document.getDouble("longitude") ?: 0.0
 
-                    val cardView = createAffiliateCard(documentId, type, businessName, address, phone, latitude, longitude)
+                    // ⚠️ CLAVE: Lee el campo mainPhotoUrl. Si es null o no existe, será "" y Glide usará el placeholder.
+                    // Si tu amigo agregó otro campo, debes cambiar "mainPhotoUrl" al nombre de ese campo.
+                    val photoUrl = document.getString("mainPhotoUrl") ?: ""
+
+                    val cardView = createAffiliateCard(documentId, type, businessName, address, latitude, longitude, photoUrl)
                     containerAffiliates.addView(cardView)
                 }
+                taskCompleted() // Tarea 3 completada
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error al cargar afiliados: ${e.message}", Toast.LENGTH_SHORT).show()
+                taskCompleted() // Tarea 3 completada
             }
     }
 
@@ -222,9 +311,9 @@ class MainActivity : AppCompatActivity() {
         type: String,
         businessName: String,
         address: String,
-        phone: String,
         lat: Double,
-        lng: Double
+        lng: Double,
+        photoUrl: String // Campo añadido para la URL
     ): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_affiliate_card, containerAffiliates, false)
 
@@ -237,10 +326,17 @@ class MainActivity : AppCompatActivity() {
         tvType.text = getAffiliateTypeText(type)
         tvAddress.text = address
 
-        // Cargar la primera foto del afiliado desde Firebase Storage
-        loadAffiliateFirstPhoto(documentId, ivPhoto)
+        // Carga de imagen con Placeholder: Si photoUrl es inválido/vacío, usará ic_image_placeholder
+        Glide.with(this)
+            .load(photoUrl)
+            .apply(
+                RequestOptions()
+                    .placeholder(R.drawable.ic_image_placeholder) // Asegúrate que esta imagen exista
+                    .error(R.drawable.ic_image_placeholder)
+                    .centerCrop()
+            )
+            .into(ivPhoto)
 
-        // Click -> Abrir mapa en esa ubicación
         view.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
             intent.putExtra("latitude", lat)
@@ -250,34 +346,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         return view
-    }
-
-    private fun loadAffiliateFirstPhoto(documentId: String, imageView: ImageView) {
-        val storage = FirebaseStorage.getInstance()
-        val affiliateRef = storage.reference.child("affiliates/$documentId/photos")
-
-        affiliateRef.listAll()
-            .addOnSuccessListener { listResult ->
-                if (listResult.items.isNotEmpty()) {
-                    // Tomar la primera foto
-                    listResult.items[0].downloadUrl.addOnSuccessListener { uri ->
-                        Glide.with(this)
-                            .load(uri.toString())
-                            .placeholder(R.drawable.ic_image_placeholder)
-                            .error(R.drawable.ic_image_placeholder)
-                            .centerCrop()
-                            .into(imageView)
-                    }.addOnFailureListener {
-                        imageView.setImageResource(R.drawable.ic_image_placeholder)
-                    }
-                } else {
-                    // Si no hay fotos, usar placeholder
-                    imageView.setImageResource(R.drawable.ic_image_placeholder)
-                }
-            }
-            .addOnFailureListener {
-                imageView.setImageResource(R.drawable.ic_image_placeholder)
-            }
     }
 
     private fun getAffiliateTypeText(type: String): String {
@@ -302,6 +370,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (documents.isEmpty) {
                     showEmptyState(containerLostAnimals, "No hay animales perdidos reportados")
+                    taskCompleted() // Tarea 4 completada
                     return@addOnSuccessListener
                 }
 
@@ -313,12 +382,15 @@ class MainActivity : AppCompatActivity() {
                     val latitude = document.getDouble("latitude") ?: 0.0
                     val longitude = document.getDouble("longitude") ?: 0.0
 
-                    // Extraer tipo de animal de la descripción
                     val animalType = extractAnimalType(description)
 
                     val cardView = createLostAnimalCard(animalType, location, photoUrl, latitude, longitude)
                     containerLostAnimals.addView(cardView)
                 }
+                taskCompleted() // Tarea 4 completada
+            }
+            .addOnFailureListener {
+                taskCompleted() // Tarea 4 completada
             }
     }
 
@@ -350,7 +422,6 @@ class MainActivity : AppCompatActivity() {
                 .into(ivPhoto)
         }
 
-        // Click -> Abrir mapa en ubicación del reporte
         view.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
             intent.putExtra("latitude", lat)
@@ -374,6 +445,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (documents.isEmpty) {
                     showEmptyState(containerAdoptionAnimals, "No hay mascotas en adopción")
+                    taskCompleted() // Tarea 5 completada
                     return@addOnSuccessListener
                 }
 
@@ -386,6 +458,10 @@ class MainActivity : AppCompatActivity() {
                         // Skip malformed documents
                     }
                 }
+                taskCompleted() // Tarea 5 completada
+            }
+            .addOnFailureListener {
+                taskCompleted() // Tarea 5 completada
             }
     }
 
@@ -398,20 +474,14 @@ class MainActivity : AppCompatActivity() {
 
         tvName.text = animal.name
 
-        // Construir información adicional (tipo + edad + raza)
         val info = buildString {
-            // Tipo de animal (Perro, Gato, etc.)
             if (animal.type.isNotEmpty()) {
                 append(animal.type)
             }
-
-            // Edad
             if (animal.age.isNotEmpty()) {
                 if (isNotEmpty()) append(" • ")
                 append(animal.age)
             }
-
-            // Raza
             if (animal.breed.isNotEmpty()) {
                 if (isNotEmpty()) append(" • ")
                 append(animal.breed)
@@ -420,7 +490,6 @@ class MainActivity : AppCompatActivity() {
 
         tvInfo.text = if (info.isNotEmpty()) info else "Mascota en adopción"
 
-        // Cargar foto
         Glide.with(this)
             .load(animal.photoUrl)
             .placeholder(R.drawable.placeholder_pet)
@@ -428,7 +497,6 @@ class MainActivity : AppCompatActivity() {
             .centerCrop()
             .into(ivPhoto)
 
-        // Click -> Abrir detalle del animal
         view.setOnClickListener {
             val intent = Intent(this, AnimalDetailActivity::class.java)
             intent.putExtra("animal", animal)

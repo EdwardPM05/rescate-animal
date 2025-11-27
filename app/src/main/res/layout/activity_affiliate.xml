@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/white">
 
-    <!-- Main Content ScrollView -->
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -16,7 +16,6 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-            <!-- Header -->
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -24,7 +23,6 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <!-- Back Button -->
                 <TextView
                         android:id="@+id/btnBack"
                         android:layout_width="wrap_content"
@@ -37,7 +35,6 @@
                         android:textColor="@color/text_primary"
                         android:textSize="24sp" />
 
-                <!-- Title -->
                 <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -49,7 +46,6 @@
 
             </LinearLayout>
 
-            <!-- Description -->
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -58,7 +54,6 @@
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
-            <!-- Business Type Section -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -68,7 +63,6 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-            <!-- Veterinaria -->
             <LinearLayout
                     android:id="@+id/affiliateTypeVet"
                     android:layout_width="match_parent"
@@ -121,7 +115,6 @@
 
             </LinearLayout>
 
-            <!-- Pet Store -->
             <LinearLayout
                     android:id="@+id/affiliateTypeStore"
                     android:layout_width="match_parent"
@@ -174,7 +167,6 @@
 
             </LinearLayout>
 
-            <!-- Shelter -->
             <LinearLayout
                     android:id="@+id/affiliateTypeShelter"
                     android:layout_width="match_parent"
@@ -227,7 +219,6 @@
 
             </LinearLayout>
 
-            <!-- Form Section -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -237,7 +228,6 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-            <!-- Business Name -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -260,7 +250,6 @@
                     android:textColorHint="@color/text_hint"
                     android:textSize="14sp" />
 
-            <!-- Business Type Display -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -283,7 +272,6 @@
                     android:textColor="@color/text_hint"
                     android:textSize="14sp" />
 
-            <!-- Contact Person -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -306,7 +294,6 @@
                     android:textColorHint="@color/text_hint"
                     android:textSize="14sp" />
 
-            <!-- Phone -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -328,10 +315,8 @@
                     android:textColor="@color/text_primary"
                     android:textColorHint="@color/text_hint"
                     android:textSize="14sp"
-                    android:drawableStart="@drawable/ic_phone"
-                    android:drawablePadding="12dp" />
+                    android:textCursorDrawable="@null"/>
 
-            <!-- Address with Location Picker -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -374,7 +359,6 @@
 
             </LinearLayout>
 
-            <!-- Selected Coordinates Display -->
             <TextView
                     android:id="@+id/tvAffiliateSelectedCoordinates"
                     android:layout_width="match_parent"
@@ -385,7 +369,6 @@
                     android:textSize="12sp"
                     android:textAlignment="center" />
 
-            <!-- Business License -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -425,7 +408,6 @@
 
             </LinearLayout>
 
-            <!-- Staff Licenses -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -465,7 +447,6 @@
 
             </LinearLayout>
 
-            <!-- Place Photos -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -517,7 +498,6 @@
 
             </LinearLayout>
 
-            <!-- Description -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -542,7 +522,6 @@
                     android:textColorHint="@color/text_hint"
                     android:textSize="14sp" />
 
-            <!-- Hours -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -565,7 +544,6 @@
                     android:textColorHint="@color/text_hint"
                     android:textSize="14sp" />
 
-            <!-- Website/Social Media -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -588,7 +566,6 @@
                     android:textColorHint="@color/text_hint"
                     android:textSize="14sp" />
 
-            <!-- Submit Button -->
             <Button
                     android:id="@+id/btnSubmitAffiliate"
                     android:layout_width="match_parent"
@@ -601,7 +578,6 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-            <!-- Affiliate Info -->
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

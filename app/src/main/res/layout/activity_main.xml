@@ -5,7 +5,6 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/white">
 
-    <!-- Header FIJO (no se mueve al hacer scroll) -->
     <RelativeLayout
             android:id="@+id/fixedHeader"
             android:layout_width="match_parent"
@@ -13,14 +12,12 @@
             android:background="@drawable/gradient_header"
             android:elevation="4dp">
 
-        <!-- Logo y menú -->
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingHorizontal="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
-
 
             <View
                     android:layout_width="0dp"
@@ -39,7 +36,6 @@
 
         </LinearLayout>
 
-        <!-- Welcome Message -->
         <TextView
                 android:id="@+id/tvWelcomeUser"
                 android:layout_width="wrap_content"
@@ -58,173 +54,181 @@
                 android:shadowRadius="4" />
 
     </RelativeLayout>
+    ---
 
-    <!-- ScrollView del contenido (SOLO esto se mueve) -->
-    <ScrollView
+    <FrameLayout
+            android:id="@+id/loadingPlaceholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/fixedHeader"
             android:layout_above="@+id/bottomNavigation"
-            android:fillViewport="true">
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:visibility="visible">
+
+        <ImageView
+                android:id="@+id/ivAnimalLoading"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:src="@drawable/loading_perro_real"
+                android:scaleType="centerCrop"
+                android:contentDescription="Cargando animales..." />
+
+    </FrameLayout>
+
+
+    <ScrollView
+            android:id="@+id/contentScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/fixedHeader"
+            android:layout_above="@+id/bottomNavigation"
+            android:fillViewport="true"
+            android:visibility="gone"> <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="Nuevas Clínicas y Albergues"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="-0.02"
+                android:lineHeight="28dp" />
+
+        <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                android:scrollbars="none">
+
+            <LinearLayout
+                    android:id="@+id/containerAffiliates"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+            </LinearLayout>
+
+        </HorizontalScrollView>
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
 
-            <!-- SECCIÓN: Nuevas Clínicas y Albergues -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:text="Nuevas Clínicas y Albergues"
-                    android:textColor="@color/text_primary"
+                    android:text="Urgente: "
+                    android:textColor="#D32F2F"
                     android:textSize="18sp"
                     android:fontFamily="sans-serif-black"
                     android:letterSpacing="-0.02"
                     android:lineHeight="28dp" />
 
-            <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="28dp"
-                    android:scrollbars="none">
-
-                <LinearLayout
-                        android:id="@+id/containerAffiliates"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                    <!-- Las tarjetas se agregarán dinámicamente -->
-
-                </LinearLayout>
-
-            </HorizontalScrollView>
-
-            <!-- SECCIÓN: Urgente - Animales Perdidos -->
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Urgente: "
-                        android:textColor="#D32F2F"
-                        android:textSize="18sp"
-                        android:fontFamily="sans-serif-black"
-                        android:letterSpacing="-0.02"
-                        android:lineHeight="28dp" />
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Animales Perdidos"
-                        android:textColor="@color/text_primary"
-                        android:textSize="22sp"
-                        android:fontFamily="sans-serif-black"
-                        android:letterSpacing="-0.02"
-                        android:lineHeight="28dp" />
-
-            </LinearLayout>
-
-            <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="28dp"
-                    android:scrollbars="none">
-
-                <LinearLayout
-                        android:id="@+id/containerLostAnimals"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                    <!-- Las tarjetas se agregarán dinámicamente -->
-
-                </LinearLayout>
-
-            </HorizontalScrollView>
-
-            <!-- SECCIÓN: Recién en Adopción -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:text="Recién en Adopción"
+                    android:text="Animales Perdidos"
                     android:textColor="@color/text_primary"
-                    android:textSize="18sp"
+                    android:textSize="22sp"
                     android:fontFamily="sans-serif-black"
                     android:letterSpacing="-0.02"
                     android:lineHeight="28dp" />
-
-            <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="28dp"
-                    android:scrollbars="none">
-
-                <LinearLayout
-                        android:id="@+id/containerAdoptionAnimals"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                    <!-- Las tarjetas se agregarán dinámicamente -->
-
-                </LinearLayout>
-
-            </HorizontalScrollView>
-
-            <!-- SECCIÓN: Afilia tu Local / Registra Mascotas -->
-            <TextView
-                    android:id="@+id/sectionAffiliateTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:text="Afilia tu Local"
-                    android:textColor="@color/text_primary"
-                    android:textSize="18sp"
-                    android:fontFamily="sans-serif-black"
-                    android:letterSpacing="-0.02"
-                    android:lineHeight="28dp"
-                    android:visibility="gone" />
-
-            <!-- BANNER DINÁMICO -->
-            <androidx.cardview.widget.CardView
-                    android:id="@+id/bannerAffiliateYourBusiness"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginBottom="16dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:visibility="gone">
-
-                <ImageView
-                        android:id="@+id/bannerImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/banner_affiliate"
-                        android:scaleType="fitXY"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="Banner dinámico" />
-
-            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
-    </ScrollView>
+        <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                android:scrollbars="none">
 
-    <!-- Bottom Navigation (FIJA) -->
+            <LinearLayout
+                    android:id="@+id/containerLostAnimals"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="Recién en Adopción"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="-0.02"
+                android:lineHeight="28dp" />
+
+        <HorizontalScrollView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                android:scrollbars="none">
+
+            <LinearLayout
+                    android:id="@+id/containerAdoptionAnimals"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <TextView
+                android:id="@+id/sectionAffiliateTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="Afilia tu Local"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="-0.02"
+                android:lineHeight="28dp"
+                android:visibility="gone" />
+
+        <androidx.cardview.widget.CardView
+                android:id="@+id/bannerAffiliateYourBusiness"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:visibility="gone">
+
+            <ImageView
+                    android:id="@+id/bannerImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/banner_affiliate"
+                    android:scaleType="fitXY"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="Banner dinámico" />
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    </ScrollView>
+    ---
+
     <include
+            android:id="@+id/bottomNavigation"
             layout="@layout/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="60dp"

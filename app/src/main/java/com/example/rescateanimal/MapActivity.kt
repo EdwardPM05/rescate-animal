@@ -117,8 +117,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setupUI() {
-        val btnBack = findViewById<ImageView>(R.id.btnBack)
-        val btnMyLocation = findViewById<ImageView>(R.id.btnMyLocation)
+        // Asegúrate que R.id.btnBack y R.id.btnMyLocation son ImageView o TextView, según tu XML
+        val btnBack = findViewById<View>(R.id.btnBack)
+        val btnMyLocation = findViewById<View>(R.id.btnMyLocation)
 
         btnBack.setOnClickListener {
             finish()
@@ -519,21 +520,32 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         tvInfo.text = message
 
-        loadAffiliatePhotos(affiliateInfo.documentId) { photoUrls ->
-            if (photoUrls.isNotEmpty()) {
-                photoContainer.visibility = View.VISIBLE
-                val adapter = PhotoPagerAdapter(photoUrls)
-                viewPager.adapter = adapter
+        // Si la URL principal está disponible, úsala para la primera foto.
+        // Si no, se recurre al método lento loadAffiliatePhotos (listAll).
+        if (affiliateInfo.mainPhotoUrl.isNotEmpty()) {
+            // Mostrar solo la URL principal inmediatamente (rápido)
+            val photoUrls = listOf(affiliateInfo.mainPhotoUrl)
+            photoContainer.visibility = View.VISIBLE
+            val adapter = PhotoPagerAdapter(photoUrls)
+            viewPager.adapter = adapter
+            photoIndicator.text = "1 / 1" // Solo una foto
+        } else {
+            // Recurrir al método lento para compatibilidad con documentos antiguos (que tienes ahora)
+            loadAffiliatePhotos(affiliateInfo.documentId) { photoUrls ->
+                if (photoUrls.isNotEmpty()) {
+                    photoContainer.visibility = View.VISIBLE
+                    val adapter = PhotoPagerAdapter(photoUrls)
+                    viewPager.adapter = adapter
+                    photoIndicator.text = "1 / ${photoUrls.size}"
 
-                photoIndicator.text = "1 / ${photoUrls.size}"
-
-                viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                    override fun onPageSelected(position: Int) {
-                        photoIndicator.text = "${position + 1} / ${photoUrls.size}"
-                    }
-                })
-            } else {
-                photoContainer.visibility = View.GONE
+                    viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                        override fun onPageSelected(position: Int) {
+                            photoIndicator.text = "${position + 1} / ${photoUrls.size}"
+                        }
+                    })
+                } else {
+                    photoContainer.visibility = View.GONE
+                }
             }
         }
 
@@ -558,7 +570,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             callback(photoUrls)
             return
         }
-
+        // Este método aún usa listAll(), lo cual es aceptable ya que los reportes
+        // rara vez tienen más de 3 fotos.
         val storage = FirebaseStorage.getInstance()
         val reportsRef = storage.reference.child("reports/$documentId")
 
@@ -718,7 +731,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val hours: String,
         val socialMedia: String,
         val verified: Boolean,
-        val documentId: String
+        val documentId: String,
+        val mainPhotoUrl: String // CLAVE: Añadida la URL
     )
 
     private fun loadReportsOnMap() {
@@ -820,6 +834,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         val hours = affiliateData["hours"] as? String ?: ""
                         val socialMedia = affiliateData["socialMedia"] as? String ?: ""
                         val verified = affiliateData["verified"] as? Boolean ?: false
+                        val mainPhotoUrl = affiliateData["mainPhotoUrl"] as? String ?: "" // ⚠️ LEYENDO EL CAMPO CLAVE
 
                         val markerTitle = getAffiliateTypeEmoji(type) + " " + businessName
                         val markerSnippet = getAffiliateTypeText(type) + "\n📞 ${phone}\n💬 Toca para más detalles"
@@ -834,7 +849,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                             hours = hours,
                             socialMedia = socialMedia,
                             verified = verified,
-                            documentId = document.id
+                            documentId = document.id,
+                            mainPhotoUrl = mainPhotoUrl // ⚠️ GUARDANDO LA URL
                         )
 
                         val marker = map.addMarker(
