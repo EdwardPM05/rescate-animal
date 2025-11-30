@@ -29,13 +29,15 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var storage: FirebaseStorage
 
     private lateinit var ivProfilePhoto: ImageView
-    private lateinit var btnChangePhoto: TextView
+    private lateinit var btnChangePhoto: ImageView
     private lateinit var etFullName: EditText
     private lateinit var etDni: EditText
     private lateinit var etPhone: EditText
     private lateinit var etBirthDate: EditText
     private lateinit var etAddress: EditText
     private lateinit var rgHouseType: RadioGroup
+    private lateinit var rbHouseVisible: RadioButton
+    private lateinit var rbApartmentVisible: RadioButton
     private lateinit var cbHasYard: CheckBox
     private lateinit var etHouseholdMembers: EditText
     private lateinit var cbHasPets: CheckBox
@@ -97,7 +99,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         initializeViews()
         setupListeners()
-        loadAvatarsFromFirebase() // Cargar avatares primero
+        loadAvatarsFromFirebase()
         loadExistingData()
     }
 
@@ -110,6 +112,8 @@ class EditProfileActivity : AppCompatActivity() {
         etBirthDate = findViewById(R.id.etBirthDate)
         etAddress = findViewById(R.id.etAddress)
         rgHouseType = findViewById(R.id.rgHouseType)
+        rbHouseVisible = findViewById(R.id.rbHouseVisible)
+        rbApartmentVisible = findViewById(R.id.rbApartmentVisible)
         cbHasYard = findViewById(R.id.cbHasYard)
         etHouseholdMembers = findViewById(R.id.etHouseholdMembers)
         cbHasPets = findViewById(R.id.cbHasPets)
@@ -120,7 +124,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        findViewById<TextView>(R.id.btnBack).setOnClickListener {
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             finish()
         }
 
@@ -130,6 +134,27 @@ class EditProfileActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnSave).setOnClickListener {
             saveProfileData()
+        }
+
+        // Manejo exclusivo de selección Casa/Departamento
+        findViewById<LinearLayout>(R.id.llHouseOption).setOnClickListener {
+            selectHouseType(true)
+        }
+
+        findViewById<LinearLayout>(R.id.llApartmentOption).setOnClickListener {
+            selectHouseType(false)
+        }
+    }
+
+    private fun selectHouseType(isHouse: Boolean) {
+        if (isHouse) {
+            rbHouseVisible.isChecked = true
+            rbApartmentVisible.isChecked = false
+            findViewById<RadioButton>(R.id.rbHouse).isChecked = true
+        } else {
+            rbHouseVisible.isChecked = false
+            rbApartmentVisible.isChecked = true
+            findViewById<RadioButton>(R.id.rbApartment).isChecked = true
         }
     }
 
@@ -166,23 +191,36 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun showPhotoOptionsDialog() {
-        val options = arrayOf(
-            "Elegir avatar del sistema",
-            "Tomar foto",
-            "Elegir de galería"
-        )
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_photo_options, null)
 
-        AlertDialog.Builder(this)
-            .setTitle("Foto de perfil")
-            .setItems(options) { _, which ->
-                when (which) {
-                    0 -> showAvatarSelectionDialog()
-                    1 -> checkCameraPermissionAndTakePhoto()
-                    2 -> checkStoragePermissionAndPickImage()
-                }
-            }
-            .setNegativeButton("Cancelar", null)
-            .show()
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        // Avatar del sistema
+        dialogView.findViewById<LinearLayout>(R.id.optionAvatar).setOnClickListener {
+            dialog.dismiss()
+            showAvatarSelectionDialog()
+        }
+
+        // Tomar foto
+        dialogView.findViewById<LinearLayout>(R.id.optionCamera).setOnClickListener {
+            dialog.dismiss()
+            checkCameraPermissionAndTakePhoto()
+        }
+
+        // Galería
+        dialogView.findViewById<LinearLayout>(R.id.optionGallery).setOnClickListener {
+            dialog.dismiss()
+            checkStoragePermissionAndPickImage()
+        }
+
+        // Cancelar
+        dialogView.findViewById<Button>(R.id.btnCancel).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun showAvatarSelectionDialog() {
@@ -218,7 +256,7 @@ class EditProfileActivity : AppCompatActivity() {
                 Glide.with(context)
                     .load(avatarUrl)
                     .circleCrop()
-                    .placeholder(android.R.drawable.ic_menu_gallery)
+                    .placeholder(R.drawable.ic_image)
                     .into(this)
 
                 setOnClickListener {
@@ -366,8 +404,8 @@ class EditProfileActivity : AppCompatActivity() {
 
         val houseType = data["houseType"] as? String
         when (houseType) {
-            "Casa" -> findViewById<RadioButton>(R.id.rbHouse).isChecked = true
-            "Departamento" -> findViewById<RadioButton>(R.id.rbApartment).isChecked = true
+            "Casa" -> selectHouseType(true)
+            "Departamento" -> selectHouseType(false)
         }
 
         cbHasYard.isChecked = data["hasYard"] as? Boolean ?: false
@@ -388,7 +426,7 @@ class EditProfileActivity : AppCompatActivity() {
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .circleCrop()
-                .placeholder(android.R.drawable.ic_menu_gallery)
+                .placeholder(R.drawable.ic_image)
                 .into(ivProfilePhoto)
         }
     }

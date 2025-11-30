@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#F5F5F5">
@@ -16,246 +17,158 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-            <!-- Header -->
-            <LinearLayout
+            <!-- Search and Filters Card -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/primary_orange"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:elevation="4dp">
+                    android:layout_margin="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp">
 
                 <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-                    <TextView
-                            android:layout_width="wrap_content"
+                    <!-- Search Bar with Filter Button -->
+                    <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Buscar para Adoptar"
-                            android:textColor="@android:color/white"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="16dp">
 
+                        <!-- Search Input -->
+                        <EditText
+                                android:id="@+id/etSearch"
+                                android:layout_width="0dp"
+                                android:layout_height="56dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/search_background"
+                                android:hint="Buscar mascota..."
+                                android:inputType="text"
+                                android:paddingStart="16dp"
+                                android:paddingEnd="16dp"
+                                android:drawableStart="@drawable/ic_search"
+                                android:drawablePadding="12dp"
+                                android:textSize="15sp"
+                                android:textColor="@color/text_primary"
+                                android:textColorHint="#999999"
+                                android:layout_marginEnd="12dp" />
+
+                        <!-- Filter Button -->
+                        <FrameLayout
+                                android:id="@+id/btnFilter"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:background="@drawable/button_filter"
+                                android:clickable="true"
+                                android:focusable="true">
+
+                            <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_filter"
+                                    android:tint="@color/primary_orange" />
+
+                        </FrameLayout>
+
+                    </LinearLayout>
+
+                    <!-- Result Count -->
                     <TextView
                             android:id="@+id/tvResultCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Encontramos mascotas para ti"
-                            android:textColor="#FFFFFF"
-                            android:alpha="0.9"
-                            android:textSize="13sp" />
-
-                </LinearLayout>
-
-                <TextView
-                        android:id="@+id/btnFilter"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/button_circular_white"
-                        android:gravity="center"
-                        android:text="🔧"
-                        android:textSize="20sp"
-                        android:clickable="true"
-                        android:focusable="true" />
-
-            </LinearLayout>
-
-            <!-- Search Bar -->
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/white"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:elevation="2dp">
-
-                <EditText
-                        android:id="@+id/etSearch"
-                        android:layout_width="match_parent"
-                        android:layout_height="52dp"
-                        android:background="@drawable/search_background"
-                        android:hint="Buscar por nombre, raza o tipo..."
-                        android:inputType="text"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:drawableStart="@drawable/ic_search"
-                        android:drawablePadding="12dp"
-                        android:textSize="15sp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint" />
-
-            </LinearLayout>
-
-            <!-- Distance Filter -->
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/white"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="16dp"
-                    android:paddingBottom="16dp"
-                    android:elevation="2dp">
-
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Radio de búsqueda"
-                            android:textColor="@color/text_primary"
+                            android:text="24 mascotas disponibles"
+                            android:textColor="#666666"
                             android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:layout_marginBottom="20dp" />
 
-                    <View
-                            android:layout_width="0dp"
-                            android:layout_height="1dp"
-                            android:layout_weight="1" />
-
-                    <TextView
-                            android:id="@+id/tvDistanceValue"
-                            android:layout_width="wrap_content"
+                    <!-- Distance Filter -->
+                    <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="10 km"
-                            android:textColor="@color/primary_orange"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:background="@drawable/distance_badge"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="4dp" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-                </LinearLayout>
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Radio de búsqueda"
+                                android:textColor="#212121"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
-                <SeekBar
-                        android:id="@+id/seekBarDistance"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:max="50"
-                        android:progress="10"
-                        android:progressTint="@color/primary_orange"
-                        android:thumbTint="@color/primary_orange" />
+                        <View
+                                android:layout_width="0dp"
+                                android:layout_height="1dp"
+                                android:layout_weight="1" />
 
-            </LinearLayout>
+                        <TextView
+                                android:id="@+id/tvDistanceValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="10 km"
+                                android:textColor="@color/primary_orange"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/distance_badge"
+                                android:paddingHorizontal="16dp"
+                                android:paddingVertical="6dp" />
 
-            <!-- Category Tabs -->
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/white"
-                    android:orientation="horizontal"
-                    android:paddingVertical="12dp"
-                    android:paddingHorizontal="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:elevation="1dp">
+                    </LinearLayout>
 
-                <LinearLayout
-                        android:id="@+id/tabPerros"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/tab_selected"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp"
-                        android:layout_marginEnd="4dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                    <TextView
-                            android:layout_width="wrap_content"
+                    <SeekBar
+                            android:id="@+id/seekBarDistance"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="🐕"
-                            android:textSize="28sp" />
+                            android:layout_marginTop="12dp"
+                            android:max="50"
+                            android:progress="10"
+                            android:progressTint="@color/primary_orange"
+                            android:thumbTint="@color/primary_orange" />
 
-                    <TextView
-                            android:id="@+id/tvTabPerros"
-                            android:layout_width="wrap_content"
+                    <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Perros"
-                            android:textColor="@color/primary_orange"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1 km"
+                                android:textColor="#999999"
+                                android:textSize="12sp" />
+
+                        <View
+                                android:layout_width="0dp"
+                                android:layout_height="1dp"
+                                android:layout_weight="1" />
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="50 km"
+                                android:textColor="#999999"
+                                android:textSize="12sp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <LinearLayout
-                        android:id="@+id/tabGatos"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/tab_unselected"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp"
-                        android:layout_marginHorizontal="4dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🐱"
-                            android:textSize="28sp" />
-
-                    <TextView
-                            android:id="@+id/tvTabGatos"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Gatos"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="13sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                        android:id="@+id/tabOtros"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/tab_unselected"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp"
-                        android:layout_marginStart="4dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🐹"
-                            android:textSize="28sp" />
-
-                    <TextView
-                            android:id="@+id/tvTabOtros"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Otros"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="13sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Animals Grid -->
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvAnimals"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="4dp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingBottom="16dp"
                     android:clipToPadding="false" />
 
             <!-- Empty State -->
@@ -272,13 +185,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="🐾"
-                        android:textSize="64sp"
-                        android:alpha="0.5" />
+                        android:textSize="72sp"
+                        android:alpha="0.3" />
 
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="24dp"
                         android:text="No hay mascotas disponibles"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
@@ -300,9 +213,10 @@
 
     </ScrollView>
 
-    <!-- Bottom Navigation (REUTILIZABLE) -->
+    <!-- Bottom Navigation -->
     <include
             layout="@layout/bottom_navigation"
+            android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_alignParentBottom="true" />

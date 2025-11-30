@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/background_light"
@@ -15,21 +16,19 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="20dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-            <TextView
+            <ImageView
                     android:id="@+id/btnBack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_marginEnd="16dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:padding="8dp"
-                    android:text="←"
-                    android:textColor="@color/text_primary"
-                    android:textSize="24sp" />
+                    android:padding="4dp"
+                    android:src="@drawable/ic_arrow_back" />
 
             <TextView
                     android:layout_width="0dp"
@@ -37,414 +36,654 @@
                     android:layout_weight="1"
                     android:text="Editar Perfil"
                     android:textColor="@color/text_primary"
-                    android:textSize="20sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
         </LinearLayout>
 
-        <!-- Profile Photo Section -->
-        <LinearLayout
+        <!-- Profile Photo Card -->
+        <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/card_background"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="24dp">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
-            <!-- Profile Image Preview -->
-            <RelativeLayout
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginBottom="16dp">
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="24dp">
 
-                <ImageView
-                        android:id="@+id/ivProfilePhoto"
+                <!-- Profile Image Preview -->
+                <RelativeLayout
                         android:layout_width="120dp"
                         android:layout_height="120dp"
-                        android:background="@drawable/profile_circle_background"
-                        android:scaleType="centerCrop"
-                        android:src="@android:drawable/ic_menu_gallery" />
+                        android:layout_marginBottom="16dp">
 
-                <!-- Camera Badge -->
+                    <ImageView
+                            android:id="@+id/ivProfilePhoto"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:background="@drawable/profile_circle_background"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_image"
+                            android:padding="6dp"/>
+
+
+                    <!-- Camera Badge -->
+                    <ImageView
+                            android:id="@+id/btnChangePhoto"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentBottom="true"
+                            android:background="@drawable/button_primary"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_camera"/>
+
+                </RelativeLayout>
+
                 <TextView
-                        android:id="@+id/btnChangePhoto"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:background="@drawable/button_primary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Toca el ícono para cambiar tu foto"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Información Personal Card -->
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                <!-- Header con icono -->
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                    <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_info"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Información Personal"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Nombre Completo -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="Nombre Completo *"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/edittext_background"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_edit"/>
+
+                    <EditText
+                            android:id="@+id/etFullName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:hint="Juan Pérez García"
+                            android:inputType="textPersonName"
+                            android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <!-- DNI -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="DNI/Cédula *"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/edittext_background"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_cedula"/>
+
+                    <EditText
+                            android:id="@+id/etDni"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:hint="12345678"
+                            android:inputType="number"
+                            android:maxLength="8"
+                            android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <!-- Teléfono -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="Teléfono *"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/edittext_background"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_phone"/>
+
+                    <EditText
+                            android:id="@+id/etPhone"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:hint="+51 999 999 999"
+                            android:inputType="phone"
+                            android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <!-- Fecha de Nacimiento -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="Fecha de Nacimiento *"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_background"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_calendar"/>
+
+                    <EditText
+                            android:id="@+id/etBirthDate"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:hint="DD/MM/AAAA"
+                            android:inputType="date"
+                            android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Información de Vivienda Card -->
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                <!-- Header con icono -->
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                    <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_location_pin"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Información de Vivienda"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Dirección -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="Dirección Completa *"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                <EditText
+                        android:id="@+id/etAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/edittext_background"
+                        android:gravity="top"
+                        android:hint="Av. Principal 123, San Isidro, Lima"
+                        android:inputType="textMultiLine"
+                        android:minHeight="60dp"
+                        android:padding="12dp"
+                        android:textSize="14sp" />
+
+                <!-- Tipo de Vivienda -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="Tipo de Vivienda *"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                <!-- RadioGroup invisible solo para mantener la referencia -->
+                <RadioGroup
+                        android:id="@+id/rgHouseType"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:visibility="gone"
+                        android:orientation="vertical">
+
+                    <RadioButton
+                            android:id="@+id/rbHouse"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    <RadioButton
+                            android:id="@+id/rbApartment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                </RadioGroup>
+
+                <!-- Casa Option -->
+                <LinearLayout
+                        android:id="@+id/llHouseOption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/edittext_background"
                         android:clickable="true"
                         android:focusable="true"
-                        android:gravity="center"
-                        android:text="📷"
-                        android:textSize="18sp" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
 
-            </RelativeLayout>
+                    <RadioButton
+                            android:id="@+id/rbHouseVisible"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="12dp"
+                            android:clickable="false"
+                            android:focusable="false" />
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Toca el ícono para cambiar tu foto"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_house"/>
 
-        </LinearLayout>
+                    <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Casa"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
 
-        <!-- Información Personal -->
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="📋 Información Personal"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                </LinearLayout>
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/card_background"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-            <!-- Nombre Completo -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Nombre Completo *"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <EditText
-                    android:id="@+id/etFullName"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="Nombre y apellidos completos"
-                    android:inputType="textPersonName"
-                    android:padding="12dp"
-                    android:textSize="14sp" />
-
-            <!-- DNI -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="DNI/Cédula *"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <EditText
-                    android:id="@+id/etDni"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="12345678"
-                    android:inputType="number"
-                    android:maxLength="8"
-                    android:padding="12dp"
-                    android:textSize="14sp" />
-
-            <!-- Teléfono -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Teléfono *"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <EditText
-                    android:id="@+id/etPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="+51 999 999 999"
-                    android:inputType="phone"
-                    android:padding="12dp"
-                    android:textSize="14sp" />
-
-            <!-- Fecha de Nacimiento -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Fecha de Nacimiento *"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <EditText
-                    android:id="@+id/etBirthDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="DD/MM/AAAA"
-                    android:inputType="date"
-                    android:padding="12dp"
-                    android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <!-- Información de Vivienda -->
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="🏠 Información de Vivienda"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/card_background"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-            <!-- Dirección -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Dirección Completa *"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <EditText
-                    android:id="@+id/etAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:gravity="top"
-                    android:hint="Calle, número, distrito, ciudad"
-                    android:inputType="textMultiLine"
-                    android:maxLines="3"
-                    android:padding="12dp"
-                    android:textSize="14sp" />
-
-            <!-- Tipo de Vivienda -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Tipo de Vivienda *"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <RadioGroup
-                    android:id="@+id/rgHouseType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal">
-
-                <RadioButton
-                        android:id="@+id/rbHouse"
-                        android:layout_width="wrap_content"
+                <!-- Apartment Option -->
+                <LinearLayout
+                        android:id="@+id/llApartmentOption"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Casa"
-                        android:textSize="14sp" />
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/edittext_background"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
 
-                <RadioButton
-                        android:id="@+id/rbApartment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:text="Departamento"
-                        android:textSize="14sp" />
+                    <RadioButton
+                            android:id="@+id/rbApartmentVisible"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="12dp"
+                            android:clickable="false"
+                            android:focusable="false" />
 
-            </RadioGroup>
+                    <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_departament"/>
 
-            <!-- ¿Tiene patio? -->
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal">
+                    <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Departamento"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
 
+                </LinearLayout>
+
+                <!-- Checkbox con icono -->
                 <CheckBox
                         android:id="@+id/cbHasYard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:padding="8dp"
+                        android:text="  ¿Tiene patio o jardín?"
+                        android:textSize="14sp" />
+
+                <!-- Número de personas -->
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="¿Tiene patio o jardín?"
-                        android:textSize="14sp" />
+                        android:layout_marginBottom="8dp"
+                        android:text="Personas en el hogar"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_background"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_person"/>
+
+                    <EditText
+                            android:id="@+id/etHouseholdMembers"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:hint="2"
+                            android:inputType="number"
+                            android:textSize="14sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Número de personas -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Número de personas en el hogar"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
 
-            <EditText
-                    android:id="@+id/etHouseholdMembers"
-                    android:layout_width="100dp"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="2"
-                    android:inputType="number"
-                    android:padding="12dp"
-                    android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <!-- Experiencia con Mascotas -->
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="🐾 Experiencia con Mascotas"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        <LinearLayout
+        <!-- Experiencia con Mascotas Card -->
+        <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/card_background"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
-            <!-- ¿Ha tenido mascotas? -->
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
+                <!-- Header con icono -->
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                    <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_adoptions"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Experiencia con Mascotas"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Checkboxes -->
                 <CheckBox
                         android:id="@+id/cbHasPets"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="¿Ha tenido mascotas antes?"
+                        android:layout_marginBottom="12dp"
+                        android:padding="8dp"
+                        android:text="  ¿Ha tenido mascotas antes?"
                         android:textSize="14sp" />
-
-            </LinearLayout>
-
-            <!-- ¿Tiene mascotas actualmente? -->
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal">
 
                 <CheckBox
                         android:id="@+id/cbCurrentPets"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:padding="8dp"
+                        android:text="  ¿Tiene mascotas actualmente?"
+                        android:textSize="14sp" />
+
+                <!-- Experiencia -->
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="¿Tiene mascotas actualmente?"
+                        android:layout_marginBottom="8dp"
+                        android:text="Cuéntanos sobre tu experiencia"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                <EditText
+                        android:id="@+id/etPetExperience"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_background"
+                        android:gravity="top"
+                        android:hint="He cuidado perros durante 5 años..."
+                        android:inputType="textMultiLine"
+                        android:minHeight="80dp"
+                        android:padding="12dp"
                         android:textSize="14sp" />
 
             </LinearLayout>
 
-            <!-- Experiencia -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Cuéntanos sobre tu experiencia"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
 
-            <EditText
-                    android:id="@+id/etPetExperience"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:gravity="top"
-                    android:hint="Describe tu experiencia con mascotas..."
-                    android:inputType="textMultiLine"
-                    android:maxLines="4"
-                    android:padding="12dp"
-                    android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <!-- Referencias -->
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="📞 Referencias"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        <LinearLayout
+        <!-- Referencias Card -->
+        <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:background="@drawable/card_background"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
-            <!-- Referencia Personal -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Referencia Personal (Nombre y Teléfono)"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <EditText
-                    android:id="@+id/etPersonalReference"
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="Juan Pérez - 999888777"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textSize="14sp" />
-
-            <!-- Veterinario de Referencia -->
-            <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Veterinario de Referencia (Opcional)"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-            <EditText
-                    android:id="@+id/etVetReference"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="Clínica Veterinaria XYZ - 01234567"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textSize="14sp" />
+                <!-- Header con icono -->
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-        </LinearLayout>
+                    <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_phone"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Referencias"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Referencia Personal -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="Referencia Personal *"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                <EditText
+                        android:id="@+id/etPersonalReference"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/edittext_background"
+                        android:hint="Juan Pérez - 999 888 777"
+                        android:inputType="text"
+                        android:padding="12dp"
+                        android:textSize="14sp" />
+
+                <!-- Veterinario de Referencia -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="Veterinario (Opcional)"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_background"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_vet"/>
+
+                    <EditText
+                            android:id="@+id/etVetReference"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:hint="Veterinaria XYZ - 012 345 678"
+                            android:inputType="text"
+                            android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <!-- Save Button -->
         <Button
@@ -453,9 +692,14 @@
                 android:layout_height="56dp"
                 android:layout_marginBottom="32dp"
                 android:background="@drawable/button_primary"
+                android:drawableStart="@drawable/ic_check"
+                android:drawablePadding="12dp"
+                android:drawableTint="@android:color/white"
                 android:elevation="4dp"
+                android:gravity="center"
+                android:paddingHorizontal="24dp"
                 android:text="GUARDAR INFORMACIÓN"
-                android:textColor="@color/text_white"
+                android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

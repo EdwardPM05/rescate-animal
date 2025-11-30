@@ -1,29 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:background="@android:color/white"
+            android:fillViewport="true">
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Selecciona tu avatar favorito"
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp" />
-
-        <GridLayout
-                android:id="@+id/avatarGrid"
+        <!-- Header decorativo -->
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="3"
-                android:alignmentMode="alignBounds"
-                android:rowOrderPreserved="false" />
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/edittext_background"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+            <!-- Icono principal -->
+            <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/ic_image"
+                    android:tint="@color/primary" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="Elige tu Avatar"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Selecciona el avatar que mejor te represente"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <!-- Separador decorativo -->
+        <View
+                android:layout_width="60dp"
+                android:layout_height="3dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:background="@color/primary" />
+
+        <!-- Grid de avatares -->
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+
+            <GridLayout
+                    android:id="@+id/avatarGrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:alignmentMode="alignBounds"
+                    android:columnCount="3"
+                    android:padding="12dp"
+                    android:rowOrderPreserved="false"
+                    android:useDefaultMargins="false" />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Indicador de carga (opcional, puedes ocultarlo con código) -->
+        <LinearLayout
+                android:id="@+id/loadingIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone">
+
+            <ProgressBar
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginBottom="8dp"
+                    android:indeterminateTint="@color/primary" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cargando avatares..."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+        </LinearLayout>
+
+
 
     </LinearLayout>
 
