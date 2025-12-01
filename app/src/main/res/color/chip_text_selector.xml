@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Guardar en: res/color/chip_text_selector.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Cuando el chip está seleccionado - Texto naranja -->
+    <item android:color="@color/primary_orange" android:state_checked="true" />
+    <!-- Cuando el chip NO está seleccionado - Texto gris -->
+    <item android:color="@color/text_secondary" />
+</selector>

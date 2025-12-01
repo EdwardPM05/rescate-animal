@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Guardar en: res/color/chip_stroke_selector.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Cuando el chip está seleccionado - Borde naranja -->
+    <item android:color="@color/primary_orange" android:state_checked="true" />
+    <!-- Cuando el chip NO está seleccionado - Borde gris claro -->
+    <item android:color="#CCCCCC" />
+</selector>

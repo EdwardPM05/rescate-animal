@@ -4,11 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
@@ -20,9 +23,19 @@ class AdminReportsActivity : AppCompatActivity() {
     private lateinit var rvReports: RecyclerView
     private lateinit var emptyState: LinearLayout
     private lateinit var loadingState: LinearLayout
+    private lateinit var tvReportCount: TextView
+    private lateinit var chipGroupStatus: ChipGroup
+    private lateinit var chipGroupPageSize: ChipGroup
     private lateinit var adapter: AdminReportsAdapter
 
-    private val reportsList = mutableListOf<Report>()
+    // Listas de reportes
+    private val allReports = mutableListOf<Report>() // Todos los reportes sin filtrar
+    private val filteredReports = mutableListOf<Report>() // Reportes filtrados por estado
+    private val displayedReports = mutableListOf<Report>() // Reportes mostrados con paginación
+
+    // Variables de filtrado y paginación
+    private var currentFilter = "all" // all, pending, in_progress, resolved
+    private var pageSize = 10 // 10, 20, 50
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +43,7 @@ class AdminReportsActivity : AppCompatActivity() {
 
         setupViews()
         setupNavigation()
+        setupFilters()
         loadAllReports()
     }
 
@@ -37,11 +51,14 @@ class AdminReportsActivity : AppCompatActivity() {
         rvReports = findViewById(R.id.rvAdminReports)
         emptyState = findViewById(R.id.emptyState)
         loadingState = findViewById(R.id.loadingState)
+        tvReportCount = findViewById(R.id.tvReportCount)
+        chipGroupStatus = findViewById(R.id.chipGroupStatus)
+        chipGroupPageSize = findViewById(R.id.chipGroupPageSize)
 
         // Setup RecyclerView
         rvReports.layoutManager = LinearLayoutManager(this)
         adapter = AdminReportsAdapter(
-            reportsList,
+            displayedReports,
             onDeleteClick = { report -> showDeleteConfirmation(report) },
             onItemClick = { report -> showReportDetails(report) },
             onStatusClick = { report -> showStatusChangeDialog(report) }
@@ -54,6 +71,45 @@ class AdminReportsActivity : AppCompatActivity() {
         navigationHelper.setupBottomNavigation()
     }
 
+    private fun setupFilters() {
+        // Filtros por estado
+        findViewById<Chip>(R.id.chipAll).setOnClickListener {
+            currentFilter = "all"
+            applyFilters()
+        }
+
+        findViewById<Chip>(R.id.chipPending).setOnClickListener {
+            currentFilter = "pending"
+            applyFilters()
+        }
+
+        findViewById<Chip>(R.id.chipInProgress).setOnClickListener {
+            currentFilter = "in_progress"
+            applyFilters()
+        }
+
+        findViewById<Chip>(R.id.chipResolved).setOnClickListener {
+            currentFilter = "resolved"
+            applyFilters()
+        }
+
+        // Selector de tamaño de página
+        findViewById<Chip>(R.id.chip10).setOnClickListener {
+            pageSize = 10
+            applyFilters()
+        }
+
+        findViewById<Chip>(R.id.chip20).setOnClickListener {
+            pageSize = 20
+            applyFilters()
+        }
+
+        findViewById<Chip>(R.id.chip50).setOnClickListener {
+            pageSize = 50
+            applyFilters()
+        }
+    }
+
     private fun loadAllReports() {
         showLoading()
 
@@ -61,7 +117,7 @@ class AdminReportsActivity : AppCompatActivity() {
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { documents ->
-                reportsList.clear()
+                allReports.clear()
 
                 for (document in documents) {
                     try {
@@ -79,20 +135,63 @@ class AdminReportsActivity : AppCompatActivity() {
                             createdAt = document.getLong("createdAt") ?: System.currentTimeMillis(),
                             updatedAt = document.getLong("updatedAt") ?: System.currentTimeMillis()
                         )
-                        reportsList.add(report)
+                        allReports.add(report)
                     } catch (e: Exception) {
                         android.util.Log.e("AdminReportsActivity", "Error parsing report: ${e.message}")
                     }
                 }
 
-                adapter.notifyDataSetChanged()
-                showContent()
+                applyFilters()
             }
             .addOnFailureListener { e ->
                 android.util.Log.e("AdminReportsActivity", "Error loading reports: ${e.message}")
                 Toast.makeText(this, "Error al cargar reportes: ${e.message}", Toast.LENGTH_LONG).show()
                 showEmpty()
             }
+    }
+
+    /**
+     * Aplica los filtros de estado y paginación
+     */
+    private fun applyFilters() {
+        // 1. Filtrar por estado
+        filteredReports.clear()
+        filteredReports.addAll(
+            when (currentFilter) {
+                "all" -> allReports
+                "pending" -> allReports.filter { it.status == "pending" }
+                "in_progress" -> allReports.filter { it.status == "in_progress" }
+                "resolved" -> allReports.filter { it.status == "resolved" }
+                else -> allReports
+            }
+        )
+
+        // 2. Aplicar paginación (tomar solo los primeros pageSize elementos)
+        displayedReports.clear()
+        displayedReports.addAll(filteredReports.take(pageSize))
+
+        // 3. Actualizar contador
+        updateReportCount()
+
+        // 4. Actualizar vista
+        adapter.notifyDataSetChanged()
+        showContent()
+    }
+
+    /**
+     * Actualiza el contador de reportes
+     */
+    private fun updateReportCount() {
+        val totalFiltered = filteredReports.size
+        val displayed = displayedReports.size
+
+        val countText = if (totalFiltered == displayed) {
+            "$totalFiltered ${if (totalFiltered == 1) "reporte encontrado" else "reportes encontrados"}"
+        } else {
+            "Mostrando $displayed de $totalFiltered reportes"
+        }
+
+        tvReportCount.text = countText
     }
 
     private fun showDeleteConfirmation(report: Report) {
@@ -111,10 +210,16 @@ class AdminReportsActivity : AppCompatActivity() {
             .delete()
             .addOnSuccessListener {
                 Toast.makeText(this, "Reporte eliminado exitosamente", Toast.LENGTH_SHORT).show()
-                reportsList.remove(report)
-                adapter.notifyDataSetChanged()
 
-                if (reportsList.isEmpty()) {
+                // Remover de todas las listas
+                allReports.remove(report)
+                filteredReports.remove(report)
+                displayedReports.remove(report)
+
+                adapter.notifyDataSetChanged()
+                updateReportCount()
+
+                if (displayedReports.isEmpty()) {
                     showEmpty()
                 }
             }
@@ -151,7 +256,9 @@ class AdminReportsActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Toast.makeText(this, "Estado actualizado", Toast.LENGTH_SHORT).show()
                 report.status = newStatus
-                adapter.notifyDataSetChanged()
+
+                // Re-aplicar filtros para actualizar la lista
+                applyFilters()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error al actualizar: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -172,7 +279,7 @@ class AdminReportsActivity : AppCompatActivity() {
 
     private fun showContent() {
         loadingState.visibility = View.GONE
-        if (reportsList.isEmpty()) {
+        if (displayedReports.isEmpty()) {
             showEmpty()
         } else {
             rvReports.visibility = View.VISIBLE

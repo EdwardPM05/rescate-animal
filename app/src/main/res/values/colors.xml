@@ -103,4 +103,6 @@
 
     <color name="background">#F5F5F5</color>
 
+    <color name="divider_gray">#E0E0E0</color>
+
 </resources>
