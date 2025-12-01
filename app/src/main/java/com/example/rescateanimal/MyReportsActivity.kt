@@ -3,6 +3,7 @@ package com.example.rescateanimal
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -38,7 +39,7 @@ class MyReportsActivity : AppCompatActivity() {
 
     private fun setupViews() {
         // Back Button
-        findViewById<TextView>(R.id.btnBack).setOnClickListener {
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             finish()
         }
 

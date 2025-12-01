@@ -241,7 +241,7 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:layout_marginEnd="16dp"
-                                    android:src="@drawable/ic_rescue"
+                                    android:src="@drawable/ic_abandoned"
                                     android:padding="8dp"
                                     android:background="@drawable/icon_abandoned_background"
                                     android:contentDescription="Animal abandonado" />

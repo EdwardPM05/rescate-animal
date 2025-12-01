@@ -24,7 +24,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_image_placeholder"
+                    android:src="@drawable/ic_image"
                     android:contentDescription="Foto del local" />
 
             <!-- Overlay sutil para mejor legibilidad -->

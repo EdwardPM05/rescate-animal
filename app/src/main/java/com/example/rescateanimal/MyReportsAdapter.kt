@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -20,20 +22,25 @@ class MyReportsAdapter(
 
     inner class ReportViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivReportPhoto: ImageView = itemView.findViewById(R.id.ivReportPhoto)
-        val tvReportIcon: TextView = itemView.findViewById(R.id.tvReportIcon)
+        val vIconBackground: View = itemView.findViewById(R.id.vIconBackground)
+        val ivReportIcon: ImageView = itemView.findViewById(R.id.ivReportIcon)
+        val ivReportInfoIcon: ImageView = itemView.findViewById(R.id.ivReportInfoIcon)
         val tvReportType: TextView = itemView.findViewById(R.id.tvReportType)
         val tvReportInfo: TextView = itemView.findViewById(R.id.tvReportInfo)
         val tvReportDate: TextView = itemView.findViewById(R.id.tvReportDate)
         val tvReportLocation: TextView = itemView.findViewById(R.id.tvReportLocation)
+        val llStatusBadge: LinearLayout = itemView.findViewById(R.id.llStatusBadge)
+        val ivStatusIcon: ImageView = itemView.findViewById(R.id.ivStatusIcon)
         val tvReportStatus: TextView = itemView.findViewById(R.id.tvReportStatus)
-        val btnDelete: TextView = itemView.findViewById(R.id.btnDeleteReport)
+        val btnDelete: ImageView = itemView.findViewById(R.id.btnDeleteReport)
 
         fun bind(report: Report) {
             // Load photo or show icon
             if (report.photoUrls.isNotEmpty() && report.photoUrls[0].isNotEmpty()) {
                 // Show photo
-                tvReportIcon.visibility = View.GONE
                 ivReportPhoto.visibility = View.VISIBLE
+                vIconBackground.visibility = View.GONE
+                ivReportIcon.visibility = View.GONE
 
                 android.util.Log.d("MyReportsAdapter", "Cargando foto: ${report.photoUrls[0]}")
 
@@ -46,30 +53,39 @@ class MyReportsAdapter(
             } else {
                 // Show icon
                 ivReportPhoto.visibility = View.GONE
-                tvReportIcon.visibility = View.VISIBLE
+                vIconBackground.visibility = View.VISIBLE
+                ivReportIcon.visibility = View.VISIBLE
             }
 
             // Set icon and type based on report type
             when (report.type) {
                 "danger" -> {
-                    tvReportIcon.text = "⚠️"
+                    ivReportIcon.setImageResource(R.drawable.ic_warning)
+                    ivReportInfoIcon.setImageResource(R.drawable.ic_warning)
+                    vIconBackground.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.danger_light)
                     tvReportType.text = "Animal en peligro"
-                    tvReportInfo.text = "⚠️ Urgente"
+                    tvReportInfo.text = "Urgente"
                 }
                 "lost" -> {
-                    tvReportIcon.text = "💔"
+                    ivReportIcon.setImageResource(R.drawable.ic_lost_pet)
+                    ivReportInfoIcon.setImageResource(R.drawable.ic_lost_pet)
+                    vIconBackground.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.lost_light)
                     tvReportType.text = "Animal perdido"
-                    tvReportInfo.text = "💔 Búsqueda activa"
+                    tvReportInfo.text = "Búsqueda activa"
                 }
                 "abandoned" -> {
-                    tvReportIcon.text = "🏠"
+                    ivReportIcon.setImageResource(R.drawable.ic_house)
+                    ivReportInfoIcon.setImageResource(R.drawable.ic_house)
+                    vIconBackground.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.abandoned_light)
                     tvReportType.text = "Animal abandonado"
-                    tvReportInfo.text = "🏠 Necesita hogar"
+                    tvReportInfo.text = "Necesita hogar"
                 }
                 else -> {
-                    tvReportIcon.text = "📍"
+                    ivReportIcon.setImageResource(R.drawable.ic_pin)
+                    ivReportInfoIcon.setImageResource(R.drawable.ic_pin)
+                    vIconBackground.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.default_light)
                     tvReportType.text = "Reporte"
-                    tvReportInfo.text = "📍 Reporte general"
+                    tvReportInfo.text = "Reporte general"
                 }
             }
 
@@ -78,25 +94,29 @@ class MyReportsAdapter(
 
             // Location (first part of address)
             val locationText = report.address?.split(",")?.take(2)?.joinToString(", ") ?: "Ubicación no disponible"
-            tvReportLocation.text = "📍 $locationText"
+            tvReportLocation.text = locationText
 
             // Status
             when (report.status) {
                 "pending" -> {
-                    tvReportStatus.text = "⏳ Pendiente"
-                    tvReportStatus.setBackgroundResource(R.drawable.status_badge_pending)
+                    ivStatusIcon.setImageResource(R.drawable.ic_pending)
+                    tvReportStatus.text = "Pendiente"
+                    llStatusBadge.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.status_pending)
                 }
                 "in_progress" -> {
-                    tvReportStatus.text = "🔄 En proceso"
-                    tvReportStatus.setBackgroundResource(R.drawable.status_badge_in_progress)
+                    ivStatusIcon.setImageResource(R.drawable.ic_in_progress)
+                    tvReportStatus.text = "En proceso"
+                    llStatusBadge.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.status_in_progress)
                 }
                 "resolved" -> {
-                    tvReportStatus.text = "✅ Resuelto"
-                    tvReportStatus.setBackgroundResource(R.drawable.status_badge_resolved)
+                    ivStatusIcon.setImageResource(R.drawable.ic_check)
+                    tvReportStatus.text = "Resuelto"
+                    llStatusBadge.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.status_resolved)
                 }
                 else -> {
-                    tvReportStatus.text = "⏳ Pendiente"
-                    tvReportStatus.setBackgroundResource(R.drawable.status_badge_pending)
+                    ivStatusIcon.setImageResource(R.drawable.ic_pending)
+                    tvReportStatus.text = "Pendiente"
+                    llStatusBadge.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.status_pending)
                 }
             }
 

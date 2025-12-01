@@ -316,49 +316,6 @@
                             android:layout_marginHorizontal="16dp"
                             android:background="#E0E0E0" />
 
-                    <!-- Mis adopciones -->
-                    <LinearLayout
-                            android:id="@+id/menuMyAdoptions"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="16dp"
-                            android:background="?attr/selectableItemBackground">
-
-                        <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:src="@drawable/ic_adoptions"
-                                android:contentDescription="Adopciones" />
-
-                        <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:layout_weight="1"
-                                android:text="Mis adopciones"
-                                android:textColor="@color/text_primary"
-                                android:textSize="16sp" />
-
-                        <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_arrow_back"
-                                android:rotation="180"
-                                android:contentDescription="Ir" />
-
-                    </LinearLayout>
-
-                    <!-- Divider -->
-                    <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:background="#E0E0E0" />
-
                     <!-- Mis reportes -->
                     <LinearLayout
                             android:id="@+id/menuMyReports"

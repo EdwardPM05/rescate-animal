@@ -740,7 +740,7 @@ class RegisterPetActivity : AppCompatActivity() {
             Glide.with(holder.itemView.context)
                 .load(photos[position])
                 .centerCrop()
-                .placeholder(R.drawable.ic_image_placeholder)
+                .placeholder(R.drawable.ic_image)
                 .error(R.drawable.ic_image_error)
                 .into(holder.ivPhoto)
 

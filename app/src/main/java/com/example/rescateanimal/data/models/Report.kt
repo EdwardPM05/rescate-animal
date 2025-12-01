@@ -1,7 +1,7 @@
 package com.example.rescateanimal
 
 data class Report(
-    var id: String = "",
+    val id: String = "",
     val userId: String = "",
     val type: String = "", // "danger", "lost", "abandoned"
     val description: String = "",
@@ -10,7 +10,7 @@ data class Report(
     val longitude: Double = 0.0,
     val address: String = "",
     val photoUrls: List<String> = listOf(),
-    val status: String = "pending", // "pending", "in_progress", "resolved"
-    val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    var status: String = "pending", // "pending", "in_progress", "resolved" - var para permitir cambios
+    val createdAt: Long = 0L,
+    val updatedAt: Long = 0L
 )

@@ -7,18 +7,34 @@
               android:background="@drawable/dialog_background"
               android:padding="0dp">
 
-    <!-- Título del Dialog -->
-    <TextView
-            android:id="@+id/tvDialogTitle"
+    <!-- Header con título e ícono -->
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Título del Reporte"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#2C3E50"
+            android:orientation="horizontal"
             android:padding="20dp"
             android:background="#F8F9FA"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical">
+
+        <ImageView
+                android:id="@+id/ivDialogIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_warning"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="Tipo de reporte" />
+
+        <TextView
+                android:id="@+id/tvDialogTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Título del Reporte"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#2C3E50" />
+
+    </LinearLayout>
 
     <ScrollView
             android:layout_width="match_parent"
@@ -96,19 +112,36 @@
             android:background="#F8F9FA"
             android:gravity="end">
 
-        <TextView
+        <!-- Botón Llamar con ícono -->
+        <LinearLayout
                 android:id="@+id/btnCall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📞 Llamar"
-                android:textSize="16sp"
-                android:textColor="#FFFFFF"
+                android:orientation="horizontal"
                 android:background="@drawable/button_call_background"
-                android:paddingHorizontal="24dp"
+                android:paddingHorizontal="20dp"
                 android:paddingVertical="12dp"
                 android:layout_marginEnd="12dp"
+                android:gravity="center_vertical"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true">
+
+            <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_phone"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Llamar" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Llamar"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF" />
+
+        </LinearLayout>
 
         <TextView
                 android:id="@+id/btnClose"

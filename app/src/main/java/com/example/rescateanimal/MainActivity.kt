@@ -18,25 +18,21 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.storage.FirebaseStorage
-
-// --- Asegúrate que todas estas clases existan en tu proyecto ---
 import com.example.rescateanimal.data.models.Animal
-import com.example.rescateanimal.LoginActivity
-import com.example.rescateanimal.ProfileActivity
-import com.example.rescateanimal.MapActivity
-import com.example.rescateanimal.AnimalDetailActivity
-import com.example.rescateanimal.NavigationHelper
-import com.example.rescateanimal.RegisterPetActivity
-import com.example.rescateanimal.AffiliateActivity
-import android.location.Location
-import com.example.rescateanimal.LocationPickerActivity // Necesaria para el Intent
 
+/**
+ * MainActivity - SOLO PARA ROL USER
+ * Vista principal para usuarios normales con:
+ * - Nuevos afiliados (clínicas/albergues)
+ * - Animales perdidos (urgente)
+ * - Animales en adopción
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var navigationHelper: NavigationHelper
+    private lateinit var roleManager: RoleManager
 
     private lateinit var ivProfileHeader: ImageView
     private lateinit var tvWelcomeUser: TextView
@@ -47,15 +43,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sectionAffiliateTitle: TextView
     private lateinit var bannerImage: ImageView
 
-    // VARIABLES PARA LOADING (Placeholder animado)
+    // VARIABLES PARA LOADING
     private lateinit var loadingPlaceholder: View
     private lateinit var contentScrollView: View
     private lateinit var ivAnimalLoading: ImageView
 
     private var tasksCompleted = 0
-    private val totalTasks = 5 // UserData, AffiliateStatus, NewAffiliates, LostAnimals, AdoptionAnimals
+    private val totalTasks = 5
 
-    // LISTA DE RECURSOS PARA EL CARRUSEL DE CARGA (Usando tus imágenes)
     private val animalPlaceholders = listOf(
         R.drawable.loading_perro_real,
         R.drawable.loading_gato_real,
@@ -67,11 +62,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        NavigationHelper(this).setupBottomNavigation()
-
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+        roleManager = RoleManager(this)
 
+        // VERIFICACIÓN DE ROL: Si no es USER, redirigir al dispatcher
+        if (roleManager.getCurrentRole() != RoleManager.ROLE_USER) {
+            redirectToCorrectActivity()
+            return
+        }
+
+        // Verificar autenticación
         if (auth.currentUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
@@ -80,15 +81,33 @@ class MainActivity : AppCompatActivity() {
 
         initializeViews()
 
-        // 1. Iniciar las 5 tareas de carga (todas asíncronas)
+        // Cargar datos
         loadUserData()
         checkAffiliateStatus()
-        loadNewAffiliates() // OPTIMIZADO
-        loadLostAnimalsReports() // Se optimizará cuando RegisterPetActivity y ReportActivity se corrijan
-        loadRecentAdoptionAnimals() // Se optimizará cuando RegisterPetActivity y ReportActivity se corrijan
+        loadNewAffiliates()
+        loadLostAnimalsReports()
+        loadRecentAdoptionAnimals()
 
         navigationHelper = NavigationHelper(this)
         navigationHelper.setupBottomNavigation()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Verificar el rol cada vez que se resume la activity
+        if (roleManager.getCurrentRole() != RoleManager.ROLE_USER) {
+            redirectToCorrectActivity()
+        }
+    }
+
+    /**
+     * Redirige al RoleDispatcherActivity si el rol no es USER
+     */
+    private fun redirectToCorrectActivity() {
+        val intent = Intent(this, RoleDispatcherActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
     private fun initializeViews() {
@@ -101,12 +120,10 @@ class MainActivity : AppCompatActivity() {
         sectionAffiliateTitle = findViewById(R.id.sectionAffiliateTitle)
         bannerImage = findViewById(R.id.bannerImage)
 
-        // VISTAS DE LOADING
         loadingPlaceholder = findViewById(R.id.loadingPlaceholder)
         contentScrollView = findViewById(R.id.contentScrollView)
         ivAnimalLoading = findViewById(R.id.ivAnimalLoading)
 
-        // Iniciar el carrusel de perritos
         startLoadingAnimation()
 
         ivProfileHeader.setOnClickListener {
@@ -115,19 +132,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     // =======================================================
-    // LÓGICA DE CARGA Y ANIMACIÓN (Placeholder)
+    // LÓGICA DE CARGA Y ANIMACIÓN
     // =======================================================
 
     private fun startLoadingAnimation() {
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
-                // Rota las imágenes de animales (carrusel)
                 currentAnimalIndex = (currentAnimalIndex + 1) % animalPlaceholders.size
                 ivAnimalLoading.setImageResource(animalPlaceholders[currentAnimalIndex])
 
                 if (tasksCompleted < totalTasks) {
-                    handler.postDelayed(this, 800) // Cambia cada 0.8 segundos
+                    handler.postDelayed(this, 800)
                 }
             }
         }
@@ -136,14 +152,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun taskCompleted() {
         tasksCompleted++
-        // Si las 5 tareas completaron, ocultar el placeholder y mostrar el contenido
         if (tasksCompleted >= totalTasks) {
             showContent()
         }
     }
 
     private fun showContent() {
-        // Ocultar placeholder con fade-out
         loadingPlaceholder.animate()
             .alpha(0f)
             .setDuration(300)
@@ -151,7 +165,6 @@ class MainActivity : AppCompatActivity() {
                 loadingPlaceholder.visibility = View.GONE
             }
 
-        // Mostrar contenido principal con fade-in
         contentScrollView.alpha = 0f
         contentScrollView.visibility = View.VISIBLE
         contentScrollView.animate()
@@ -161,7 +174,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // =======================================================
-    // FUNCIONES DE CARGA DE DATOS (Cada función llama a taskCompleted)
+    // FUNCIONES DE CARGA DE DATOS
     // =======================================================
 
     private fun loadUserData() {
@@ -170,7 +183,9 @@ class MainActivity : AppCompatActivity() {
         db.collection("users").document(currentUser.uid)
             .get()
             .addOnSuccessListener { document ->
-                val displayName = document.getString("displayName") ?: currentUser.email?.split("@")?.get(0) ?: "Usuario"
+                val displayName = document.getString("displayName")
+                    ?: currentUser.email?.split("@")?.get(0)
+                    ?: "Usuario"
                 tvWelcomeUser.text = "Hola, $displayName!"
 
                 db.collection("user_profiles").document(currentUser.uid)
@@ -178,14 +193,14 @@ class MainActivity : AppCompatActivity() {
                     .addOnSuccessListener { profileDoc ->
                         val photoUrl = profileDoc.getString("profilePhotoUrl")
                         loadProfileImage(photoUrl)
-                        taskCompleted() // Tarea 1 completada
+                        taskCompleted()
                     }
                     .addOnFailureListener {
-                        taskCompleted() // Tarea 1 completada
+                        taskCompleted()
                     }
             }
             .addOnFailureListener {
-                taskCompleted() // Tarea 1 completada
+                taskCompleted()
             }
     }
 
@@ -231,11 +246,11 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                taskCompleted() // Tarea 2 completada
+                taskCompleted()
             }
             .addOnFailureListener {
                 showAffiliateBanner()
-                taskCompleted() // Tarea 2 completada
+                taskCompleted()
             }
     }
 
@@ -266,7 +281,7 @@ class MainActivity : AppCompatActivity() {
         bannerAffiliateYourBusiness.visibility = View.GONE
     }
 
-    // ========== SECCIÓN 1: NUEVAS CLÍNICAS Y ALBERGUES (OPTIMIZADA) ==========
+    // ========== SECCIÓN 1: NUEVAS CLÍNICAS Y ALBERGUES ==========
     private fun loadNewAffiliates() {
         db.collection("affiliates")
             .whereEqualTo("status", "approved")
@@ -279,7 +294,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (documents.isEmpty) {
                     showEmptyState(containerAffiliates, "No hay negocios nuevos")
-                    taskCompleted() // Tarea 3 completada
+                    taskCompleted()
                     return@addOnSuccessListener
                 }
 
@@ -290,19 +305,19 @@ class MainActivity : AppCompatActivity() {
                     val address = document.getString("address") ?: ""
                     val latitude = document.getDouble("latitude") ?: 0.0
                     val longitude = document.getDouble("longitude") ?: 0.0
-
-                    // ⚠️ CLAVE: Lee el campo mainPhotoUrl. Si es null o no existe, será "" y Glide usará el placeholder.
-                    // Si tu amigo agregó otro campo, debes cambiar "mainPhotoUrl" al nombre de ese campo.
                     val photoUrl = document.getString("mainPhotoUrl") ?: ""
 
-                    val cardView = createAffiliateCard(documentId, type, businessName, address, latitude, longitude, photoUrl)
+                    val cardView = createAffiliateCard(
+                        documentId, type, businessName, address,
+                        latitude, longitude, photoUrl
+                    )
                     containerAffiliates.addView(cardView)
                 }
-                taskCompleted() // Tarea 3 completada
+                taskCompleted()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error al cargar afiliados: ${e.message}", Toast.LENGTH_SHORT).show()
-                taskCompleted() // Tarea 3 completada
+                taskCompleted()
             }
     }
 
@@ -313,9 +328,13 @@ class MainActivity : AppCompatActivity() {
         address: String,
         lat: Double,
         lng: Double,
-        photoUrl: String // Campo añadido para la URL
+        photoUrl: String
     ): View {
-        val view = LayoutInflater.from(this).inflate(R.layout.item_affiliate_card, containerAffiliates, false)
+        val view = LayoutInflater.from(this).inflate(
+            R.layout.item_affiliate_card,
+            containerAffiliates,
+            false
+        )
 
         val ivPhoto = view.findViewById<ImageView>(R.id.ivAffiliatePhoto)
         val tvName = view.findViewById<TextView>(R.id.tvAffiliateName)
@@ -326,13 +345,12 @@ class MainActivity : AppCompatActivity() {
         tvType.text = getAffiliateTypeText(type)
         tvAddress.text = address
 
-        // Carga de imagen con Placeholder: Si photoUrl es inválido/vacío, usará ic_image_placeholder
         Glide.with(this)
             .load(photoUrl)
             .apply(
                 RequestOptions()
-                    .placeholder(R.drawable.ic_image_placeholder) // Asegúrate que esta imagen exista
-                    .error(R.drawable.ic_image_placeholder)
+                    .placeholder(R.drawable.ic_image)
+                    .error(R.drawable.ic_image)
                     .centerCrop()
             )
             .into(ivPhoto)
@@ -357,7 +375,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ========== SECCIÓN 2: ANIMALES PERDIDOS (URGENTE) ==========
+    // ========== SECCIÓN 2: ANIMALES PERDIDOS ==========
     private fun loadLostAnimalsReports() {
         db.collection("reports")
             .whereEqualTo("reportType", "lost")
@@ -370,27 +388,31 @@ class MainActivity : AppCompatActivity() {
 
                 if (documents.isEmpty) {
                     showEmptyState(containerLostAnimals, "No hay animales perdidos reportados")
-                    taskCompleted() // Tarea 4 completada
+                    taskCompleted()
                     return@addOnSuccessListener
                 }
 
                 for (document in documents) {
                     val description = document.getString("description") ?: "Animal perdido"
                     val location = document.getString("location") ?: "Ubicación desconocida"
-                    val photoUrls = (document.get("photoUrls") as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
+                    val photoUrls = (document.get("photoUrls") as? List<*>)
+                        ?.mapNotNull { it as? String } ?: emptyList()
                     val photoUrl = photoUrls.firstOrNull() ?: ""
                     val latitude = document.getDouble("latitude") ?: 0.0
                     val longitude = document.getDouble("longitude") ?: 0.0
 
                     val animalType = extractAnimalType(description)
 
-                    val cardView = createLostAnimalCard(animalType, location, photoUrl, latitude, longitude)
+                    val cardView = createLostAnimalCard(
+                        animalType, location, photoUrl,
+                        latitude, longitude
+                    )
                     containerLostAnimals.addView(cardView)
                 }
-                taskCompleted() // Tarea 4 completada
+                taskCompleted()
             }
             .addOnFailureListener {
-                taskCompleted() // Tarea 4 completada
+                taskCompleted()
             }
     }
 
@@ -403,8 +425,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createLostAnimalCard(animalType: String, location: String, photoUrl: String, lat: Double, lng: Double): View {
-        val view = LayoutInflater.from(this).inflate(R.layout.item_lost_animal_card, containerLostAnimals, false)
+    private fun createLostAnimalCard(
+        animalType: String,
+        location: String,
+        photoUrl: String,
+        lat: Double,
+        lng: Double
+    ): View {
+        val view = LayoutInflater.from(this).inflate(
+            R.layout.item_lost_animal_card,
+            containerLostAnimals,
+            false
+        )
 
         val ivPhoto = view.findViewById<ImageView>(R.id.ivLostAnimalPhoto)
         val tvAnimalName = view.findViewById<TextView>(R.id.tvLostAnimalName)
@@ -445,28 +477,33 @@ class MainActivity : AppCompatActivity() {
 
                 if (documents.isEmpty) {
                     showEmptyState(containerAdoptionAnimals, "No hay mascotas en adopción")
-                    taskCompleted() // Tarea 5 completada
+                    taskCompleted()
                     return@addOnSuccessListener
                 }
 
                 for (document in documents) {
                     try {
-                        val animal = document.toObject(Animal::class.java).copy(id = document.id)
+                        val animal = document.toObject(Animal::class.java)
+                            .copy(id = document.id)
                         val cardView = createAdoptionAnimalCard(animal)
                         containerAdoptionAnimals.addView(cardView)
                     } catch (e: Exception) {
                         // Skip malformed documents
                     }
                 }
-                taskCompleted() // Tarea 5 completada
+                taskCompleted()
             }
             .addOnFailureListener {
-                taskCompleted() // Tarea 5 completada
+                taskCompleted()
             }
     }
 
     private fun createAdoptionAnimalCard(animal: Animal): View {
-        val view = LayoutInflater.from(this).inflate(R.layout.item_adoption_animal_card, containerAdoptionAnimals, false)
+        val view = LayoutInflater.from(this).inflate(
+            R.layout.item_adoption_animal_card,
+            containerAdoptionAnimals,
+            false
+        )
 
         val ivPhoto = view.findViewById<ImageView>(R.id.ivAdoptionAnimalPhoto)
         val tvName = view.findViewById<TextView>(R.id.tvAdoptionAnimalName)
@@ -475,9 +512,7 @@ class MainActivity : AppCompatActivity() {
         tvName.text = animal.name
 
         val info = buildString {
-            if (animal.type.isNotEmpty()) {
-                append(animal.type)
-            }
+            if (animal.type.isNotEmpty()) append(animal.type)
             if (animal.age.isNotEmpty()) {
                 if (isNotEmpty()) append(" • ")
                 append(animal.age)
