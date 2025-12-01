@@ -352,8 +352,9 @@
 
                     </LinearLayout>
 
-                    <!-- Divider -->
+                    <!-- Divider Mis Reportes (CON ID) -->
                     <View
+                            android:id="@+id/dividerMyReports"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginHorizontal="16dp"
@@ -438,14 +439,15 @@
 
                     </LinearLayout>
 
-                    <!-- Divider -->
+                    <!-- Divider Afiliación -->
                     <View
+                            android:id="@+id/dividerAffiliate"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginHorizontal="16dp"
                             android:background="#E0E0E0" />
 
-                    <!-- Afiliar negocio (DINÁMICO) -->
+                    <!-- Afiliar negocio (solo para USER) -->
                     <LinearLayout
                             android:id="@+id/menuAffiliate"
                             android:layout_width="match_parent"

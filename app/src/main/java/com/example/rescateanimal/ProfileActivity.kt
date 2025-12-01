@@ -2,6 +2,7 @@ package com.example.rescateanimal
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,9 +19,13 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var navigationHelper: NavigationHelper
+    private lateinit var roleManager: RoleManager
 
     private lateinit var ivProfileImage: ImageView
+    private lateinit var menuMyReports: LinearLayout
     private lateinit var menuAffiliate: LinearLayout
+    private lateinit var dividerMyReports: View
+    private lateinit var dividerAffiliate: View
     private lateinit var ivAffiliateIcon: ImageView
     private lateinit var tvAffiliateTitle: TextView
     private lateinit var tvAffiliateSubtitle: TextView
@@ -32,21 +37,25 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+        // Inicializar TODAS las dependencias PRIMERO
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+        roleManager = RoleManager(this)
+        navigationHelper = NavigationHelper(this)
 
+        // Luego configurar las vistas y UI
         setupViews()
         loadUserData()
-        checkAffiliateStatus()
+        configureUIBasedOnRole()
 
-        navigationHelper = NavigationHelper(this)
+        // Finalmente configurar la navegación
         navigationHelper.setupBottomNavigation()
     }
 
     override fun onResume() {
         super.onResume()
         loadUserData()
-        checkAffiliateStatus()
+        configureUIBasedOnRole()
     }
 
     private fun setupViews() {
@@ -63,9 +72,21 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(Intent(this, EditProfileActivity::class.java))
         }
 
-        findViewById<LinearLayout>(R.id.menuMyReports).setOnClickListener {
+        // REFERENCIA A MIS REPORTES (para ocultar si es admin/partner)
+        menuMyReports = findViewById(R.id.menuMyReports)
+        menuMyReports.setOnClickListener {
             startActivity(Intent(this, MyReportsActivity::class.java))
         }
+
+        // REFERENCIA AL DIVIDER de Mis Reportes
+        dividerMyReports = findViewById(R.id.dividerMyReports)
+
+        // REFERENCIA A AFFILIATE (para ocultar si es partner o admin)
+        menuAffiliate = findViewById(R.id.menuAffiliate)
+        ivAffiliateIcon = findViewById(R.id.ivAffiliateIcon)
+        tvAffiliateTitle = findViewById(R.id.tvAffiliateTitle)
+        tvAffiliateSubtitle = findViewById(R.id.tvAffiliateSubtitle)
+        dividerAffiliate = findViewById(R.id.dividerAffiliate)
 
         findViewById<LinearLayout>(R.id.menuNotifications).setOnClickListener {
             Toast.makeText(this, "Notificaciones - Próximamente", Toast.LENGTH_SHORT).show()
@@ -75,15 +96,49 @@ class ProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Privacidad - Próximamente", Toast.LENGTH_SHORT).show()
         }
 
-        // AFFILIATE OPTION - Ahora con elementos del XML
-        menuAffiliate = findViewById(R.id.menuAffiliate)
-        ivAffiliateIcon = findViewById(R.id.ivAffiliateIcon)
-        tvAffiliateTitle = findViewById(R.id.tvAffiliateTitle)
-        tvAffiliateSubtitle = findViewById(R.id.tvAffiliateSubtitle)
-
         // Logout
         findViewById<LinearLayout>(R.id.btnLogout).setOnClickListener {
             logout()
+        }
+    }
+
+    /**
+     * Configura la interfaz según el rol del usuario
+     * - USER: Ve todo (Mis Reportes + Afiliar mi negocio)
+     * - PARTNER: Solo opciones personales (ya está afiliado, no necesita "Afiliar negocio")
+     * - ADMIN: Solo opciones personales (no necesita reportes ni afiliación)
+     */
+    private fun configureUIBasedOnRole() {
+        val currentRole = roleManager.getCurrentRole()
+
+        when (currentRole) {
+            RoleManager.ROLE_USER -> {
+                // USUARIO NORMAL: Ve todas las opciones
+                menuMyReports.visibility = View.VISIBLE
+                dividerMyReports.visibility = View.VISIBLE
+
+                menuAffiliate.visibility = View.VISIBLE
+                dividerAffiliate.visibility = View.VISIBLE
+
+                // Verificar estado de afiliación para mostrar opciones dinámicas
+                checkAffiliateStatus()
+            }
+            RoleManager.ROLE_PARTNER -> {
+                // PARTNER: Ya está afiliado, no necesita "Afiliar negocio"
+                menuMyReports.visibility = View.GONE
+                dividerMyReports.visibility = View.GONE
+
+                menuAffiliate.visibility = View.GONE
+                dividerAffiliate.visibility = View.GONE
+            }
+            RoleManager.ROLE_ADMIN -> {
+                // ADMIN: Solo configuración personal
+                menuMyReports.visibility = View.GONE
+                dividerMyReports.visibility = View.GONE
+
+                menuAffiliate.visibility = View.GONE
+                dividerAffiliate.visibility = View.GONE
+            }
         }
     }
 
@@ -112,34 +167,13 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun setupAffiliateButton(status: String?, type: String?) {
         when {
-            // ALBERGUES Y VETERINARIAS APROBADOS pueden registrar mascotas
-            status == "approved" && (type == "albergue" || type == "veterinaria") -> {
-                ivAffiliateIcon.setImageResource(R.drawable.ic_adoptions)
-                tvAffiliateTitle.text = "Registrar mascotas"
-                tvAffiliateSubtitle.text = "Publica mascotas disponibles para adopción"
-                menuAffiliate.setOnClickListener {
-                    val intent = Intent(this, RegisterPetActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-
-            // TIENDAS APROBADAS - Solo aparecen en el mapa
-            status == "approved" && type == "tienda" -> {
-                ivAffiliateIcon.setImageResource(R.drawable.ic_check)
-                tvAffiliateTitle.text = "Tienda afiliada"
-                tvAffiliateSubtitle.text = "Tu tienda está aprobada y aparece en el mapa"
-                menuAffiliate.setOnClickListener {
-                    Toast.makeText(this, "Tu tienda ya está visible en el mapa para todos los usuarios", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            // Cualquier tipo APROBADO (por si hay más tipos en el futuro)
+            // APROBADO - Ya es afiliado
             status == "approved" -> {
                 ivAffiliateIcon.setImageResource(R.drawable.ic_check)
                 tvAffiliateTitle.text = "Negocio afiliado"
-                tvAffiliateSubtitle.text = "Tu ${getAffiliateTypeText(type)} está aprobada"
+                tvAffiliateSubtitle.text = "Tu ${getAffiliateTypeText(type)} está aprobado"
                 menuAffiliate.setOnClickListener {
-                    Toast.makeText(this, "Tu negocio ya está afiliado y aparece en el mapa", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Tu negocio ya está afiliado. Cambia al modo Partner para gestionar tu negocio.", Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -266,6 +300,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun logout() {
         auth.signOut()
+        roleManager.clearRoleData()
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
