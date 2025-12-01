@@ -1,130 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:padding="24dp"
-              android:background="@android:color/white">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:layout_margin="24dp"
+                                   app:cardCornerRadius="16dp"
+                                   app:cardElevation="8dp"
+                                   app:cardBackgroundColor="@android:color/white">
 
-    <!-- Título -->
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cambiar Modo de Vista"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:gravity="center"
-            android:layout_marginBottom="8dp"/>
-
-    <!-- Subtítulo con rol actual -->
-    <TextView
-            android:id="@+id/tvCurrentRole"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Rol actual: Usuario"
-            android:textSize="14sp"
-            android:textColor="@color/text_secondary"
-            android:gravity="center"
-            android:layout_marginBottom="24dp"/>
-
-    <!-- Divider -->
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/text_secondary"
-            android:alpha="0.2"
-            android:layout_marginBottom="16dp"/>
-
-    <!-- Opciones de Rol -->
-    <RadioGroup
-            android:id="@+id/rgRoleOptions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        <!-- Usuario Normal -->
-        <RadioButton
-                android:id="@+id/rbUser"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="👤 Usuario Normal"
-                android:textSize="16sp"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp"/>
-
-        <!-- Partner (Albergue/Veterinaria) -->
-        <RadioButton
-                android:id="@+id/rbPartner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="🏥 Partner (Albergue/Veterinaria)"
-                android:textSize="16sp"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone"/>
-
-        <!-- Administrador -->
-        <RadioButton
-                android:id="@+id/rbAdmin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="⚙️ Administrador"
-                android:textSize="16sp"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone"/>
-
-    </RadioGroup>
-
-    <!-- Divider -->
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/text_secondary"
-            android:alpha="0.2"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"/>
-
-    <!-- Descripción del rol seleccionado -->
-    <TextView
-            android:id="@+id/tvRoleDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Selecciona un modo para ver la descripción"
-            android:textSize="13sp"
-            android:textColor="@color/text_secondary"
-            android:textStyle="italic"
-            android:layout_marginBottom="24dp"
-            android:minHeight="60dp"/>
-
-    <!-- Botones de Acción -->
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end">
+            android:orientation="vertical"
+            android:padding="24dp">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cambiar Modo"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:gravity="center"
+                android:layout_marginBottom="8dp"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Selecciona cómo quieres usar la app hoy:"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:gravity="center"
+                android:layout_marginBottom="20dp"/>
+
+        <!-- Aquí se inyectarán los roles dinámicamente -->
+        <LinearLayout
+                android:id="@+id/rolesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
         <Button
-                android:id="@+id/btnCancel"
-                android:layout_width="wrap_content"
+                android:id="@+id/btnCloseDialog"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Cancelar"
-                android:textColor="@color/text_secondary"
-                android:background="?attr/selectableItemBackground"
-                android:layout_marginEnd="16dp"
-                style="?android:attr/borderlessButtonStyle"/>
-
-        <Button
-                android:id="@+id/btnConfirm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Confirmar"
-                android:textColor="@android:color/white"
-                android:backgroundTint="@color/primary_orange"
-                android:paddingHorizontal="24dp"/>
+                android:textColor="#666666"
+                style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
     </LinearLayout>
 
-</LinearLayout>
+</androidx.cardview.widget.CardView>

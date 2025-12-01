@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#F5F5F5">
+
+    <!-- Encabezado -->
+    <LinearLayout
+            android:id="@+id/headerAffiliates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_orange"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:elevation="4dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Solicitudes de Afiliación"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aprueba veterinarias, albergues y tiendas"
+                android:textColor="#F0F0F0"
+                android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- LISTA DE SOLICITUDES -->
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAdminAffiliates"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/headerAffiliates"
+            android:layout_above="@id/bottomNavigation"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:visibility="gone"/> <!-- Oculto por defecto hasta cargar -->
+
+    <!-- ESTADO VACÍO (Se muestra si no hay datos) -->
+    <LinearLayout
+            android:id="@+id/emptyStateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+        <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_check_circle"
+                android:tint="#CCCCCC"
+                android:contentDescription="Todo listo" />
+        <!-- Nota: Si no tienes ic_check_circle, usa cualquier icono disponible o borra el src -->
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="¡Todo al día!"
+                android:textColor="#999999"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="No hay solicitudes pendientes de revisión."
+                android:textColor="#999999"
+                android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <!-- Barra de Navegación -->
+    <include
+            android:id="@+id/bottomNavigation"
+            layout="@layout/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+
+</RelativeLayout>
