@@ -105,4 +105,12 @@
 
     <color name="divider_gray">#E0E0E0</color>
 
+    <color name="bg_vet_selected">#FFE0B2</color>
+    <color name="bg_store_selected">#C8E6C9</color>
+    <color name="bg_shelter_selected">#E1BEE7</color>
+
+    <color name="bg_vet_unselected">#FFF3E0</color>
+    <color name="bg_store_unselected">#E8F5E9</color>
+    <color name="bg_shelter_unselected">#F3E5F5</color>
+
 </resources>

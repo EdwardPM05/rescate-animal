@@ -1,63 +1,283 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/background"
-                tools:context=".PartnerMainActivity">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   android:background="#F5F5F5"
+                                                   tools:context=".PartnerMainActivity">
 
-    <ScrollView
+    <!-- Header -->
+    <LinearLayout
+            android:id="@+id/headerLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/bottomNavigation">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="#FFFFFF"
+            android:elevation="4dp"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-                android:layout_width="match_parent"
+        <TextView
+                android:id="@+id/tvPartnerWelcome"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Mis Adopciones"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#212121" />
+
+        <TextView
+                android:id="@+id/tvPartnerSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Gestiona tus publicaciones de adopción"
+                android:textSize="14sp"
+                android:textColor="#757575" />
+
+    </LinearLayout>
+
+    <!-- Loading State -->
+    <LinearLayout
+            android:id="@+id/loadingState"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
+
+        <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="#FF6B6B" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Cargando adopciones..."
+                android:textSize="16sp"
+                android:textColor="#757575" />
+
+    </LinearLayout>
+
+    <!-- Empty State -->
+    <LinearLayout
+            android:id="@+id/emptyState"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📋"
+                android:textSize="64sp" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="No tienes publicaciones"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:gravity="center" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Crea tu primera publicación de adopción para que aparezca aquí"
+                android:textSize="14sp"
+                android:textColor="#757575"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp" />
+
+    </LinearLayout>
+
+    <!-- RecyclerView for Adoptions -->
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMyAdoptions"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="16dp"
+            android:clipToPadding="false"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+            tools:listitem="@layout/item_my_adoption" />
+
+    <!-- Bottom Navigation (LinearLayout para compatibilidad con NavigationHelper) -->
+    <LinearLayout
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:background="#FFFFFF"
+            android:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Nav Inicio / Adopciones -->
+        <LinearLayout
+                android:id="@+id/navInicio"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="vertical"
-                android:padding="24dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:background="?attr/selectableItemBackground">
 
-            <!-- Ícono -->
             <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/ic_adopciones"
-                    android:tint="@color/primary_orange"
-                    android:layout_marginTop="60dp"
-                    android:layout_marginBottom="24dp"
-                    android:contentDescription="Mis Adopciones"/>
+                    android:tint="#757575" />
 
-            <!-- Título -->
             <TextView
-                    android:id="@+id/tvPartnerWelcome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mis Adopciones"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:gravity="center"
-                    android:layout_marginBottom="16dp"/>
-
-            <!-- Descripción -->
-            <TextView
-                    android:id="@+id/tvPartnerDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Próximamente"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_secondary"
-                    android:gravity="center"
-                    android:lineSpacingExtra="6dp"
-                    android:layout_marginBottom="32dp"/>
-
+                    android:text="Adopciones"
+                    android:textSize="10sp"
+                    android:textColor="#757575"
+                    android:layout_marginTop="2dp" />
         </LinearLayout>
 
-    </ScrollView>
+        <!-- Nav Mapa -->
+        <LinearLayout
+                android:id="@+id/navMapa"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackground">
 
-    <!-- Bottom Navigation -->
-    <include layout="@layout/bottom_navigation"
-             android:id="@+id/bottomNavigation"/>
+            <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_map"
+                    android:tint="#757575" />
 
-</RelativeLayout>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mapa"
+                    android:textSize="10sp"
+                    android:textColor="#757575"
+                    android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Nav Reportar (oculto para partners) -->
+        <LinearLayout
+                android:id="@+id/navReportar"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone"
+                android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/nav_report"
+                    android:tint="#757575" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reportar"
+                    android:textSize="10sp"
+                    android:textColor="#757575"
+                    android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Nav Adoptar (oculto para partners) -->
+        <LinearLayout
+                android:id="@+id/navAdoptar"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone"
+                android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/nav_adopt"
+                    android:tint="#757575" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Adoptar"
+                    android:textSize="10sp"
+                    android:textColor="#757575"
+                    android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Nav Perfil -->
+        <LinearLayout
+                android:id="@+id/navPerfil"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/nav_profile"
+                    android:tint="#757575" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Perfil"
+                    android:textSize="10sp"
+                    android:textColor="#757575"
+                    android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Nav Rol (Cambiar Rol) -->
+        <LinearLayout
+                android:id="@+id/navRol"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_rol"
+                    android:tint="#757575" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rol"
+                    android:textSize="10sp"
+                    android:textColor="#757575"
+                    android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

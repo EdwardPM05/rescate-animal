@@ -22,39 +22,39 @@
             android:padding="16dp">
 
         <!-- Back Button -->
-        <TextView
+        <ImageView
                 android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginEnd="16dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="8dp"
-                android:text="←"
-                android:textColor="@color/text_primary"
-                android:textSize="24sp" />
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Volver"
+                android:background="?attr/selectableItemBackgroundBorderless" />
 
         <!-- Title -->
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Seleccionar Ubicación"
+                android:text="Mapa de Rescates"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
         <!-- My Location Button -->
-        <TextView
+        <ImageView
                 android:id="@+id/btnMyLocation"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/button_circular_white"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
-                android:text="📍"
-                android:textSize="18sp" />
+                android:padding="8dp"
+                android:src="@drawable/ic_location_pin"
+                android:contentDescription="Mi ubicación" />
 
     </LinearLayout>
 
@@ -72,31 +72,33 @@
             android:id="@+id/locationInfoCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/btnConfirmLocation"
+            android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
             android:background="@drawable/card_white_elevated"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:visibility="gone">
 
         <TextView
+                android:id="@+id/tvLocationTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📍 Ubicación seleccionada"
+                android:text="Tu ubicación actual"
                 android:textColor="@color/text_primary"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         <TextView
-                android:id="@+id/tvSelectedAddress"
+                android:id="@+id/tvLocationAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Mueve el mapa para seleccionar"
+                android:text="Obteniendo ubicación..."
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp" />
 
         <TextView
-                android:id="@+id/tvSelectedCoords"
+                android:id="@+id/tvLocationCoords"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -105,18 +107,5 @@
                 android:textSize="12sp" />
 
     </LinearLayout>
-
-    <!-- Confirm Button -->
-    <Button
-            android:id="@+id/btnConfirmLocation"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="16dp"
-            android:background="@drawable/button_rounded_orange"
-            android:text="Confirmar ubicación"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
 
 </RelativeLayout>

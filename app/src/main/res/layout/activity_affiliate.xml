@@ -3,8 +3,9 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/white">
+                android:background="#F5F5F5">
 
+    <!-- Main Content ScrollView -->
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -16,579 +17,1016 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-            <LinearLayout
+            <!-- Header Card -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                <TextView
-                        android:id="@+id/btnBack"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="8dp"
-                        android:text="←"
-                        android:textColor="@color/text_primary"
-                        android:textSize="24sp" />
-
-                <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Afiliar Negocio"
-                        android:textColor="@color/text_primary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:text="Registra tu negocio para que aparezca en nuestro mapa y los rescatistas puedan encontrarte fácilmente"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
-
-            <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="Tipo de negocio"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-            <LinearLayout
-                    android:id="@+id/affiliateTypeVet"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/report_type_unselected"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🏥"
-                        android:textSize="28sp"
-                        android:layout_marginEnd="12dp" />
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@android:color/white">
 
                 <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Veterinaria"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Consultorios y servicios veterinarios"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <TextView
-                        android:id="@+id/checkVet"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="☐"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="28sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                    android:id="@+id/affiliateTypeStore"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/report_type_unselected"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🛍️"
-                        android:textSize="28sp"
-                        android:layout_marginEnd="12dp" />
-
-                <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tienda de Mascotas"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Alimentos, juguetes y accesorios"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <TextView
-                        android:id="@+id/checkStore"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="☐"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="28sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                    android:id="@+id/affiliateTypeShelter"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="32dp"
-                    android:background="@drawable/report_type_unselected"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🏠"
-                        android:textSize="28sp"
-                        android:layout_marginEnd="12dp" />
-
-                <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Albergue / Refugio"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Refugios y centros de acogida"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <TextView
-                        android:id="@+id/checkShelter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="☐"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="28sp" />
-
-            </LinearLayout>
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="Información del negocio"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Nombre del negocio"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <EditText
-                    android:id="@+id/etAffiliateBusinessName"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="Nombre del negocio"
-                    android:inputType="text"
-                    android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="14sp" />
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Tipo de negocio"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <TextView
-                    android:id="@+id/tvAffiliateBusinessType"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="Selecciona un tipo"
-                    android:textColor="@color/text_hint"
-                    android:textSize="14sp" />
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Persona encargada"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <EditText
-                    android:id="@+id/etAffiliatePerson"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="Nombre del encargado"
-                    android:inputType="text"
-                    android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="14sp" />
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Teléfono"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <EditText
-                    android:id="@+id/etAffiliatePhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="+51 999 999 999"
-                    android:inputType="phone"
-                    android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="14sp"
-                    android:textCursorDrawable="@null"/>
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Dirección"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="horizontal">
-
-                <EditText
-                        android:id="@+id/etAffiliateAddress"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/edittext_background"
-                        android:hint="Av. Principal 123, Lima"
-                        android:inputType="textPostalAddress"
+                        android:orientation="horizontal"
                         android:padding="16dp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
-                        android:textSize="14sp"
-                        android:drawableStart="@drawable/ic_location"
-                        android:drawablePadding="12dp"
-                        android:enabled="false" />
+                        android:gravity="center_vertical">
 
-                <Button
-                        android:id="@+id/btnSelectAffiliateLocation"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:background="@drawable/button_rounded_orange"
-                        android:text="📍"
-                        android:textSize="24sp" />
+                    <!-- Back Button -->
+                    <ImageView
+                            android:id="@+id/btnBack"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="16dp"
+                            android:src="@drawable/ic_arrow_back"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:padding="4dp"
+                            android:contentDescription="Volver" />
 
-            </LinearLayout>
+                    <!-- Title Section -->
+                    <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-            <TextView
-                    android:id="@+id/tvAffiliateSelectedCoordinates"
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Afiliar Negocio"
+                                android:textColor="@color/text_primary"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Registra tu negocio en nuestro mapa"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Info Card -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="Toca el botón 📍 para seleccionar la ubicación en el mapa"
-                    android:textColor="@color/text_hint"
-                    android:textSize="12sp"
-                    android:textAlignment="center" />
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#E3F2FD">
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Licencia de funcionamiento (obligatorio)"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
 
-            <LinearLayout
-                    android:id="@+id/licensFileUpload"
+                    <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_info"
+                            android:contentDescription="Información" />
+
+                    <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Ayúdanos a proteger a los animales. Los rescatistas podrán encontrarte fácilmente en el mapa."
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp"
+                            android:lineSpacingExtra="2dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Business Type Section Card -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/photo_upload_background"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@android:color/white">
 
-                <TextView
-                        android:layout_width="wrap_content"
+                <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="📄"
-                        android:textSize="32sp"
-                        android:layout_marginBottom="8dp" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                <TextView
-                        android:id="@+id/tvLicenseFileName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sube tu licencia de funcionamiento"
-                        android:textAlignment="center"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp" />
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:text="Tipo de negocio"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-            </LinearLayout>
+                    <!-- Veterinaria -->
+                    <androidx.cardview.widget.CardView
+                            android:id="@+id/affiliateTypeVet"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#FFF3E0"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground">
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Licencias de los trabajadores (obligatorio)"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="16dp"
+                                android:gravity="center_vertical">
 
-            <LinearLayout
-                    android:id="@+id/staffLicensesUpload"
+                            <!-- Icon Background -->
+                            <androidx.cardview.widget.CardView
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:layout_marginEnd="16dp"
+                                    app:cardCornerRadius="24dp"
+                                    app:cardElevation="0dp"
+                                    app:cardBackgroundColor="#FFE0B2">
+
+                                <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:padding="8dp"
+                                        android:src="@drawable/ic_vet"
+                                        android:contentDescription="Veterinaria" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <!-- Text Content -->
+                            <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Veterinaria"
+                                        android:textColor="@color/text_primary"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:text="Consultorios y servicios veterinarios"
+                                        android:textColor="@color/text_secondary"
+                                        android:textSize="12sp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Tienda de Mascotas -->
+                    <androidx.cardview.widget.CardView
+                            android:id="@+id/affiliateTypeStore"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#E8F5E9"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="16dp"
+                                android:gravity="center_vertical">
+
+                            <!-- Icon Background -->
+                            <androidx.cardview.widget.CardView
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:layout_marginEnd="16dp"
+                                    app:cardCornerRadius="24dp"
+                                    app:cardElevation="0dp"
+                                    app:cardBackgroundColor="#C8E6C9">
+
+                                <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:padding="8dp"
+                                        android:src="@drawable/ic_shop"
+                                        android:contentDescription="Tienda de Mascotas" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <!-- Text Content -->
+                            <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Tienda de Mascotas"
+                                        android:textColor="@color/text_primary"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:text="Alimentos, juguetes y accesorios"
+                                        android:textColor="@color/text_secondary"
+                                        android:textSize="12sp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Albergue / Refugio -->
+                    <androidx.cardview.widget.CardView
+                            android:id="@+id/affiliateTypeShelter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F3E5F5"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="16dp"
+                                android:gravity="center_vertical">
+
+                            <!-- Icon Background -->
+                            <androidx.cardview.widget.CardView
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:layout_marginEnd="16dp"
+                                    app:cardCornerRadius="24dp"
+                                    app:cardElevation="0dp"
+                                    app:cardBackgroundColor="#E1BEE7">
+
+                                <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:padding="8dp"
+                                        android:src="@drawable/ic_rescue"
+                                        android:contentDescription="Albergue / Refugio" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <!-- Text Content -->
+                            <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Albergue / Refugio"
+                                        android:textColor="@color/text_primary"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:text="Refugios y centros de acogida"
+                                        android:textColor="@color/text_secondary"
+                                        android:textSize="12sp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Business Information Card -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/photo_upload_background"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@android:color/white">
 
-                <TextView
-                        android:layout_width="wrap_content"
+                <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="📋"
-                        android:textSize="32sp"
-                        android:layout_marginBottom="8dp" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                <TextView
-                        android:id="@+id/tvStaffLicensesFileName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sube licencias de profesionales"
-                        android:textAlignment="center"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp" />
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:text="Información del negocio"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-            </LinearLayout>
+                    <!-- Business Name -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Nombre del negocio"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Fotos del lugar (obligatorio)"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="@drawable/edittext_background"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
 
-            <LinearLayout
-                    android:id="@+id/placePhotosUpload"
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="12dp"
+                                android:src="@drawable/ic_negocio"
+                                android:contentDescription="Negocio" />
+
+                        <EditText
+                                android:id="@+id/etAffiliateBusinessName"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:hint="Ej: Veterinaria San Martín"
+                                android:inputType="text"
+                                android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_hint"
+                                android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <!-- Business Type Display -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Tipo seleccionado"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="@drawable/edittext_background"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="12dp"
+                                android:src="@drawable/ic_info"
+                                android:contentDescription="Información" />
+
+                        <TextView
+                                android:id="@+id/tvAffiliateBusinessType"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:text="Selecciona un tipo arriba"
+                                android:textColor="@color/text_hint"
+                                android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <!-- Contact Person -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Persona encargada"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="@drawable/edittext_background"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="12dp"
+                                android:src="@drawable/ic_person"
+                                android:contentDescription="Persona" />
+
+                        <EditText
+                                android:id="@+id/etAffiliatePerson"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:hint="Nombre del encargado"
+                                android:inputType="textPersonName"
+                                android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_hint"
+                                android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <!-- Phone -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Teléfono de contacto"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@drawable/edittext_background"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="12dp"
+                                android:src="@drawable/ic_phone"
+                                android:contentDescription="Teléfono" />
+
+                        <EditText
+                                android:id="@+id/etAffiliatePhone"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:hint="+51 999 999 999"
+                                android:inputType="phone"
+                                android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_hint"
+                                android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Location Card -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/photo_upload_background"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@android:color/white">
 
-                <TextView
-                        android:layout_width="wrap_content"
+                <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="📤"
-                        android:textSize="36sp"
-                        android:layout_marginBottom="8dp" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                <TextView
-                        android:id="@+id/tvPlacePhotosFileName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sube fotos del establecimiento"
-                        android:textAlignment="center"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:layout_marginBottom="8dp" />
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Ubicación del negocio"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/button_rounded_orange"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:text="📷 Seleccionar fotos"
-                        android:textColor="@android:color/white"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                    <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:text="Selecciona la ubicación exacta de tu negocio en el mapa"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
 
-            </LinearLayout>
+                    <!-- Address Display with Map Button -->
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:orientation="horizontal">
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Descripción del negocio"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                        <EditText
+                                android:id="@+id/etAffiliateAddress"
+                                android:layout_width="0dp"
+                                android:layout_height="56dp"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp"
+                                android:background="@drawable/edittext_background"
+                                android:hint="Dirección del negocio"
+                                android:inputType="textPostalAddress"
+                                android:padding="16dp"
+                                android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_hint"
+                                android:textSize="14sp"
+                                android:drawableStart="@drawable/ic_location"
+                                android:drawablePadding="12dp"
+                                android:enabled="false" />
 
-            <EditText
-                    android:id="@+id/etAffiliateDescription"
+                        <androidx.cardview.widget.CardView
+                                android:id="@+id/btnSelectAffiliateLocation"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                app:cardCornerRadius="8dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="@color/primary_orange"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground">
+
+                            <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_pin"
+                                    android:contentDescription="Seleccionar ubicación"/>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                    <TextView
+                            android:id="@+id/tvAffiliateSelectedCoordinates"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Toca el botón 📍 para seleccionar en el mapa"
+                            android:textColor="@color/text_hint"
+                            android:textSize="12sp"
+                            android:textAlignment="center"
+                            android:padding="8dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Documents Card -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:gravity="top|start"
-                    android:hint="Describe los servicios que ofreces..."
-                    android:inputType="textMultiLine"
-                    android:maxLines="5"
-                    android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="14sp" />
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@android:color/white">
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Horario de atención"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-            <EditText
-                    android:id="@+id/etAffiliateHours"
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Documentación requerida"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                    <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:text="* Todos los documentos son obligatorios para verificar la legitimidad de tu negocio"
+                            android:textColor="#FF5722"
+                            android:textSize="12sp"
+                            android:textStyle="italic" />
+
+                    <!-- ==================== LICENCIA DE FUNCIONAMIENTO ==================== -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Licencia de funcionamiento"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    <androidx.cardview.widget.CardView
+                            android:id="@+id/licensFileUpload"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_marginBottom="12dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F5F5F5"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+
+                            <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:src="@drawable/ic_documents"
+                                    android:contentDescription="Documento"/>
+
+                            <TextView
+                                    android:id="@+id/tvLicenseFileName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Subir licencia de funcionamiento"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- RecyclerView para Licencia -->
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvLicensePhotos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:orientation="horizontal"
+                            android:visibility="gone"
+                            android:clipToPadding="false" />
+
+                    <!-- ==================== LICENCIAS DE PROFESIONALES ==================== -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Licencias de profesionales"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    <androidx.cardview.widget.CardView
+                            android:id="@+id/staffLicensesUpload"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_marginBottom="12dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F5F5F5"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+
+                            <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:src="@drawable/ic_documents"
+                                    android:contentDescription="Documento"/>
+
+                            <TextView
+                                    android:id="@+id/tvStaffLicensesFileName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Subir licencias de profesionales"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- RecyclerView para Licencias de Staff -->
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvStaffLicensesPhotos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:orientation="horizontal"
+                            android:visibility="gone"
+                            android:clipToPadding="false" />
+
+                    <!-- ==================== FOTOS DEL ESTABLECIMIENTO ==================== -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Fotos del establecimiento"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    <androidx.cardview.widget.CardView
+                            android:id="@+id/placePhotosUpload"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_marginBottom="12dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F5F5F5"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+
+                            <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:src="@drawable/ic_documents"
+                                    android:contentDescription="Documento"/>
+
+                            <TextView
+                                    android:id="@+id/tvPlacePhotosFileName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Subir fotos del establecimiento"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- RecyclerView para Fotos del Establecimiento -->
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvPlacePhotos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:orientation="horizontal"
+                            android:visibility="gone"
+                            android:clipToPadding="false" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Additional Information Card -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="Lunes a Viernes: 9:00 - 18:00"
-                    android:inputType="text"
-                    android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="14sp" />
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@android:color/white">
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Sitio web o redes sociales (opcional)"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-            <EditText
-                    android:id="@+id/etAffiliateSocial"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginBottom="24dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="www.miwebsite.com o @minegocio"
-                    android:inputType="text"
-                    android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="14sp" />
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:text="Información adicional"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-            <Button
+                    <!-- Description -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Descripción del negocio"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    <EditText
+                            android:id="@+id/etAffiliateDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="@drawable/edittext_background"
+                            android:gravity="top|start"
+                            android:hint="Describe los servicios que ofreces, especialidades, años de experiencia..."
+                            android:inputType="textMultiLine|textCapSentences"
+                            android:maxLines="6"
+                            android:padding="16dp"
+                            android:textColor="@color/text_primary"
+                            android:textColorHint="@color/text_hint"
+                            android:textSize="14sp" />
+
+                    <!-- Hours -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Horario de atención"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="@drawable/edittext_background"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="12dp"
+                                android:src="@drawable/ic_reloj"
+                                android:contentDescription="Horario" />
+
+                        <EditText
+                                android:id="@+id/etAffiliateHours"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:hint="Ej: Lunes a Viernes 9:00 - 18:00"
+                                android:inputType="text"
+                                android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_hint"
+                                android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <!-- Social Media (Optional) -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="Sitio web o redes sociales (opcional)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@drawable/edittext_background"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="12dp"
+                                android:src="@drawable/ic_web"
+                                android:contentDescription="Web" />
+
+                        <EditText
+                                android:id="@+id/etAffiliateSocial"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:hint="www.minegocio.com o @minegocio"
+                                android:inputType="textUri"
+                                android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_hint"
+                                android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Submit Button -->
+            <androidx.cardview.widget.CardView
                     android:id="@+id/btnSubmitAffiliate"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/button_submit_disabled"
-                    android:enabled="false"
-                    android:text="Enviar solicitud de afiliación"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="#BDBDBD"
+                    android:clickable="false"
+                    android:focusable="false">
 
-            <TextView
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Enviar solicitud de afiliación"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Review Info Card -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp"
-                    android:text="Tu solicitud será revisada en 2-3 días hábiles. Te notificaremos por email"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#FFF3E0">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                    <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_info"
+                            android:contentDescription="Información" />
+
+                    <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tu solicitud será revisada en 2-3 días hábiles. Te notificaremos por email sobre el estado de tu afiliación."
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:lineSpacingExtra="2dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
     </ScrollView>
-
 </RelativeLayout>

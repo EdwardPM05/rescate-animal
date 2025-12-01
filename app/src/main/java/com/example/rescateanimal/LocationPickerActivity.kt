@@ -7,7 +7,8 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,9 +27,10 @@ class LocationPickerActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var tvSelectedAddress: TextView
-    private lateinit var tvSelectedCoords: TextView
-    private lateinit var btnConfirmLocation: Button
+    private lateinit var tvLocationTitle: TextView
+    private lateinit var tvLocationAddress: TextView
+    private lateinit var tvLocationCoords: TextView
+    private lateinit var locationInfoCard: LinearLayout
 
     private var selectedLatLng: LatLng? = null
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
@@ -39,9 +41,10 @@ class LocationPickerActivity : AppCompatActivity(), OnMapReadyCallback {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        tvSelectedAddress = findViewById(R.id.tvSelectedAddress)
-        tvSelectedCoords = findViewById(R.id.tvSelectedCoords)
-        btnConfirmLocation = findViewById(R.id.btnConfirmLocation)
+        tvLocationTitle = findViewById(R.id.tvLocationTitle)
+        tvLocationAddress = findViewById(R.id.tvLocationAddress)
+        tvLocationCoords = findViewById(R.id.tvLocationCoords)
+        locationInfoCard = findViewById(R.id.locationInfoCard)
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -50,8 +53,8 @@ class LocationPickerActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setupUI() {
-        val btnBack = findViewById<TextView>(R.id.btnBack)
-        val btnMyLocation = findViewById<TextView>(R.id.btnMyLocation)
+        val btnBack = findViewById<ImageView>(R.id.btnBack)
+        val btnMyLocation = findViewById<ImageView>(R.id.btnMyLocation)
 
         btnBack.setOnClickListener {
             finish()
@@ -59,10 +62,6 @@ class LocationPickerActivity : AppCompatActivity(), OnMapReadyCallback {
 
         btnMyLocation.setOnClickListener {
             getCurrentLocation()
-        }
-
-        btnConfirmLocation.setOnClickListener {
-            confirmLocation()
         }
     }
 
@@ -172,7 +171,11 @@ class LocationPickerActivity : AppCompatActivity(), OnMapReadyCallback {
         val latitude = latLng.latitude
         val longitude = latLng.longitude
 
-        tvSelectedCoords.text = "Lat: ${String.format("%.6f", latitude)}, Lng: ${String.format("%.6f", longitude)}"
+        // Mostrar el card de información
+        locationInfoCard.visibility = android.view.View.VISIBLE
+
+        tvLocationTitle.text = "Ubicación en el mapa"
+        tvLocationCoords.text = "Lat: ${String.format("%.6f", latitude)}, Lng: ${String.format("%.6f", longitude)}"
 
         // Obtener dirección usando Geocoder
         try {
@@ -187,32 +190,17 @@ class LocationPickerActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (address.locality != null) append("${address.locality}")
                 }
 
-                tvSelectedAddress.text = if (addressText.isNotEmpty()) {
+                tvLocationAddress.text = if (addressText.isNotEmpty()) {
                     addressText
                 } else {
                     "Dirección no disponible"
                 }
             } else {
-                tvSelectedAddress.text = "Arrastra el mapa para seleccionar"
+                tvLocationAddress.text = "Mueve el mapa para ver la ubicación"
             }
         } catch (e: Exception) {
-            tvSelectedAddress.text = "Arrastra el mapa para seleccionar"
+            tvLocationAddress.text = "Mueve el mapa para ver la ubicación"
         }
-    }
-
-    private fun confirmLocation() {
-        if (selectedLatLng == null) {
-            showToast("Por favor selecciona una ubicación")
-            return
-        }
-
-        val resultIntent = Intent()
-        resultIntent.putExtra("latitude", selectedLatLng!!.latitude)
-        resultIntent.putExtra("longitude", selectedLatLng!!.longitude)
-        resultIntent.putExtra("address", tvSelectedAddress.text.toString())
-
-        setResult(RESULT_OK, resultIntent)
-        finish()
     }
 
     private fun showToast(message: String) {
