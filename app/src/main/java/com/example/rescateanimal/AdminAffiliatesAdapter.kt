@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-// IMPORTANTE: Importamos el modelo
 import com.example.rescateanimal.data.models.Affiliate
 
 class AdminAffiliatesAdapter(
@@ -17,19 +16,15 @@ class AdminAffiliatesAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivPhoto: ImageView = view.findViewById(R.id.ivAffiliatePhoto)
-        val tvType: TextView = view.findViewById(R.id.tvAffiliateType)
         val tvName: TextView = view.findViewById(R.id.tvAffiliateName)
+        val tvType: TextView = view.findViewById(R.id.tvAffiliateType)
         val tvAddress: TextView = view.findViewById(R.id.tvAffiliateAddress)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        // Asegúrate de que el XML se llame item_admin_affiliate_card.xml
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_affiliate_card, parent, false)
-
-        val layoutParams = view.layoutParams
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-        view.layoutParams = layoutParams
-
+            .inflate(R.layout.item_admin_affiliate_card, parent, false)
         return ViewHolder(view)
     }
 
@@ -38,21 +33,22 @@ class AdminAffiliatesAdapter(
 
         holder.tvName.text = affiliate.businessName
         holder.tvAddress.text = affiliate.address
-        holder.tvType.text = when(affiliate.type) {
-            "veterinaria" -> "🏥 Veterinaria"
-            "tienda" -> "🛍️ Tienda"
-            "albergue" -> "🏠 Albergue"
-            else -> affiliate.type.replaceFirstChar { it.uppercase() }
-        }
+        holder.tvType.text = affiliate.type.uppercase()
 
         if (affiliate.mainPhotoUrl.isNotEmpty()) {
             Glide.with(holder.itemView.context)
                 .load(affiliate.mainPhotoUrl)
                 .centerCrop()
+                .placeholder(R.drawable.ic_image) // Usa un drawable existente
                 .into(holder.ivPhoto)
+        } else {
+            holder.ivPhoto.setImageResource(R.drawable.ic_image)
         }
 
-        holder.itemView.setOnClickListener { onAffiliateClick(affiliate) }
+        // Clic en toda la tarjeta
+        holder.itemView.setOnClickListener {
+            onAffiliateClick(affiliate)
+        }
     }
 
     override fun getItemCount() = affiliatesList.size

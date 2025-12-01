@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F5F5F5">
+
+    <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:contentScrim="@color/primary_orange"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <!-- Foto del Local -->
+            <ImageView
+                    android:id="@+id/ivDetailHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_store_business"
+                    app:layout_collapseMode="parallax" />
+
+            <!-- Sombra para el texto -->
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/gradient_overlay"/>
+
+            <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbarDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:navigationIcon="@drawable/ic_arrow_back"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+            <!-- Tarjeta 1: Información Principal -->
+            <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                    <TextView
+                            android:id="@+id/tvDetailBusinessName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nombre del Negocio"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333"/>
+
+                    <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_vertical">
+
+                        <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_check_circle"
+                                app:tint="@color/primary_orange"/>
+
+                        <TextView
+                                android:id="@+id/tvDetailType"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Veterinaria"
+                                android:textColor="@color/primary_orange"
+                                android:textStyle="bold"
+                                android:layout_marginStart="6dp"/>
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="• Pendiente de Aprobación"
+                                android:textColor="#FFA000"
+                                android:layout_marginStart="8dp"
+                                android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Descripción"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <TextView
+                            android:id="@+id/tvDetailDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Descripción detallada..."
+                            android:textColor="#666666"
+                            android:layout_marginTop="4dp"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tarjeta 2: Contacto y Ubicación -->
+            <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📍 Ubicación y Contacto"
+                            android:textStyle="bold"
+                            android:textSize="16sp"/>
+
+                    <!-- Dirección -->
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="12dp">
+
+                        <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_location_pin"
+                                app:tint="#555555"
+                                android:layout_marginEnd="12dp"/>
+
+                        <TextView
+                                android:id="@+id/tvDetailAddress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Av. Principal 123"
+                                android:textColor="#333333"/>
+                    </LinearLayout>
+
+                    <!-- Persona Encargada -->
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="12dp">
+
+                        <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_person_outline"
+                                app:tint="#555555"
+                                android:layout_marginEnd="12dp"/>
+
+                        <TextView
+                                android:id="@+id/tvDetailPerson"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Encargado: Juan Pérez"
+                                android:textColor="#333333"/>
+                    </LinearLayout>
+
+                    <!-- Teléfono (USANDO TU ICONO ic_phone) -->
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="12dp">
+
+                        <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_phone"
+                                app:tint="#555555"
+                                android:layout_marginEnd="12dp"/>
+
+                        <TextView
+                                android:id="@+id/tvDetailPhone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="+51 999 999 999"
+                                android:textColor="#333333"/>
+                    </LinearLayout>
+
+                    <Button
+                            android:id="@+id/btnViewMap"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ver en Mapa"
+                            android:layout_marginTop="16dp"
+                            android:backgroundTint="#F0F0F0"
+                            android:textColor="#333333"
+                            app:icon="@drawable/ic_location_pin"
+                            app:iconTint="#333333"
+                            app:iconGravity="textStart"
+                            app:iconPadding="8dp"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tarjeta 3: Documentación -->
+            <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:layout_marginBottom="80dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📄 Documentación Adjunta"
+                            android:textStyle="bold"
+                            android:textSize="16sp"/>
+
+                    <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Revisa que las licencias sean válidas."
+                            android:textSize="12sp"
+                            android:textColor="#888888"
+                            android:layout_marginBottom="12dp"/>
+
+                    <!-- USANDO TU ICONO ic_image -->
+                    <Button
+                            android:id="@+id/btnViewLicense"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ver Licencia de Funcionamiento"
+                            android:backgroundTint="#E3F2FD"
+                            android:textColor="#1565C0"
+                            app:icon="@drawable/ic_image"
+                            app:iconTint="#1565C0"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:gravity="start|center_vertical"
+                            app:iconGravity="start"/>
+
+                    <!-- USANDO TU ICONO ic_image -->
+                    <Button
+                            android:id="@+id/btnViewStaffLicense"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ver Licencias del Personal"
+                            android:backgroundTint="#E3F2FD"
+                            android:textColor="#1565C0"
+                            app:icon="@drawable/ic_image"
+                            app:iconTint="#1565C0"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:gravity="start|center_vertical"
+                            app:iconGravity="start"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Botones de Acción Fijos Abajo -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:background="@android:color/white"
+            android:elevation="16dp">
+
+        <Button
+                android:id="@+id/btnReject"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:text="Rechazar"
+                android:textColor="#D32F2F"
+                android:backgroundTint="#FFEBEE"
+                android:layout_marginEnd="8dp"/>
+
+        <Button
+                android:id="@+id/btnApprove"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:text="Aprobar Solicitud"
+                android:backgroundTint="@color/primary_orange"
+                android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="rescate-animal.Rescateanimal.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-12-01T06:47:02.145004500Z">
+        <DropdownSelection timestamp="2025-12-01T09:54:26.789440100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\abner\.android\avd\Pixel.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\abner\.android\avd\Pixel_9a.avd" />
             </handle>
           </Target>
         </DropdownSelection>

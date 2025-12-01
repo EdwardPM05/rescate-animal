@@ -4,7 +4,6 @@
                 android:layout_height="match_parent"
                 android:background="#F5F5F5">
 
-    <!-- Encabezado -->
     <LinearLayout
             android:id="@+id/headerAffiliates"
             android:layout_width="match_parent"
@@ -30,7 +29,6 @@
                 android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- LISTA DE SOLICITUDES -->
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvAdminAffiliates"
             android:layout_width="match_parent"
@@ -39,9 +37,8 @@
             android:layout_above="@id/bottomNavigation"
             android:padding="8dp"
             android:clipToPadding="false"
-            android:visibility="gone"/> <!-- Oculto por defecto hasta cargar -->
+            android:visibility="gone"/>
 
-    <!-- ESTADO VACÍO (Se muestra si no hay datos) -->
     <LinearLayout
             android:id="@+id/emptyStateLayout"
             android:layout_width="match_parent"
@@ -57,7 +54,6 @@
                 android:src="@drawable/ic_check_circle"
                 android:tint="#CCCCCC"
                 android:contentDescription="Todo listo" />
-        <!-- Nota: Si no tienes ic_check_circle, usa cualquier icono disponible o borra el src -->
 
         <TextView
                 android:layout_width="wrap_content"
@@ -78,7 +74,6 @@
 
     </LinearLayout>
 
-    <!-- Barra de Navegación -->
     <include
             android:id="@+id/bottomNavigation"
             layout="@layout/bottom_navigation"
