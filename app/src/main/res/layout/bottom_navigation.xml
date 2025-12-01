@@ -7,7 +7,7 @@
               android:background="@android:color/white"
               android:elevation="8dp"
               android:orientation="horizontal"
-              android:weightSum="5">
+              android:weightSum="6">
 
     <!-- Inicio -->
     <LinearLayout
@@ -164,6 +164,39 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Perfil"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp" />
+
+    </LinearLayout>
+
+    <!-- Cambiar Rol (OCULTO POR DEFECTO - Solo visible para Partner/Admin) -->
+    <LinearLayout
+            android:id="@+id/navRol"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground"
+            android:paddingVertical="6dp"
+            android:visibility="gone">
+
+        <ImageView
+                android:id="@+id/iconRol"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_rol"
+                android:contentDescription="Cambiar Rol"
+                android:tint="@color/text_secondary" />
+
+        <TextView
+                android:id="@+id/textRol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Rol"
                 android:textColor="@color/text_secondary"
                 android:textSize="10sp" />
 

@@ -63,10 +63,6 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(Intent(this, EditProfileActivity::class.java))
         }
 
-        findViewById<LinearLayout>(R.id.menuMyAdoptions).setOnClickListener {
-            startActivity(Intent(this, MyAdoptionsActivity::class.java))
-        }
-
         findViewById<LinearLayout>(R.id.menuMyReports).setOnClickListener {
             startActivity(Intent(this, MyReportsActivity::class.java))
         }

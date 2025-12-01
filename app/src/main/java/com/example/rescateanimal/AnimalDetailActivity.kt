@@ -1,15 +1,14 @@
 package com.example.rescateanimal
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.example.rescateanimal.data.models.Animal
 import com.google.firebase.auth.FirebaseAuth
@@ -40,12 +39,12 @@ class AnimalDetailActivity : AppCompatActivity() {
 
     private fun setupUI() {
         // Back button
-        findViewById<TextView>(R.id.btnBack).setOnClickListener {
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             finish()
         }
 
         // Share button
-        findViewById<TextView>(R.id.btnShare).setOnClickListener {
+        findViewById<ImageView>(R.id.btnShare).setOnClickListener {
             shareAnimal()
         }
 
@@ -56,10 +55,6 @@ class AnimalDetailActivity : AppCompatActivity() {
     }
 
     private fun loadAnimalData() {
-
-        android.util.Log.d("AnimalDetail", "Animal: ${animal.name}")
-        android.util.Log.d("AnimalDetail", "isVaccinated: ${animal.isVaccinated}")
-        android.util.Log.d("AnimalDetail", "isSterilized: ${animal.isSterilized}")
         // Load photo
         Glide.with(this)
             .load(animal.photoUrl)
@@ -77,7 +72,7 @@ class AnimalDetailActivity : AppCompatActivity() {
         // Distance
         if (distance >= 0) {
             val distanceText = if (distance < 1) {
-                "${(distance * 1000).toInt()} metros de ti"
+                "${(distance * 1000).toInt()} m de ti"
             } else {
                 "${"%.1f".format(distance)} km de ti"
             }
@@ -87,37 +82,36 @@ class AnimalDetailActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.tvDistance).visibility = View.GONE
         }
 
-        // Type
-        val typeText = when (animal.type.lowercase()) {
-            "perro" -> "🐕 Perro"
-            "gato" -> "🐱 Gato"
-            else -> "🐹 Otra mascota"
+        // Set animal type icon
+        val ivAnimalTypeIcon = findViewById<ImageView>(R.id.ivAnimalTypeIcon)
+        when (animal.type.lowercase()) {
+            "perro" -> ivAnimalTypeIcon.setImageResource(R.drawable.ic_perro)
+            "gato" -> ivAnimalTypeIcon.setImageResource(R.drawable.ic_gato)
+            else -> ivAnimalTypeIcon.setImageResource(R.drawable.ic_otros)
         }
-        findViewById<TextView>(R.id.tvAnimalType).text = typeText
 
         // Health status
-        val vaccineIcon = findViewById<LinearLayout>(R.id.iconVaccinated)
-        val sterilizedIcon = findViewById<LinearLayout>(R.id.iconSterilized)
+        val vaccineIcon = findViewById<android.widget.LinearLayout>(R.id.iconVaccinated)
+        val sterilizedIcon = findViewById<android.widget.LinearLayout>(R.id.iconSterilized)
+        val tvVaccinatedStatus = findViewById<TextView>(R.id.tvVaccinatedStatus)
+        val tvSterilizedStatus = findViewById<TextView>(R.id.tvSterilizedStatus)
 
-        // Health status - Usar isVaccinated e isSterilized
+        // Vacunación
         if (animal.isVaccinated) {
-            vaccineIcon.visibility = View.VISIBLE
-            findViewById<TextView>(R.id.tvVaccinatedStatus).text = "Vacunado"
-            findViewById<TextView>(R.id.tvVaccinatedStatus).setTextColor(getColor(R.color.success_color))
+            tvVaccinatedStatus.text = "Vacunado"
+            tvVaccinatedStatus.setTextColor(getColor(R.color.success_color))
         } else {
-            vaccineIcon.visibility = View.VISIBLE
-            findViewById<TextView>(R.id.tvVaccinatedStatus).text = "No vacunado"
-            findViewById<TextView>(R.id.tvVaccinatedStatus).setTextColor(getColor(R.color.warning_color))
+            tvVaccinatedStatus.text = "No vacunado"
+            tvVaccinatedStatus.setTextColor(getColor(R.color.warning_color))
         }
 
+        // Esterilización
         if (animal.isSterilized) {
-            sterilizedIcon.visibility = View.VISIBLE
-            findViewById<TextView>(R.id.tvSterilizedStatus).text = "Esterilizado"
-            findViewById<TextView>(R.id.tvSterilizedStatus).setTextColor(getColor(R.color.success_color))
+            tvSterilizedStatus.text = "Esterilizado"
+            tvSterilizedStatus.setTextColor(getColor(R.color.success_color))
         } else {
-            sterilizedIcon.visibility = View.VISIBLE
-            findViewById<TextView>(R.id.tvSterilizedStatus).text = "No esterilizado"
-            findViewById<TextView>(R.id.tvSterilizedStatus).setTextColor(getColor(R.color.warning_color))
+            tvSterilizedStatus.text = "No esterilizado"
+            tvSterilizedStatus.setTextColor(getColor(R.color.warning_color))
         }
 
         // Description
@@ -127,28 +121,56 @@ class AnimalDetailActivity : AppCompatActivity() {
             "Sin descripción disponible"
         }
 
-        // Shelter info - Por ahora ocultamos hasta tener esta data
-        findViewById<LinearLayout>(R.id.layoutShelterInfo).visibility = View.GONE
+        // Shelter/Vet info
+        setupShelterInfo()
+    }
+
+    private fun setupShelterInfo() {
+        val cardShelterInfo = findViewById<CardView>(R.id.cardShelterInfo)
+        val ivShelterIcon = findViewById<ImageView>(R.id.ivShelterIcon)
+        val tvShelterLabel = findViewById<TextView>(R.id.tvShelterLabel)
+        val tvShelterName = findViewById<TextView>(R.id.tvShelterName)
+
+        // Determinar si es veterinaria o albergue basándose en el nombre
+        val shelterName = animal.shelterName ?: ""
+        val isVet = shelterName.contains("veterinaria", ignoreCase = true) ||
+                shelterName.contains("clínica", ignoreCase = true) ||
+                shelterName.contains("vet", ignoreCase = true)
+
+        if (isVet) {
+            // Usar icono de veterinaria (asumiendo que tienes ic_vet.png)
+            ivShelterIcon.setImageResource(R.drawable.ic_vet)
+            tvShelterLabel.text = "Veterinaria"
+        } else {
+            // Usar icono de albergue/refugio
+            ivShelterIcon.setImageResource(R.drawable.ic_rescue)
+            tvShelterLabel.text = "Albergue"
+        }
+
+        // Mostrar nombre del albergue/veterinaria si existe
+        if (shelterName.isNotEmpty()) {
+            tvShelterName.text = shelterName
+            cardShelterInfo.visibility = View.VISIBLE
+        } else {
+            cardShelterInfo.visibility = View.GONE
+        }
     }
 
     private fun contactShelter() {
         val currentUser = auth.currentUser
         if (currentUser == null) {
             Toast.makeText(this, "Debes iniciar sesión para contactar", Toast.LENGTH_SHORT).show()
-            // Redirigir al login
             startActivity(Intent(this, LoginActivity::class.java))
             return
         }
 
-        // Por ahora mostrar mensaje genérico
-        // TODO: Implementar contacto real con el albergue
         showContactOptions()
     }
 
     private fun showContactOptions() {
         val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-        builder.setTitle("Contactar con el albergue")
-        builder.setMessage("¿Estás interesado en adoptar a ${animal.name}?\n\nSe enviará tu información de contacto al albergue para que se comuniquen contigo.")
+        builder.setTitle("Contactar")
+        builder.setMessage("¿Estás interesado en adoptar a ${animal.name}?\n\nSe enviará tu información de contacto al albergue.")
         builder.setPositiveButton("Sí, estoy interesado") { dialog, _ ->
             sendAdoptionRequest()
             dialog.dismiss()
@@ -160,14 +182,11 @@ class AnimalDetailActivity : AppCompatActivity() {
     }
 
     private fun sendAdoptionRequest() {
-        // TODO: Implementar envío de solicitud a Firebase
         Toast.makeText(
             this,
             "¡Solicitud enviada! El albergue se pondrá en contacto contigo pronto",
             Toast.LENGTH_LONG
         ).show()
-
-        // Opcional: Volver a la pantalla anterior
         finish()
     }
 
@@ -182,7 +201,7 @@ class AnimalDetailActivity : AppCompatActivity() {
             
             ${animal.description}
             
-            Descarga RescateAnimal para más información sobre adopciones.
+            Descarga RescateAnimal para más información.
         """.trimIndent()
 
         val shareIntent = Intent(Intent.ACTION_SEND)

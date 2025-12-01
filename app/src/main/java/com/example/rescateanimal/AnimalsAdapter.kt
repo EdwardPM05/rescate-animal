@@ -36,9 +36,8 @@ class AnimalsAdapter(
     inner class AnimalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val ivAnimalPhoto: ImageView = itemView.findViewById(R.id.ivAnimalPhoto)
         private val tvAnimalName: TextView = itemView.findViewById(R.id.tvAnimalName)
-        private val tvAnimalType: TextView = itemView.findViewById(R.id.tvAnimalType)
-        private val tvAnimalAge: TextView = itemView.findViewById(R.id.tvAnimalAge)
         private val tvAnimalBreed: TextView = itemView.findViewById(R.id.tvAnimalBreed)
+        private val tvAnimalAge: TextView = itemView.findViewById(R.id.tvAnimalAge)
         private val tvAnimalSize: TextView = itemView.findViewById(R.id.tvAnimalSize)
         private val tvAnimalLocation: TextView = itemView.findViewById(R.id.tvAnimalLocation)
         private val tvAnimalDistance: TextView = itemView.findViewById(R.id.tvAnimalDistance)
@@ -61,19 +60,8 @@ class AnimalsAdapter(
             tvAnimalName.text = animal.name
             tvAnimalAge.text = animal.age
             tvAnimalBreed.text = animal.breed
-            tvAnimalSize.text = "Tamaño: ${animal.size}"
-            tvAnimalLocation.text = animal.location
-
-            // Set animal type with emoji
-            tvAnimalType.text = when (animal.type.lowercase()) {
-                "perro" -> "🐕 Perro"
-                "gato" -> "🐱 Gato"
-                else -> "🐹 Otro"
-            }
-
-            // Mostrar/ocultar badges de salud según el estado del animal
-            layoutVaccinated.visibility = if (animal.isVaccinated) View.VISIBLE else View.GONE
-            layoutSterilized.visibility = if (animal.isSterilized) View.VISIBLE else View.GONE
+            tvAnimalSize.text = "Tamaño: ${animal.size.lowercase()}"
+            tvAnimalLocation.text = truncateLocation(animal.location)
 
             // Distance
             if (animalWithDistance.distance >= 0) {
@@ -87,6 +75,10 @@ class AnimalsAdapter(
                 tvAnimalDistance.visibility = View.GONE
             }
 
+            // Show/hide health badges
+            layoutVaccinated.visibility = if (animal.isVaccinated) View.VISIBLE else View.GONE
+            layoutSterilized.visibility = if (animal.isSterilized) View.VISIBLE else View.GONE
+
             // Click handlers
             btnViewMore.setOnClickListener {
                 onAnimalClick(animalWithDistance)
@@ -94,6 +86,14 @@ class AnimalsAdapter(
 
             itemView.setOnClickListener {
                 onAnimalClick(animalWithDistance)
+            }
+        }
+
+        private fun truncateLocation(location: String): String {
+            return if (location.length > 20) {
+                "${location.take(20)}..."
+            } else {
+                location
             }
         }
     }

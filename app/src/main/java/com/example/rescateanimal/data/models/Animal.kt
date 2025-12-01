@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Animal(
-    val id: String = "",
+    var id: String = "",  // Cambié a 'var' para poder modificarlo
     val name: String = "",
     val type: String = "",
     val breed: String = "",
@@ -34,5 +34,5 @@ data class Animal(
 @Parcelize
 data class AnimalWithDistance(
     val animal: Animal,
-    val distance: Float
+    val distance: Float  // in kilometers, -1 if unknown
 ) : Parcelable

@@ -37,7 +37,7 @@
         <!-- Google Maps API Key -->
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyCN0iHr8y8uMW72iQeQyQ9_bnWTz0GdPlA" />
+                android:value="AIzaSyDFKgdTpfM23dGuxzmLhiS1EPvHgsClsEg" />
 
         <!-- FileProvider para compartir archivos de fotos de la cámara y perfil -->
         <provider
@@ -50,17 +50,50 @@
                     android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- MainActivity (Dashboard) -->
+        <!-- ============================================ -->
+        <!-- DISPATCHER: Punto de entrada de la app -->
+        <!-- Redirige a la Activity correcta según el rol -->
+        <!-- Usa el Splash Screen nativo de Android 12+ -->
+        <!-- ============================================ -->
         <activity
-                android:name=".MainActivity"
+                android:name=".RoleDispatcherActivity"
                 android:exported="true"
-                android:launchMode="singleTop"
-                android:theme="@style/Theme.Rescateanimal.NoAnimation">
+                android:theme="@style/Theme.Rescateanimal"
+                android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- ============================================ -->
+        <!-- ACTIVITIES PRINCIPALES POR ROL -->
+        <!-- ============================================ -->
+
+        <!-- MainActivity - SOLO para ROL USER -->
+        <activity
+                android:name=".MainActivity"
+                android:exported="false"
+                android:launchMode="singleTop"
+                android:theme="@style/Theme.Rescateanimal.NoAnimation" />
+
+        <!-- PartnerMainActivity - Activity principal para ROL PARTNER -->
+        <activity
+                android:name=".PartnerMainActivity"
+                android:exported="false"
+                android:launchMode="singleTop"
+                android:theme="@style/Theme.Rescateanimal.NoAnimation" />
+
+        <!-- AdminMetricsActivity - Activity principal para ROL ADMIN -->
+        <activity
+                android:name=".AdminMetricsActivity"
+                android:exported="false"
+                android:launchMode="singleTop"
+                android:theme="@style/Theme.Rescateanimal.NoAnimation" />
+
+        <!-- ============================================ -->
+        <!-- AUTENTICACIÓN -->
+        <!-- ============================================ -->
 
         <!-- LoginActivity -->
         <activity
@@ -74,7 +107,11 @@
                 android:exported="false"
                 android:theme="@style/Theme.Rescateanimal" />
 
-        <!-- ProfileActivity -->
+        <!-- ============================================ -->
+        <!-- PERFIL Y CONFIGURACIÓN -->
+        <!-- ============================================ -->
+
+        <!-- ProfileActivity - Compartida por todos los roles -->
         <activity
                 android:name=".ProfileActivity"
                 android:exported="false"
@@ -86,6 +123,10 @@
                 android:exported="false"
                 android:theme="@style/Theme.Rescateanimal"
                 android:windowSoftInputMode="adjustResize" />
+
+        <!-- ============================================ -->
+        <!-- ACTIVITIES DE USUARIO NORMAL -->
+        <!-- ============================================ -->
 
         <!-- MapActivity -->
         <activity
@@ -117,22 +158,7 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.Rescateanimal" />
 
-        <!-- MyAdoptionsActivity - NUEVA -->
-        <activity
-                android:name=".MyAdoptionsActivity"
-                android:exported="false"
-                android:screenOrientation="portrait"
-                android:theme="@style/Theme.Rescateanimal"
-                android:windowSoftInputMode="adjustResize" />
-
-        <!-- AdoptionDetailActivity - NUEVA -->
-        <activity
-                android:name=".AdoptionDetailActivity"
-                android:exported="false"
-                android:screenOrientation="portrait"
-                android:theme="@style/Theme.Rescateanimal" />
-
-        <!-- AdoptActivity -->
+        <!-- AdoptActivity - Pantalla de adopciones -->
         <activity
                 android:name=".AdoptActivity"
                 android:exported="false"
@@ -140,13 +166,51 @@
                 android:theme="@style/Theme.Rescateanimal.NoAnimation"
                 android:windowSoftInputMode="adjustResize" />
 
-        <!-- RegisterPetActivity -->
+        <!-- MyAdoptionsActivity -->
+        <activity
+                android:name=".MyAdoptionsActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal"
+                android:windowSoftInputMode="adjustResize" />
+
+        <!-- AdoptionDetailActivity -->
+        <activity
+                android:name=".AdoptionDetailActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal" />
+
+        <!-- AnimalDetailActivity -->
+        <activity
+                android:name=".AnimalDetailActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal" />
+
+        <!-- ============================================ -->
+        <!-- AFILIACIÓN -->
+        <!-- ============================================ -->
+
+        <!-- AffiliateActivity - Formulario de afiliación -->
+        <activity
+                android:name=".AffiliateActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal"
+                android:windowSoftInputMode="adjustResize" />
+
+        <!-- RegisterPetActivity - Registro de mascotas (Partners) -->
         <activity
                 android:name=".RegisterPetActivity"
                 android:exported="false"
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.Rescateanimal"
                 android:windowSoftInputMode="adjustResize" />
+
+        <!-- ============================================ -->
+        <!-- UTILIDADES -->
+        <!-- ============================================ -->
 
         <!-- LocationPickerActivity -->
         <activity
@@ -156,17 +220,34 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.Rescateanimal" />
 
-        <!-- AffiliateActivity -->
+        <!-- ============================================ -->
+        <!-- ADMIN ACTIVITIES - Panel de Administración -->
+        <!-- ============================================ -->
+
+        <!-- AdminReportsActivity - Gestión de Reportes -->
         <activity
-                android:name=".AffiliateActivity"
+                android:name=".AdminReportsActivity"
                 android:exported="false"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme.Rescateanimal"
-                android:windowSoftInputMode="adjustResize" />
+                android:theme="@style/Theme.Rescateanimal.NoAnimation" />
 
-        <!-- AnimalDetailActivity -->
+        <!-- AdminAffiliatesActivity - Gestión de Afiliaciones -->
         <activity
-                android:name=".AnimalDetailActivity"
+                android:name=".AdminAffiliatesActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal.NoAnimation" />
+
+        <!-- AdminUsersActivity - Gestión de Usuarios -->
+        <activity
+                android:name=".AdminUsersActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal.NoAnimation" />
+
+        <!-- AdminReportDetailActivity - Detalle de Reporte para Admin -->
+        <activity
+                android:name=".AdminReportDetailActivity"
                 android:exported="false"
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.Rescateanimal" />

@@ -6,7 +6,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
+        app:cardElevation="3dp"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground">
@@ -16,36 +16,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <!-- Animal Image con overlay para estado -->
-        <FrameLayout
+        <!-- Animal Image -->
+        <ImageView
+                android:id="@+id/ivAnimalPhoto"
                 android:layout_width="match_parent"
-                android:layout_height="220dp">
-
-            <ImageView
-                    android:id="@+id/ivAnimalPhoto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:background="@color/surface_light"
-                    android:contentDescription="Foto del animal" />
-
-            <!-- Badge de tipo de animal -->
-            <TextView
-                    android:id="@+id/tvAnimalType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="12dp"
-                    android:background="@drawable/badge_background"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:text="🐕 Perro"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:elevation="2dp" />
-
-        </FrameLayout>
+                android:layout_height="240dp"
+                android:scaleType="centerCrop"
+                android:background="#F0F0F0"
+                android:contentDescription="Foto del animal" />
 
         <!-- Animal Info -->
         <LinearLayout
@@ -55,45 +33,34 @@
                 android:padding="16dp">
 
             <!-- Name and Age -->
-            <LinearLayout
+            <TextView
+                    android:id="@+id/tvAnimalName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:text="Max"
+                    android:textColor="#212121"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
 
-                <TextView
-                        android:id="@+id/tvAnimalName"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Max"
-                        android:textColor="@color/text_primary"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:maxLines="1"
-                        android:ellipsize="end" />
+            <TextView
+                    android:id="@+id/tvAnimalAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="1 año"
+                    android:textColor="#757575"
+                    android:textSize="14sp" />
 
-                <TextView
-                        android:id="@+id/tvAnimalAge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2 años"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp"
-                        android:background="@drawable/age_badge_background"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="4dp" />
-
-            </LinearLayout>
-
-            <!-- Breed and Size -->
+            <!-- Size and Breed -->
             <TextView
                     android:id="@+id/tvAnimalBreed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Mestizo"
-                    android:textColor="@color/text_secondary"
+                    android:text="Chusco"
+                    android:textColor="#757575"
                     android:textSize="14sp" />
 
             <TextView
@@ -101,21 +68,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Tamaño: Mediano"
-                    android:textColor="@color/text_hint"
-                    android:textSize="12sp" />
+                    android:text="Tamaño: grande"
+                    android:textColor="#9E9E9E"
+                    android:textSize="13sp" />
 
-            <!-- Health Status Icons - MEJORADO CON FLEXBOX LAYOUT -->
-            <!-- Usamos android:layout_weight para distribución automática -->
+            <!-- Health Status Icons -->
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:orientation="horizontal"
-                    android:gravity="start"
-                    android:weightSum="2">
+                    android:gravity="start">
 
-                <!-- Badge Vacunado/No Vacunado -->
+                <!-- Badge Vacunado -->
                 <LinearLayout
                         android:id="@+id/layoutVaccinated"
                         android:layout_width="0dp"
@@ -123,32 +88,29 @@
                         android:layout_weight="1"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:background="@drawable/health_badge_background"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="6dp"
-                        android:layout_marginEnd="4dp">
+                        android:background="@drawable/health_badge_green"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="10dp"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="visible">
+
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_vaccine" />
 
                     <TextView
-                            android:id="@+id/tvVaccinatedIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="💉"
-                            android:textSize="12sp" />
-
-                    <TextView
-                            android:id="@+id/tvVaccinatedText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="3dp"
+                            android:layout_marginStart="6dp"
                             android:text="Vacunado"
-                            android:textColor="@color/text_primary"
-                            android:textSize="10sp"
-                            android:maxLines="1"
-                            android:ellipsize="end" />
+                            android:textColor="#4CAF50"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
 
                 </LinearLayout>
 
-                <!-- Badge Esterilizado/No Esterilizado -->
+                <!-- Badge Esterilizado -->
                 <LinearLayout
                         android:id="@+id/layoutSterilized"
                         android:layout_width="0dp"
@@ -156,28 +118,24 @@
                         android:layout_weight="1"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:background="@drawable/health_badge_background"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="6dp"
-                        android:layout_marginStart="4dp">
+                        android:background="@drawable/health_badge_blue"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="10dp"
+                        android:visibility="visible">
+
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_sterilized" />
 
                     <TextView
-                            android:id="@+id/tvSterilizedIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="✂️"
-                            android:textSize="12sp" />
-
-                    <TextView
-                            android:id="@+id/tvSterilizedText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="3dp"
+                            android:layout_marginStart="6dp"
                             android:text="Esterilizado"
-                            android:textColor="@color/text_primary"
-                            android:textSize="10sp"
-                            android:maxLines="1"
-                            android:ellipsize="end" />
+                            android:textColor="#2196F3"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -187,7 +145,7 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="16dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -195,17 +153,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="📍"
-                        android:textSize="14sp" />
+                        android:textSize="18sp" />
 
                 <TextView
                         android:id="@+id/tvAnimalLocation"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="4dp"
-                        android:text="Villa El Salvador"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
+                        android:layout_marginStart="8dp"
+                        android:text="Villa El Salvador Se..."
+                        android:textColor="#757575"
+                        android:textSize="14sp"
                         android:maxLines="1"
                         android:ellipsize="end" />
 
@@ -213,28 +171,21 @@
                         android:id="@+id/tvAnimalDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="2.5 km"
+                        android:layout_marginStart="12dp"
+                        android:text="3.9 km"
                         android:textColor="@color/primary_orange"
-                        android:textSize="13sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
             </LinearLayout>
 
-            <!-- Divider -->
-            <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="16dp"
-                    android:background="#E0E0E0" />
-
-            <!-- Action Button - Solo "Ver más" -->
+            <!-- Action Button -->
             <Button
                     android:id="@+id/btnViewMore"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/button_primary"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button_ver_mas"
                     android:text="Ver más"
                     android:textColor="@android:color/white"
                     android:textSize="15sp"

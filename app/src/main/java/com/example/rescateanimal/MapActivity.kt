@@ -38,6 +38,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.util.*
+import android.graphics.drawable.Drawable
+import androidx.core.graphics.drawable.DrawableCompat
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -152,6 +154,54 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun createMarkerFromDrawable(drawableRes: Int, backgroundColor: Int): BitmapDescriptor {
+        val size = 140
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+
+        // Sombra
+        val shadowPaint = Paint().apply {
+            color = Color.argb(80, 0, 0, 0)
+            isAntiAlias = true
+            style = Paint.Style.FILL
+        }
+        canvas.drawCircle(size / 2f + 4, size / 2f + 4, size / 2f - 10, shadowPaint)
+
+        // Fondo circular
+        val backgroundPaint = Paint().apply {
+            color = backgroundColor
+            isAntiAlias = true
+            style = Paint.Style.FILL
+        }
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f - 10, backgroundPaint)
+
+        // Borde blanco
+        val borderPaint = Paint().apply {
+            color = Color.WHITE
+            isAntiAlias = true
+            style = Paint.Style.STROKE
+            strokeWidth = 6f
+        }
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f - 13, borderPaint)
+
+        // Dibujar el ícono PNG en el centro
+        val drawable = ContextCompat.getDrawable(this, drawableRes)
+        if (drawable != null) {
+            val iconSize = 60 // Tamaño del ícono
+            val left = (size - iconSize) / 2
+            val top = (size - iconSize) / 2
+            val right = left + iconSize
+            val bottom = top + iconSize
+
+            drawable.setBounds(left, top, right, bottom)
+
+
+            drawable.draw(canvas)
+        }
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         mapReady = true
@@ -205,10 +255,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Determinar el ícono según el tipo de reporte
         val markerIcon = when (reportType) {
-            "lost" -> createEmojiIcon("🔍", Color.parseColor("#FFD740"))
-            "danger" -> createEmojiIcon("🆘", Color.parseColor("#FF5252"))
-            "abandoned" -> createEmojiIcon("🏠", Color.parseColor("#FF9800"))
-            else -> createEmojiIcon("📍", Color.parseColor("#FF6B35")) // Naranja para negocios
+            "lost" -> createMarkerFromDrawable(R.drawable.ic_lost_pet, Color.parseColor("#FFD740"))
+            "danger" -> createMarkerFromDrawable(R.drawable.ic_warning, Color.parseColor("#FF5252"))
+            "abandoned" -> createMarkerFromDrawable(R.drawable.ic_abandoned, Color.parseColor("#FF9800"))
+            else -> createMarkerFromDrawable(R.drawable.ic_pin, Color.parseColor("#FF6B35")) // Naranja para negocios
         }
 
         // Agregar marcador destacado
@@ -226,14 +276,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         // Animar la cámara hacia esa ubicación con zoom cercano
         map.animateCamera(
             CameraUpdateFactory.newLatLngZoom(location, 17f),
-            1000, // duración de la animación
+            1000,
             object : GoogleMap.CancelableCallback {
-                override fun onFinish() {
-                    // Animación completada
-                }
-                override fun onCancel() {
-                    // Animación cancelada
-                }
+                override fun onFinish() {}
+                override fun onCancel() {}
             }
         )
 
@@ -413,13 +459,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun showReportDetailsDialog(reportInfo: ReportInfo) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_report_details, null)
 
+        val ivDialogIcon = dialogView.findViewById<ImageView>(R.id.ivDialogIcon)
         val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
         val tvInfo = dialogView.findViewById<TextView>(R.id.tvDialogInfo)
         val viewPager = dialogView.findViewById<ViewPager2>(R.id.viewPagerPhotos)
         val photoIndicator = dialogView.findViewById<TextView>(R.id.tvPhotoIndicator)
         val photoContainer = dialogView.findViewById<LinearLayout>(R.id.photoContainer)
-        val btnCall = dialogView.findViewById<TextView>(R.id.btnCall)
+        val btnCall = dialogView.findViewById<LinearLayout>(R.id.btnCall)
         val btnClose = dialogView.findViewById<TextView>(R.id.btnClose)
+
+        // Establecer ícono según tipo
+        when (reportInfo.type) {
+            "danger" -> ivDialogIcon.setImageResource(R.drawable.ic_warning)
+            "lost" -> ivDialogIcon.setImageResource(R.drawable.ic_lost_pet)
+            "abandoned" -> ivDialogIcon.setImageResource(R.drawable.ic_abandoned)
+            else -> ivDialogIcon.setImageResource(R.drawable.ic_pin)
+        }
 
         tvTitle.text = reportInfo.title
 
@@ -484,16 +539,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         dialog.show()
     }
 
+
     private fun showAffiliateDetailsDialog(affiliateInfo: AffiliateInfo) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_report_details, null)
 
+        val ivDialogIcon = dialogView.findViewById<ImageView>(R.id.ivDialogIcon)
         val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
         val tvInfo = dialogView.findViewById<TextView>(R.id.tvDialogInfo)
         val viewPager = dialogView.findViewById<ViewPager2>(R.id.viewPagerPhotos)
         val photoIndicator = dialogView.findViewById<TextView>(R.id.tvPhotoIndicator)
         val photoContainer = dialogView.findViewById<LinearLayout>(R.id.photoContainer)
-        val btnCall = dialogView.findViewById<TextView>(R.id.btnCall)
+        val btnCall = dialogView.findViewById<LinearLayout>(R.id.btnCall)
         val btnClose = dialogView.findViewById<TextView>(R.id.btnClose)
+
+        // Establecer ícono según tipo de afiliado
+        when (affiliateInfo.type) {
+            "veterinaria" -> ivDialogIcon.setImageResource(R.drawable.ic_vet)
+            "tienda" -> ivDialogIcon.setImageResource(R.drawable.ic_shop)
+            "albergue" -> ivDialogIcon.setImageResource(R.drawable.ic_rescue)
+            else -> ivDialogIcon.setImageResource(R.drawable.ic_pin)
+        }
 
         tvTitle.text = affiliateInfo.businessName
 
@@ -520,17 +585,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         tvInfo.text = message
 
-        // Si la URL principal está disponible, úsala para la primera foto.
-        // Si no, se recurre al método lento loadAffiliatePhotos (listAll).
         if (affiliateInfo.mainPhotoUrl.isNotEmpty()) {
-            // Mostrar solo la URL principal inmediatamente (rápido)
             val photoUrls = listOf(affiliateInfo.mainPhotoUrl)
             photoContainer.visibility = View.VISIBLE
             val adapter = PhotoPagerAdapter(photoUrls)
             viewPager.adapter = adapter
-            photoIndicator.text = "1 / 1" // Solo una foto
+            photoIndicator.text = "1 / 1"
         } else {
-            // Recurrir al método lento para compatibilidad con documentos antiguos (que tienes ahora)
             loadAffiliatePhotos(affiliateInfo.documentId) { photoUrls ->
                 if (photoUrls.isNotEmpty()) {
                     photoContainer.visibility = View.VISIBLE
@@ -657,7 +718,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
             Glide.with(holder.itemView.context)
                 .load(photoUrls[position])
-                .placeholder(R.drawable.ic_image_placeholder)
+                .placeholder(R.drawable.ic_image)
                 .error(R.drawable.ic_image_error)
                 .centerCrop()
                 .into(holder.imageView)
@@ -875,10 +936,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun getReportTypeTitle(reportType: String): String {
         return when (reportType) {
-            "danger" -> "🆘 Animal en Peligro"
-            "lost" -> "🔍 Animal Perdido"
-            "abandoned" -> "🏠 Animal Abandonado"
-            else -> "📍 Reporte de Animal"
+            "danger" -> "Animal en Peligro"
+            "lost" -> "Animal Perdido"
+            "abandoned" -> "Animal Abandonado"
+            else -> "Reporte de Animal"
         }
     }
 
@@ -911,19 +972,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun getMarkerIconByReportType(reportType: String): BitmapDescriptor {
         return when (reportType) {
-            "danger" -> createEmojiIcon("🆘", Color.parseColor("#FF5252"))
-            "lost" -> createEmojiIcon("🔍", Color.parseColor("#FFD740"))
-            "abandoned" -> createEmojiIcon("🏠", Color.parseColor("#FF9800"))
-            else -> createEmojiIcon("📍", Color.parseColor("#42A5F5"))
+            "danger" -> createMarkerFromDrawable(R.drawable.ic_warning, Color.parseColor("#FF5252"))
+            "lost" -> createMarkerFromDrawable(R.drawable.ic_lost_pet, Color.parseColor("#FFD740"))
+            "abandoned" -> createMarkerFromDrawable(R.drawable.ic_abandoned, Color.parseColor("#FF9800"))
+            else -> createMarkerFromDrawable(R.drawable.ic_pin, Color.parseColor("#42A5F5"))
         }
     }
 
     private fun getMarkerIconByAffiliateType(type: String): BitmapDescriptor {
         return when (type) {
-            "veterinaria" -> createEmojiIcon("🏥", Color.parseColor("#26C6DA"))
-            "tienda" -> createEmojiIcon("🛍️", Color.parseColor("#AB47BC"))
-            "albergue" -> createEmojiIcon("🏡", Color.parseColor("#66BB6A"))
-            else -> createEmojiIcon("📍", Color.parseColor("#42A5F5"))
+            "veterinaria" -> createMarkerFromDrawable(R.drawable.ic_vet, Color.parseColor("#26C6DA"))
+            "tienda" -> createMarkerFromDrawable(R.drawable.ic_shop, Color.parseColor("#AB47BC"))
+            "albergue" -> createMarkerFromDrawable(R.drawable.ic_rescue, Color.parseColor("#66BB6A"))
+            else -> createMarkerFromDrawable(R.drawable.ic_pin, Color.parseColor("#42A5F5"))
         }
     }
 }

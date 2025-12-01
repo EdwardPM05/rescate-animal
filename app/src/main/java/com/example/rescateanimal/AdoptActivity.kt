@@ -12,7 +12,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rescateanimal.data.models.Animal
 import com.example.rescateanimal.data.models.AnimalWithDistance
@@ -33,20 +33,14 @@ class AdoptActivity : AppCompatActivity() {
     private lateinit var emptyState: LinearLayout
     private lateinit var tvResultCount: TextView
 
-    private lateinit var tabPerros: LinearLayout
-    private lateinit var tabGatos: LinearLayout
-    private lateinit var tabOtros: LinearLayout
-    private lateinit var tvTabPerros: TextView
-    private lateinit var tvTabGatos: TextView
-    private lateinit var tvTabOtros: TextView
-
     private lateinit var animalsAdapter: AnimalsAdapter
     private var allAnimals = listOf<Animal>()
     private var filteredAnimals = listOf<AnimalWithDistance>()
     private var userLocation: Location? = null
 
-    private var currentCategory = "perro" // Filtro activo
     private var maxDistance = 10.0f // Radio en km
+    private var currentCategory = "all" // "all", "dog", "cat", etc.
+    private var advancedFilters = AdvancedFilters() // Filtros avanzados
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 2001
 
@@ -54,10 +48,11 @@ class AdoptActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_adopt)
 
-        NavigationHelper(this).setupBottomNavigation()
-
         db = FirebaseFirestore.getInstance()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        // Get category from intent if provided
+        currentCategory = intent.getStringExtra("category") ?: "all"
 
         initializeViews()
         setupUI()
@@ -76,14 +71,6 @@ class AdoptActivity : AppCompatActivity() {
         rvAnimals = findViewById(R.id.rvAnimals)
         emptyState = findViewById(R.id.emptyState)
         tvResultCount = findViewById(R.id.tvResultCount)
-
-        tabPerros = findViewById(R.id.tabPerros)
-        tabGatos = findViewById(R.id.tabGatos)
-        tabOtros = findViewById(R.id.tabOtros)
-
-        tvTabPerros = findViewById(R.id.tvTabPerros)
-        tvTabGatos = findViewById(R.id.tvTabGatos)
-        tvTabOtros = findViewById(R.id.tvTabOtros)
     }
 
     private fun setupUI() {
@@ -109,18 +96,10 @@ class AdoptActivity : AppCompatActivity() {
             }
         })
 
-        // Category Tabs
-        tabPerros.setOnClickListener { selectCategory("perro") }
-        tabGatos.setOnClickListener { selectCategory("gato") }
-        tabOtros.setOnClickListener { selectCategory("otro") }
-
         // Filter button
-        findViewById<TextView>(R.id.btnFilter).setOnClickListener {
+        findViewById<FrameLayout>(R.id.btnFilter).setOnClickListener {
             showAdvancedFilters()
         }
-
-        // Seleccionar "Perros" por defecto
-        selectCategory("perro")
     }
 
     private fun setupRecyclerView() {
@@ -135,40 +114,9 @@ class AdoptActivity : AppCompatActivity() {
         )
 
         rvAnimals.apply {
-            layoutManager = GridLayoutManager(this@AdoptActivity, 2)
+            layoutManager = LinearLayoutManager(this@AdoptActivity)
             adapter = animalsAdapter
         }
-    }
-
-    private fun selectCategory(category: String) {
-        currentCategory = category
-
-        // Reset todas las pestañas a estado no seleccionado
-        tabPerros.setBackgroundResource(R.drawable.tab_unselected)
-        tabGatos.setBackgroundResource(R.drawable.tab_unselected)
-        tabOtros.setBackgroundResource(R.drawable.tab_unselected)
-
-        tvTabPerros.setTextColor(getColor(R.color.text_secondary))
-        tvTabGatos.setTextColor(getColor(R.color.text_secondary))
-        tvTabOtros.setTextColor(getColor(R.color.text_secondary))
-
-        // Aplicar estilo seleccionado
-        when (category) {
-            "perro" -> {
-                tabPerros.setBackgroundResource(R.drawable.tab_selected)
-                tvTabPerros.setTextColor(getColor(android.R.color.white))
-            }
-            "gato" -> {
-                tabGatos.setBackgroundResource(R.drawable.tab_selected)
-                tvTabGatos.setTextColor(getColor(android.R.color.white))
-            }
-            "otro" -> {
-                tabOtros.setBackgroundResource(R.drawable.tab_selected)
-                tvTabOtros.setTextColor(getColor(android.R.color.white))
-            }
-        }
-
-        filterAnimalsAndUpdate()
     }
 
     private fun checkLocationPermissionAndLoad() {
@@ -184,7 +132,11 @@ class AdoptActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -192,7 +144,11 @@ class AdoptActivity : AppCompatActivity() {
             } else {
                 // Sin permisos, cargar animales sin filtro de distancia
                 loadAnimalsFromFirestore()
-                Toast.makeText(this, "Permiso de ubicación requerido para mostrar distancias", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "Permiso de ubicación requerido para mostrar distancias",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -204,7 +160,11 @@ class AdoptActivity : AppCompatActivity() {
                 loadAnimalsFromFirestore()
 
                 if (location == null) {
-                    Toast.makeText(this, "No se pudo obtener la ubicación actual", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "No se pudo obtener la ubicación actual",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }.addOnFailureListener {
                 loadAnimalsFromFirestore()
@@ -232,7 +192,11 @@ class AdoptActivity : AppCompatActivity() {
                 filterAnimalsAndUpdate()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Error al cargar animales: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Error al cargar animales: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
                 showEmptyState()
             }
     }
@@ -240,15 +204,52 @@ class AdoptActivity : AppCompatActivity() {
     private fun filterAnimalsAndUpdate() {
         val searchQuery = etSearch.text.toString().lowercase().trim()
 
-        // Filter by category and search
+        // Filter by all criteria
         val filtered = allAnimals.filter { animal ->
-            val matchesCategory = animal.type.lowercase() == currentCategory
-            val matchesSearch = if (searchQuery.isEmpty()) true else {
+            // Filtro de categoría (desde el intent - perro/gato/otro)
+            val matchesCategory = if (currentCategory == "all") {
+                true
+            } else {
+                animal.type.lowercase() == currentCategory.lowercase()
+            }
+
+            // Filtro de tipo de mascota (desde filtros avanzados)
+            val matchesPetType = advancedFilters.petType?.let { petType ->
+                animal.type.lowercase() == petType.lowercase()
+            } ?: true
+
+            // Búsqueda por texto
+            val matchesSearch = if (searchQuery.isEmpty()) {
+                true
+            } else {
                 animal.name.lowercase().contains(searchQuery) ||
                         animal.breed.lowercase().contains(searchQuery) ||
                         animal.location.lowercase().contains(searchQuery)
             }
-            matchesCategory && matchesSearch
+
+            // Filtro de tamaño
+            val matchesSize = advancedFilters.size?.let { size ->
+                animal.size.lowercase() == size.lowercase()
+            } ?: true
+
+            // Filtro de edad con lógica mejorada
+            val matchesAge = advancedFilters.ageRange?.let { ageRange ->
+                matchesAgeRange(animal.age, ageRange)
+            } ?: true
+
+            // Filtro de vacunación
+            val matchesVaccinated = advancedFilters.isVaccinated?.let { vaccinated ->
+                animal.isVaccinated == vaccinated
+            } ?: true
+
+            // Filtro de esterilización
+            val matchesSterilized = advancedFilters.isSterilized?.let { sterilized ->
+                animal.isSterilized == sterilized
+            } ?: true
+
+            // Aplicar todos los filtros
+            matchesCategory && matchesPetType && matchesSearch && matchesSize &&
+                    matchesAge && matchesVaccinated && matchesSterilized
         }
 
         // Calculate distances and filter by distance
@@ -262,7 +263,9 @@ class AdoptActivity : AppCompatActivity() {
 
                     if (distance <= maxDistance) {
                         AnimalWithDistance(animal, distance)
-                    } else null
+                    } else {
+                        null
+                    }
                 } else {
                     // Include animals without location data
                     AnimalWithDistance(animal, -1f)
@@ -276,7 +279,32 @@ class AdoptActivity : AppCompatActivity() {
         updateUI()
     }
 
-    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Float {
+    private fun matchesAgeRange(age: String, ageRange: String): Boolean {
+        // Parsear edad en formato "X años Y meses" o "X años" o "Y meses"
+        val yearsMatch = Regex("""(\d+)\s*año""").find(age)
+        val monthsMatch = Regex("""(\d+)\s*mes""").find(age)
+
+        val years = yearsMatch?.groupValues?.get(1)?.toIntOrNull() ?: 0
+        val months = monthsMatch?.groupValues?.get(1)?.toIntOrNull() ?: 0
+
+        // Convertir todo a meses para comparación más precisa
+        val totalMonths = (years * 12) + months
+
+        return when (ageRange) {
+            "cachorro" -> totalMonths <= 12      // 0-1 año (0-12 meses)
+            "joven" -> totalMonths in 13..36     // 1-3 años (13-36 meses)
+            "adulto" -> totalMonths in 37..84    // 3-7 años (37-84 meses)
+            "senior" -> totalMonths > 84         // 7+ años (más de 84 meses)
+            else -> true
+        }
+    }
+
+    private fun calculateDistance(
+        lat1: Double,
+        lon1: Double,
+        lat2: Double,
+        lon2: Double
+    ): Float {
         val results = FloatArray(1)
         Location.distanceBetween(lat1, lon1, lat2, lon2, results)
         return results[0] / 1000 // Convert to kilometers
@@ -290,12 +318,11 @@ class AdoptActivity : AppCompatActivity() {
             animalsAdapter.updateAnimals(filteredAnimals)
 
             // Actualizar contador de resultados
-            val categoryName = when(currentCategory) {
-                "perro" -> "perros"
-                "gato" -> "gatos"
-                else -> "mascotas"
+            val count = filteredAnimals.size
+            tvResultCount.text = when {
+                count == 1 -> "Encontramos 1 mascota"
+                else -> "Encontramos $count mascotas"
             }
-            tvResultCount.text = "Encontramos ${filteredAnimals.size} $categoryName para ti"
         }
     }
 
@@ -311,7 +338,10 @@ class AdoptActivity : AppCompatActivity() {
     }
 
     private fun showAdvancedFilters() {
-        // TODO: Mostrar diálogo con filtros avanzados (edad, tamaño, vacunado, etc.)
-        Toast.makeText(this, "Filtros avanzados - Próximamente", Toast.LENGTH_SHORT).show()
+        val dialog = AdvancedFiltersDialog(this, advancedFilters) { filters ->
+            advancedFilters = filters
+            filterAnimalsAndUpdate()
+        }
+        dialog.show()
     }
 }

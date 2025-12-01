@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/background_light">
+                android:background="#F5F5F5">
 
     <!-- Main Content ScrollView -->
     <ScrollView
@@ -19,40 +20,37 @@
             <!-- Photo Header -->
             <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="300dp">
+                    android:layout_height="320dp">
 
                 <ImageView
                         android:id="@+id/ivAnimalPhoto"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:background="@color/surface_light" />
+                        android:background="#F0F0F0" />
 
                 <!-- Back Button -->
-                <TextView
+                <ImageView
                         android:id="@+id/btnBack"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:layout_margin="16dp"
                         android:background="@drawable/button_circular_white"
-                        android:gravity="center"
-                        android:text="←"
-                        android:textColor="@color/text_primary"
-                        android:textSize="24sp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_arrow_back"
                         android:clickable="true"
                         android:focusable="true" />
 
                 <!-- Share Button -->
-                <TextView
+                <ImageView
                         android:id="@+id/btnShare"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:layout_gravity="top|end"
                         android:layout_margin="16dp"
                         android:background="@drawable/button_circular_white"
-                        android:gravity="center"
-                        android:text="📤"
-                        android:textSize="20sp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_adoption"
                         android:clickable="true"
                         android:focusable="true" />
 
@@ -64,321 +62,298 @@
                         android:layout_gravity="bottom|end"
                         android:layout_margin="16dp"
                         android:background="@drawable/badge_distance"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp"
-                        android:text="2.5 km de ti"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="8dp"
+                        android:text="3.9 km de ti"
                         android:textColor="@android:color/white"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
                         android:visibility="gone" />
 
             </FrameLayout>
 
             <!-- Main Info Card -->
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/white"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                <!-- Name and Type -->
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                    <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                        <TextView
-                                android:id="@+id/tvAnimalName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Max"
-                                android:textColor="@color/text_primary"
-                                android:textSize="28sp"
-                                android:textStyle="bold" />
-
-                        <TextView
-                                android:id="@+id/tvAnimalType"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="🐕 Perro"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="16sp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <!-- Quick Info Grid -->
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
-                        android:orientation="horizontal">
-
-                    <!-- Raza -->
-                    <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:padding="12dp"
-                            android:background="@drawable/card_light_orange">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Raza"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="12sp" />
-
-                        <TextView
-                                android:id="@+id/tvAnimalBreed"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Mestizo"
-                                android:textColor="@color/text_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <!-- Edad -->
-                    <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:padding="12dp"
-                            android:background="@drawable/card_light_orange">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Edad"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="12sp" />
-
-                        <TextView
-                                android:id="@+id/tvAnimalAge"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="2 años"
-                                android:textColor="@color/text_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <!-- Tamaño -->
-                    <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:padding="12dp"
-                            android:background="@drawable/card_light_orange">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tamaño"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="12sp" />
-
-                        <TextView
-                                android:id="@+id/tvAnimalSize"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Mediano"
-                                android:textColor="@color/text_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <!-- Location -->
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="📍"
-                            android:textSize="18sp" />
-
-                    <TextView
-                            android:id="@+id/tvAnimalLocation"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="Villa El Salvador, Lima"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <!-- Description -->
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="Acerca de mí"
-                        android:textColor="@color/text_primary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                <TextView
-                        android:id="@+id/tvDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
-                        android:lineSpacingExtra="4dp"
-                        android:text="Soy un perro muy cariñoso y juguetón. Me encanta jugar con otros perros y con niños. Estoy buscando una familia que me dé mucho amor."
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-
-                <!-- Health Status -->
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="Estado de salud"
-                        android:textColor="@color/text_primary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
 
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
-                        android:orientation="horizontal">
-
-                    <!-- Vaccinated -->
-                    <LinearLayout
-                            android:id="@+id/iconVaccinated"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:padding="12dp"
-                            android:background="@drawable/edittext_background">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="💉"
-                                android:textSize="20sp" />
-
-                        <TextView
-                                android:id="@+id/tvVaccinatedStatus"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:text="Vacunado"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <!-- Sterilized -->
-                    <LinearLayout
-                            android:id="@+id/iconSterilized"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:padding="12dp"
-                            android:background="@drawable/edittext_background">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="✂️"
-                                android:textSize="20sp" />
-
-                        <TextView
-                                android:id="@+id/tvSterilizedStatus"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:text="Esterilizado"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <!-- Shelter Info -->
-                <LinearLayout
-                        android:id="@+id/layoutShelterInfo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/card_light_yellow"
                         android:orientation="vertical"
-                        android:padding="16dp"
-                        android:visibility="visible">
+                        android:padding="20dp">
 
+                    <!-- Name and Type -->
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="🏠"
-                                android:textSize="20sp" />
+                        <ImageView
+                                android:id="@+id/ivAnimalTypeIcon"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_perro" />
 
+                        <TextView
+                                android:id="@+id/tvAnimalName"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="12dp"
+                                android:text="Spyke"
+                                android:textColor="#212121"
+                                android:textSize="26sp"
+                                android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <!-- Quick Info Grid -->
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal">
+
+                        <!-- Raza -->
                         <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
                                 android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:background="@drawable/card_light_orange">
 
                             <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Albergue"
-                                    android:textColor="@color/text_secondary"
+                                    android:text="Raza"
+                                    android:textColor="#757575"
                                     android:textSize="12sp" />
 
                             <TextView
-                                    android:id="@+id/tvShelterName"
+                                    android:id="@+id/tvAnimalBreed"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="2dp"
-                                    android:text="Albergue Patitas Felices"
-                                    android:textColor="@color/text_primary"
-                                    android:textSize="14sp"
+                                    android:layout_marginTop="4dp"
+                                    android:text="Mestizo"
+                                    android:textColor="#212121"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <!-- Edad -->
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="8dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:background="@drawable/card_light_orange">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Edad"
+                                    android:textColor="#757575"
+                                    android:textSize="12sp" />
+
+                            <TextView
+                                    android:id="@+id/tvAnimalAge"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="1 año"
+                                    android:textColor="#212121"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <!-- Tamaño -->
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:background="@drawable/card_light_orange">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tamaño"
+                                    android:textColor="#757575"
+                                    android:textSize="12sp" />
+
+                            <TextView
+                                    android:id="@+id/tvAnimalSize"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="Mediano"
+                                    android:textColor="#212121"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Location -->
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_location_pin" />
+
+                        <TextView
+                                android:id="@+id/tvAnimalLocation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="Villa El Salvador, Lima"
+                                android:textColor="#757575"
+                                android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Description Card -->
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Acerca de mí"
+                            android:textColor="#212121"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    <TextView
+                            android:id="@+id/tvDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:lineSpacingExtra="4dp"
+                            android:text="Soy un perro muy cariñoso y juguetón..."
+                            android:textColor="#757575"
+                            android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Health Status Card -->
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Estado de salud"
+                            android:textColor="#212121"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:orientation="horizontal">
+
+                        <!-- Vaccinated -->
+                        <LinearLayout
+                                android:id="@+id/iconVaccinated"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="16dp"
+                                android:background="@drawable/health_badge_green">
+
+                            <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:src="@drawable/ic_vaccine" />
+
+                            <TextView
+                                    android:id="@+id/tvVaccinatedStatus"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:text="Vacunado"
+                                    android:textColor="#4CAF50"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <!-- Sterilized -->
+                        <LinearLayout
+                                android:id="@+id/iconSterilized"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="16dp"
+                                android:background="@drawable/health_badge_blue">
+
+                            <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:src="@drawable/ic_sterilized" />
+
+                            <TextView
+                                    android:id="@+id/tvSterilizedStatus"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:text="Esterilizado"
+                                    android:textColor="#2196F3"
+                                    android:textSize="13sp"
                                     android:textStyle="bold" />
 
                         </LinearLayout>
@@ -387,13 +362,69 @@
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Shelter/Vet Info Card -->
+            <androidx.cardview.widget.CardView
+                    android:id="@+id/cardShelterInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:visibility="visible">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="20dp">
+
+                    <ImageView
+                            android:id="@+id/ivShelterIcon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ic_rescue" />
+
+                    <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                        <TextView
+                                android:id="@+id/tvShelterLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Albergue"
+                                android:textColor="#757575"
+                                android:textSize="12sp" />
+
+                        <TextView
+                                android:id="@+id/tvShelterName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Patitas Felices"
+                                android:textColor="#212121"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
     </ScrollView>
 
-    <!-- Bottom Action Button - Solo Contactar -->
+    <!-- Bottom Action Button -->
     <LinearLayout
             android:id="@+id/bottomButtons"
             android:layout_width="match_parent"
@@ -407,7 +438,7 @@
         <Button
                 android:id="@+id/btnContactShelter"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="56dp"
                 android:background="@drawable/button_primary"
                 android:text="Contactar con el albergue"
                 android:textColor="@android:color/white"
