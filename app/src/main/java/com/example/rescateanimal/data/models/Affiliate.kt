@@ -13,6 +13,11 @@ data class Affiliate(
     val userEmail: String = "",
     val userId: String = "",
     val mainPhotoUrl: String = "",
+    // URLs de fotos organizadas por categoría
+    val photosUrls: List<String> = emptyList(),        // Fotos del negocio (carpeta photos/)
+    val licenseUrls: List<String> = emptyList(),       // Licencias del negocio (carpeta license/)
+    val staffLicensesUrls: List<String> = emptyList(), // Licencias del personal (carpeta staff_licenses/)
+
     val status: String = "pending", // pending, approved, rejected
     val verified: Boolean = false, // Si está verificado o no
     val createdAt: Long = 0L,

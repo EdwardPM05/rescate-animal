@@ -1,5 +1,6 @@
 package com.example.rescateanimal
 
+import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
@@ -30,8 +31,6 @@ class AdminAffiliatesAdapter(
         val tvVerified: TextView = view.findViewById(R.id.tvAffiliateVerified)
         val llStatusBadge: LinearLayout = view.findViewById(R.id.llStatusBadge)
         val ivStatusIcon: ImageView = view.findViewById(R.id.ivStatusIcon)
-        val btnEdit: ImageView = view.findViewById(R.id.btnEditAffiliate)
-        val btnDelete: ImageView = view.findViewById(R.id.btnDeleteAffiliate)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -106,7 +105,7 @@ class AdminAffiliatesAdapter(
             }
         }
 
-        // Verified Status - Manejo con colores hardcodeados por si no existen en resources
+        // Verified Status
         if (affiliate.verified) {
             holder.tvVerified.text = "✓ Verificado"
             try {
@@ -123,10 +122,13 @@ class AdminAffiliatesAdapter(
             }
         }
 
-        // Click Listeners
-        holder.btnEdit.setOnClickListener { onEditClick(affiliate) }
-        holder.btnDelete.setOnClickListener { onDeleteClick(affiliate) }
-        holder.itemView.setOnClickListener { onEditClick(affiliate) }
+
+        // Click en el item completo para abrir detalles
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, AffiliateDetailActivity::class.java)
+            intent.putExtra("AFFILIATE_ID", affiliate.id)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount() = affiliatesList.size

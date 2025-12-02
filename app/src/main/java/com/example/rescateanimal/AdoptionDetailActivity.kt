@@ -207,7 +207,7 @@ class AdoptionDetailActivity : AppCompatActivity() {
             tvPhotoCounter.visibility = if (photoUrls.size > 1) View.VISIBLE else View.GONE
 
             try {
-                val adapter = AnimalDetailPhotosAdapter(photoUrls)
+                val adapter =   AnimalDetailPhotosAdapter(photoUrls)
                 vpPhotos.adapter = adapter
 
                 // Update counter on page change

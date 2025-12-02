@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="#F8F9FA">
+
+    <!-- Header -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:background="@color/white"
+            android:elevation="4dp">
+
+        <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_back"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:contentDescription="Volver" />
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Detalles del Afiliado"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginStart="12dp" />
+
+    </LinearLayout>
+
+    <!-- Content Container -->
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <!-- Loading State -->
+        <LinearLayout
+                android:id="@+id/loadingState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="visible">
+
+            <ProgressBar
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:indeterminateTint="@color/primary_orange" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cargando detalles..."
+                    android:textSize="15sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="16dp" />
+
+        </LinearLayout>
+
+        <!-- Content State -->
+        <ScrollView
+                android:id="@+id/contentState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:fillViewport="true">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                <!-- Main Card with Photos and Header -->
+                <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                        <!-- Photos Section -->
+                        <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="320dp">
+
+                            <!-- Photos ViewPager2 -->
+                            <androidx.viewpager2.widget.ViewPager2
+                                    android:id="@+id/vpPhotos"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:visibility="gone" />
+
+                            <!-- No Photos Placeholder -->
+                            <LinearLayout
+                                    android:id="@+id/llNoPhotos"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:gravity="center"
+                                    android:background="#F5F5F5"
+                                    android:visibility="visible">
+
+                                <ImageView
+                                        android:layout_width="80dp"
+                                        android:layout_height="80dp"
+                                        android:src="@drawable/ic_negocio"
+                                        android:alpha="0.3"
+                                        android:contentDescription="Sin fotos" />
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Sin fotos"
+                                        android:textSize="14sp"
+                                        android:textColor="@color/text_tertiary"
+                                        android:layout_marginTop="12dp" />
+
+                            </LinearLayout>
+
+                            <!-- Gradient Overlay -->
+                            <View
+                                    android:id="@+id/vPhotoOverlay"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="100dp"
+                                    android:layout_gravity="bottom"
+                                    android:background="@drawable/gradient_overlay"
+                                    android:visibility="gone" />
+
+                            <!-- Photo Counter -->
+                            <TextView
+                                    android:id="@+id/tvPhotoCounter"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="top|end"
+                                    android:layout_margin="16dp"
+                                    android:background="@drawable/photo_counter_bg"
+                                    android:paddingStart="12dp"
+                                    android:paddingEnd="12dp"
+                                    android:paddingTop="6dp"
+                                    android:paddingBottom="6dp"
+                                    android:text="1/3"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:elevation="4dp"
+                                    android:visibility="gone" />
+
+                        </FrameLayout>
+
+                        <!-- Business Info Container -->
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="20dp">
+
+                            <!-- Business Name with Icon -->
+                            <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_marginBottom="8dp">
+
+                                <ImageView
+                                        android:id="@+id/ivBusinessTypeIcon"
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:src="@drawable/ic_negocio"
+                                        android:layout_marginEnd="8dp"
+                                        android:contentDescription="Tipo" />
+
+                                <TextView
+                                        android:id="@+id/tvBusinessName"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Nombre del Negocio"
+                                        android:textSize="24sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/text_primary" />
+
+                            </LinearLayout>
+
+                            <!-- Type Subtitle -->
+                            <TextView
+                                    android:id="@+id/tvBusinessType"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Veterinaria"
+                                    android:textSize="15sp"
+                                    android:textColor="@color/text_secondary"
+                                    android:layout_marginBottom="12dp" />
+
+                            <!-- Status and Verified Row -->
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical">
+
+                                <!-- Status Badge -->
+                                <LinearLayout
+                                        android:id="@+id/llStatusBadge"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:background="@drawable/status_badge_pending"
+                                        android:paddingStart="8dp"
+                                        android:paddingEnd="10dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:gravity="center_vertical">
+
+                                    <ImageView
+                                            android:id="@+id/ivStatusIcon"
+                                            android:layout_width="14dp"
+                                            android:layout_height="14dp"
+                                            android:src="@drawable/ic_pending"
+                                            android:layout_marginEnd="4dp"
+                                            android:contentDescription="Estado" />
+
+                                    <TextView
+                                            android:id="@+id/tvStatus"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Pendiente"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/white" />
+
+                                </LinearLayout>
+
+                                <!-- Verified Badge -->
+                                <LinearLayout
+                                        android:id="@+id/llVerifiedBadge"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:background="@drawable/status_badge_pending"
+                                        android:paddingStart="8dp"
+                                        android:paddingEnd="10dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:gravity="center_vertical"
+                                        android:layout_marginStart="8dp">
+
+                                    <TextView
+                                            android:id="@+id/tvVerified"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="⚠ Sin verificar"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/white" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Description Card -->
+                <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                        <!-- Header with Icon -->
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_info"
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Descripción" />
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Descripción del Negocio"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
+
+                        <TextView
+                                android:id="@+id/tvDescription"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Descripción del negocio..."
+                                android:textSize="14sp"
+                                android:textColor="@color/text_secondary"
+                                android:lineSpacingExtra="4dp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Contact Info Card -->
+                <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                        <!-- Header with Icon -->
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_phone"
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Contacto" />
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Información de Contacto"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
+
+                        <!-- Contact Person -->
+                        <LinearLayout
+                                android:id="@+id/llContactPerson"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginBottom="10dp"
+                                android:visibility="gone">
+
+                            <TextView
+                                    android:layout_width="120dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Persona de contacto"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/text_tertiary" />
+
+                            <TextView
+                                    android:id="@+id/tvContactPerson"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Juan Pérez"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_secondary" />
+
+                        </LinearLayout>
+
+                        <!-- Phone -->
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginBottom="10dp">
+
+                            <TextView
+                                    android:layout_width="120dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Teléfono"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/text_tertiary" />
+
+                            <TextView
+                                    android:id="@+id/tvPhone"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="999 666 888"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_secondary"
+                                    android:autoLink="phone" />
+
+                        </LinearLayout>
+
+                        <!-- Email -->
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                            <TextView
+                                    android:layout_width="120dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Correo"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/text_tertiary" />
+
+                            <TextView
+                                    android:id="@+id/tvEmail"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="negocio@example.com"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_secondary"
+                                    android:autoLink="email" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Location Card -->
+                <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                        <!-- Header with Icon -->
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_pin"
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Ubicación" />
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ubicación"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
+
+                        <TextView
+                                android:id="@+id/tvAddress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Av. Principal 123, Lima"
+                                android:textSize="14sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_marginBottom="12dp" />
+
+                        <!-- View on Map Button -->
+                        <LinearLayout
+                                android:id="@+id/btnViewMap"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:background="@drawable/button_secondary"
+                                android:gravity="center"
+                                android:padding="12dp"
+                                android:clickable="true"
+                                android:focusable="true">
+
+                            <ImageView
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:src="@drawable/ic_map"
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Mapa" />
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ver en el Mapa"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/primary_orange" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+
+                <!-- Documents Card -->
+                <androidx.cardview.widget.CardView
+                        android:id="@+id/cvDocuments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="gone">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                        <!-- Header with Icon -->
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_documents"
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Documentos" />
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Documentos Adjuntos"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
+
+                        <!-- Documents RecyclerView -->
+                        <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvDocuments"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Action Buttons -->
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="16dp">
+
+                    <!-- Approve Button -->
+                    <LinearLayout
+                            android:id="@+id/btnApprove"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/button_danger"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:layout_marginBottom="12dp">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_check"
+                                android:layout_marginEnd="8dp"
+                                android:contentDescription="Aprobar"/>
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Aprobar Afiliación"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white" />
+
+                    </LinearLayout>
+
+                    <!-- Reject Button -->
+                    <LinearLayout
+                            android:id="@+id/btnReject"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/button_primary"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:layout_marginBottom="12dp">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_error"
+                                android:layout_marginEnd="8dp"
+                                android:contentDescription="Rechazar" />
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Rechazar Afiliación"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white" />
+
+                    </LinearLayout>
+
+                    <!-- Delete Button -->
+                    <LinearLayout
+                            android:id="@+id/btnDelete"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/button_borrar"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_delete"
+                                android:layout_marginEnd="8dp"
+                                android:contentDescription="Eliminar" />
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Eliminar Afiliado"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+</LinearLayout>

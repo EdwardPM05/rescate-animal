@@ -197,35 +197,6 @@
 
         </LinearLayout>
 
-        <!-- Action Buttons -->
-        <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
-
-            <!-- Edit Button -->
-            <ImageView
-                    android:id="@+id/btnEditAffiliate"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:src="@drawable/ic_edit"
-                    android:padding="6dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Editar estado" />
-
-            <!-- Delete Button -->
-            <ImageView
-                    android:id="@+id/btnDeleteAffiliate"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:src="@drawable/ic_delete"
-                    android:padding="6dp"
-                    android:layout_marginTop="4dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Eliminar" />
-
-        </LinearLayout>
 
     </LinearLayout>
 

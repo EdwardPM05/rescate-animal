@@ -246,6 +246,8 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.Rescateanimal.NoAnimation" />
 
+        <activity android:name=".AffiliateDetailActivity" />
+
         <!-- AdminUsersActivity - Gestión de Usuarios -->
         <activity
                 android:name=".AdminUsersActivity"
