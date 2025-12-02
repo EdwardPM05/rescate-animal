@@ -31,6 +31,13 @@
     <color name="error_color">#DC3545</color>
     <color name="info_color">#17A2B8</color>
 
+    <color name="dog_light">#E3F2FD</color>
+    <color name="cat_light">#FFF3E0</color>
+    <color name="other_light">#F3E5F5</color>
+
+    <color name="status_available">#4CAF50</color>
+    <color name="status_adopted">#FF6B6B</color>
+
     <!-- Badge Colors -->
     <color name="badge_vaccinated">#4CAF50</color>
     <color name="badge_sterilized">#2196F3</color>

@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rescateanimal.data.models.Animal
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -31,7 +33,21 @@ class PartnerMainActivity : AppCompatActivity() {
     private lateinit var loadingState: LinearLayout
     private lateinit var adapter: MyAdoptionsAdapter
 
-    private val adoptionsList = mutableListOf<Animal>()
+    // Filtros
+    private lateinit var chipGroupAnimalType: ChipGroup
+    private lateinit var chipGroupPageSize: ChipGroup
+    private lateinit var chipAll: Chip
+    private lateinit var chipDog: Chip
+    private lateinit var chipCat: Chip
+    private lateinit var chipOther: Chip
+    private lateinit var chip10: Chip
+    private lateinit var chip20: Chip
+    private lateinit var chip50: Chip
+
+    private val allAdoptionsList = mutableListOf<Animal>() // Lista completa sin filtrar
+    private val filteredAdoptionsList = mutableListOf<Animal>() // Lista filtrada
+    private var currentAnimalType = "all" // all, dog, cat, other
+    private var currentPageSize = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +64,7 @@ class PartnerMainActivity : AppCompatActivity() {
         }
 
         initViews()
+        setupFilters()
         setupRecyclerView()
         setupNavigation()
         loadMyAdoptions()
@@ -80,13 +97,53 @@ class PartnerMainActivity : AppCompatActivity() {
         rvAdoptions = findViewById(R.id.rvMyAdoptions)
         emptyState = findViewById(R.id.emptyState)
         loadingState = findViewById(R.id.loadingState)
+
+        // Filtros - Tipo de Animal
+        chipGroupAnimalType = findViewById(R.id.chipGroupAnimalType)
+        chipAll = findViewById(R.id.chipAll)
+        chipDog = findViewById(R.id.chipDog)
+        chipCat = findViewById(R.id.chipCat)
+        chipOther = findViewById(R.id.chipOther)
+
+        // Filtros - Tamaño de página
+        chipGroupPageSize = findViewById(R.id.chipGroupPageSize)
+        chip10 = findViewById(R.id.chip10)
+        chip20 = findViewById(R.id.chip20)
+        chip50 = findViewById(R.id.chip50)
+    }
+
+    private fun setupFilters() {
+        // Listener para tipo de animal
+        chipGroupAnimalType.setOnCheckedStateChangeListener { _, checkedIds ->
+            if (checkedIds.isNotEmpty()) {
+                currentAnimalType = when (checkedIds[0]) {
+                    R.id.chipDog -> "dog"
+                    R.id.chipCat -> "cat"
+                    R.id.chipOther -> "other"
+                    else -> "all"
+                }
+                applyFilters()
+            }
+        }
+
+        // Listener para tamaño de página
+        chipGroupPageSize.setOnCheckedStateChangeListener { _, checkedIds ->
+            if (checkedIds.isNotEmpty()) {
+                currentPageSize = when (checkedIds[0]) {
+                    R.id.chip20 -> 20
+                    R.id.chip50 -> 50
+                    else -> 10
+                }
+                applyFilters()
+            }
+        }
     }
 
     private fun setupRecyclerView() {
         // Setup RecyclerView
         rvAdoptions.layoutManager = LinearLayoutManager(this)
         adapter = MyAdoptionsAdapter(
-            adoptionsList,
+            filteredAdoptionsList,
             onDeleteClick = { animal -> showDeleteConfirmation(animal) },
             onItemClick = { animal -> showAdoptionDetails(animal) }
         )
@@ -108,21 +165,22 @@ class PartnerMainActivity : AppCompatActivity() {
             .whereEqualTo("status", "available")
             .get()
             .addOnSuccessListener { documents ->
-                adoptionsList.clear()
+                allAdoptionsList.clear()
 
                 for (document in documents) {
                     try {
                         val animal = document.toObject(Animal::class.java).copy(id = document.id)
-                        adoptionsList.add(animal)
+                        allAdoptionsList.add(animal)
                     } catch (e: Exception) {
                         android.util.Log.e("PartnerMainActivity", "Error parsing animal: ${e.message}")
                     }
                 }
 
                 // Ordenar por fecha manualmente (más recientes primero)
-                adoptionsList.sortByDescending { it.createdAt }
+                allAdoptionsList.sortByDescending { it.createdAt }
 
-                adapter.notifyDataSetChanged()
+                // Aplicar filtros
+                applyFilters()
                 showContent()
             }
             .addOnFailureListener { e ->
@@ -130,6 +188,36 @@ class PartnerMainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error al cargar publicaciones: ${e.message}", Toast.LENGTH_LONG).show()
                 showEmpty()
             }
+    }
+
+    private fun applyFilters() {
+        filteredAdoptionsList.clear()
+
+        // Filtrar por tipo de animal
+        val filtered = when (currentAnimalType) {
+            "dog" -> allAdoptionsList.filter { it.type.equals("perro", ignoreCase = true) }
+            "cat" -> allAdoptionsList.filter { it.type.equals("gato", ignoreCase = true) }
+            "other" -> allAdoptionsList.filter {
+                !it.type.equals("perro", ignoreCase = true) &&
+                        !it.type.equals("gato", ignoreCase = true)
+            }
+            else -> allAdoptionsList
+        }
+
+        // Aplicar paginación (limitar cantidad)
+        val paginated = filtered.take(currentPageSize)
+
+        filteredAdoptionsList.addAll(paginated)
+        adapter.notifyDataSetChanged()
+
+        // Actualizar visibilidad
+        if (filteredAdoptionsList.isEmpty()) {
+            showEmpty()
+        } else {
+            rvAdoptions.visibility = View.VISIBLE
+            emptyState.visibility = View.GONE
+            loadingState.visibility = View.GONE
+        }
     }
 
     private fun showDeleteConfirmation(animal: Animal) {
@@ -148,10 +236,14 @@ class PartnerMainActivity : AppCompatActivity() {
             .delete()
             .addOnSuccessListener {
                 Toast.makeText(this, "Publicación eliminada exitosamente", Toast.LENGTH_SHORT).show()
-                adoptionsList.remove(animal)
+
+                // Remover de ambas listas
+                allAdoptionsList.remove(animal)
+                filteredAdoptionsList.remove(animal)
+
                 adapter.notifyDataSetChanged()
 
-                if (adoptionsList.isEmpty()) {
+                if (filteredAdoptionsList.isEmpty()) {
                     showEmpty()
                 }
             }
@@ -174,7 +266,7 @@ class PartnerMainActivity : AppCompatActivity() {
 
     private fun showContent() {
         loadingState.visibility = View.GONE
-        if (adoptionsList.isEmpty()) {
+        if (filteredAdoptionsList.isEmpty()) {
             showEmpty()
         } else {
             rvAdoptions.visibility = View.VISIBLE

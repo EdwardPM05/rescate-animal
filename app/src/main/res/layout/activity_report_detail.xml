@@ -1,446 +1,446 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:background="#F8F9FA">
+    <?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  android:background="#F8F9FA">
 
-    <!-- Header -->
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical"
-            android:background="@color/white"
-            android:elevation="4dp">
-
-        <ImageView
-                android:id="@+id/btnBack"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_back"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="4dp"
-                android:contentDescription="Volver" />
-
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Detalles del Reporte"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginStart="12dp" />
-
-    </LinearLayout>
-
-    <!-- Content Container -->
-    <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <!-- Loading State -->
+        <!-- Header -->
         <LinearLayout
-                android:id="@+id/loadingState"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:visibility="visible">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:background="@color/white"
+                android:elevation="4dp">
 
-            <ProgressBar
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:indeterminateTint="@color/primary" />
+            <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_back"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="4dp"
+                    android:contentDescription="Volver" />
 
             <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Cargando detalles..."
-                    android:textSize="15sp"
-                    android:textColor="@color/text_secondary"
-                    android:layout_marginTop="16dp" />
+                    android:layout_weight="1"
+                    android:text="Detalles del Reporte"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginStart="12dp" />
 
         </LinearLayout>
 
-        <!-- Content State -->
-        <ScrollView
-                android:id="@+id/contentState"
+        <!-- Content Container -->
+        <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:fillViewport="true">
+                android:layout_height="match_parent">
 
+            <!-- Loading State -->
             <LinearLayout
+                    android:id="@+id/loadingState"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:gravity="center"
+                    android:visibility="visible">
 
-                <!-- Main Card with Photos and Header -->
-                <androidx.cardview.widget.CardView
+                <ProgressBar
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:indeterminateTint="@color/primary" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cargando detalles..."
+                        android:textSize="15sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginTop="16dp" />
+
+            </LinearLayout>
+
+            <!-- Content State -->
+            <ScrollView
+                    android:id="@+id/contentState"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:fillViewport="true">
+
+                <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
-                        android:layout_marginBottom="16dp">
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                    <LinearLayout
+                    <!-- Main Card with Photos and Header -->
+                    <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="2dp"
+                            android:layout_marginBottom="16dp">
 
-                        <!-- Photos Section -->
-                        <FrameLayout
+                        <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="320dp">
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
 
-                            <!-- Photos ViewPager2 -->
-                            <androidx.viewpager2.widget.ViewPager2
-                                    android:id="@+id/vpPhotos"
+                            <!-- Photos Section -->
+                            <FrameLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:visibility="gone" />
+                                    android:layout_height="320dp">
 
-                            <!-- No Photos Placeholder -->
-                            <LinearLayout
-                                    android:id="@+id/llNoPhotos"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:gravity="center"
-                                    android:background="#F5F5F5"
-                                    android:visibility="visible">
+                                <!-- Photos ViewPager2 -->
+                                <androidx.viewpager2.widget.ViewPager2
+                                        android:id="@+id/vpPhotos"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:visibility="gone" />
 
-                                <ImageView
-                                        android:layout_width="80dp"
-                                        android:layout_height="80dp"
-                                        android:src="@drawable/ic_pet_placeholder"
-                                        android:alpha="0.3"
-                                        android:contentDescription="Sin fotos" />
+                                <!-- No Photos Placeholder -->
+                                <LinearLayout
+                                        android:id="@+id/llNoPhotos"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical"
+                                        android:gravity="center"
+                                        android:background="#F5F5F5"
+                                        android:visibility="visible">
 
+                                    <ImageView
+                                            android:layout_width="80dp"
+                                            android:layout_height="80dp"
+                                            android:src="@drawable/ic_pet_placeholder"
+                                            android:alpha="0.3"
+                                            android:contentDescription="Sin fotos" />
+
+                                    <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Sin fotos"
+                                            android:textSize="14sp"
+                                            android:textColor="@color/text_tertiary"
+                                            android:layout_marginTop="12dp" />
+
+                                </LinearLayout>
+
+                                <!-- Gradient Overlay -->
+                                <View
+                                        android:id="@+id/vPhotoOverlay"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="100dp"
+                                        android:layout_gravity="bottom"
+                                        android:background="@drawable/gradient_overlay"
+                                        android:visibility="gone" />
+
+                                <!-- Photo Counter -->
                                 <TextView
+                                        android:id="@+id/tvPhotoCounter"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Sin fotos"
-                                        android:textSize="14sp"
-                                        android:textColor="@color/text_tertiary"
-                                        android:layout_marginTop="12dp" />
+                                        android:layout_gravity="top|end"
+                                        android:layout_margin="16dp"
+                                        android:background="@drawable/photo_counter_bg"
+                                        android:paddingStart="12dp"
+                                        android:paddingEnd="12dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:text="1/3"
+                                        android:textColor="@color/white"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:elevation="4dp"
+                                        android:visibility="gone" />
+
+                            </FrameLayout>
+
+                            <!-- Report Info Container -->
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="20dp">
+
+                                <!-- Type with Icon -->
+                                <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:gravity="center_vertical"
+                                        android:layout_marginBottom="8dp">
+
+                                    <ImageView
+                                            android:id="@+id/ivReportTypeIcon"
+                                            android:layout_width="28dp"
+                                            android:layout_height="28dp"
+                                            android:src="@drawable/ic_warning"
+                                            android:layout_marginEnd="8dp"
+                                            android:contentDescription="Tipo" />
+
+                                    <TextView
+                                            android:id="@+id/tvReportType"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Animal en peligro"
+                                            android:textSize="24sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/text_primary" />
+
+                                </LinearLayout>
+
+                                <!-- Subtitle -->
+                                <TextView
+                                        android:id="@+id/tvReportSubtitle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Reporte urgente"
+                                        android:textSize="15sp"
+                                        android:textColor="@color/text_secondary"
+                                        android:layout_marginBottom="12dp" />
+
+                                <!-- Status and Date Row -->
+                                <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:gravity="center_vertical">
+
+                                    <!-- Status Badge -->
+                                    <LinearLayout
+                                            android:id="@+id/llStatusBadge"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:orientation="horizontal"
+                                            android:background="@drawable/status_badge_pending"
+                                            android:paddingStart="8dp"
+                                            android:paddingEnd="10dp"
+                                            android:paddingTop="6dp"
+                                            android:paddingBottom="6dp"
+                                            android:gravity="center_vertical">
+
+                                        <ImageView
+                                                android:id="@+id/ivStatusIcon"
+                                                android:layout_width="14dp"
+                                                android:layout_height="14dp"
+                                                android:src="@drawable/ic_pending"
+                                                android:layout_marginEnd="4dp"
+                                                android:contentDescription="Estado" />
+
+                                        <TextView
+                                                android:id="@+id/tvReportStatus"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="Pendiente"
+                                                android:textSize="12sp"
+                                                android:textStyle="bold"
+                                                android:textColor="@color/white" />
+
+                                    </LinearLayout>
+
+                                    <!-- Date -->
+                                    <TextView
+                                            android:id="@+id/tvReportDate"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="Hace 2 días"
+                                            android:textSize="13sp"
+                                            android:textColor="@color/text_tertiary"
+                                            android:layout_marginStart="12dp"
+                                            android:gravity="end" />
+
+                                </LinearLayout>
 
                             </LinearLayout>
 
-                            <!-- Gradient Overlay -->
-                            <View
-                                    android:id="@+id/vPhotoOverlay"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="100dp"
-                                    android:layout_gravity="bottom"
-                                    android:background="@drawable/gradient_overlay"
-                                    android:visibility="gone" />
+                        </LinearLayout>
 
-                            <!-- Photo Counter -->
-                            <TextView
-                                    android:id="@+id/tvPhotoCounter"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="top|end"
-                                    android:layout_margin="16dp"
-                                    android:background="@drawable/photo_counter_bg"
-                                    android:paddingStart="12dp"
-                                    android:paddingEnd="12dp"
-                                    android:paddingTop="6dp"
-                                    android:paddingBottom="6dp"
-                                    android:text="1/3"
-                                    android:textColor="@color/white"
-                                    android:textSize="12sp"
-                                    android:textStyle="bold"
-                                    android:elevation="4dp"
-                                    android:visibility="gone" />
+                    </androidx.cardview.widget.CardView>
 
-                        </FrameLayout>
+                    <!-- Description Card -->
+                    <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="2dp"
+                            android:layout_marginBottom="16dp">
 
-                        <!-- Report Info Container -->
                         <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                android:padding="20dp">
+                                android:padding="16dp">
 
-                            <!-- Type with Icon -->
+                            <!-- Header with Icon -->
                             <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
                                     android:gravity="center_vertical"
-                                    android:layout_marginBottom="8dp">
+                                    android:layout_marginBottom="12dp">
 
                                 <ImageView
-                                        android:id="@+id/ivReportTypeIcon"
-                                        android:layout_width="28dp"
-                                        android:layout_height="28dp"
-                                        android:src="@drawable/ic_warning"
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:src="@drawable/ic_info"
                                         android:layout_marginEnd="8dp"
-                                        android:contentDescription="Tipo" />
+                                        android:contentDescription="Descripción" />
 
                                 <TextView
-                                        android:id="@+id/tvReportType"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Animal en peligro"
-                                        android:textSize="24sp"
+                                        android:text="Descripción"
+                                        android:textSize="16sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/text_primary" />
 
                             </LinearLayout>
 
-                            <!-- Subtitle -->
                             <TextView
-                                    android:id="@+id/tvReportSubtitle"
+                                    android:id="@+id/tvDescription"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Reporte urgente"
-                                    android:textSize="15sp"
+                                    android:text="Descripción del reporte..."
+                                    android:textSize="14sp"
                                     android:textColor="@color/text_secondary"
-                                    android:layout_marginBottom="12dp" />
+                                    android:lineSpacingExtra="4dp" />
 
-                            <!-- Status and Date Row -->
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Location Card -->
+                    <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="2dp"
+                            android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+
+                            <!-- Header with Icon -->
                             <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_marginBottom="12dp">
+
+                                <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:src="@drawable/ic_pin"
+                                        android:layout_marginEnd="8dp"
+                                        android:contentDescription="Ubicación" />
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Ubicación"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/text_primary" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                    android:id="@+id/tvLocation"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Lima, Perú"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_secondary"
+                                    android:layout_marginBottom="6dp" />
+
+                            <TextView
+                                    android:id="@+id/tvCoordinates"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Lat: -12.046374, Lng: -77.042793"
+                                    android:textSize="12sp"
+                                    android:textColor="@color/text_tertiary"
+                                    android:layout_marginBottom="16dp" />
+
+                            <!-- Open Map Button -->
+                            <LinearLayout
+                                    android:id="@+id/btnOpenMap"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
-                                    android:gravity="center_vertical">
+                                    android:background="@drawable/button_primary"
+                                    android:gravity="center"
+                                    android:padding="14dp"
+                                    android:clickable="true"
+                                    android:focusable="true">
 
-                                <!-- Status Badge -->
-                                <LinearLayout
-                                        android:id="@+id/llStatusBadge"
+                                <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:src="@drawable/ic_map"
+                                        android:layout_marginEnd="8dp"
+                                        android:contentDescription="Mapa" />
+
+                                <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:orientation="horizontal"
-                                        android:background="@drawable/status_badge_pending"
-                                        android:paddingStart="8dp"
-                                        android:paddingEnd="10dp"
-                                        android:paddingTop="6dp"
-                                        android:paddingBottom="6dp"
-                                        android:gravity="center_vertical">
-
-                                    <ImageView
-                                            android:id="@+id/ivStatusIcon"
-                                            android:layout_width="14dp"
-                                            android:layout_height="14dp"
-                                            android:src="@drawable/ic_pending"
-                                            android:layout_marginEnd="4dp"
-                                            android:contentDescription="Estado" />
-
-                                    <TextView
-                                            android:id="@+id/tvReportStatus"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Pendiente"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold"
-                                            android:textColor="@color/white" />
-
-                                </LinearLayout>
-
-                                <!-- Date -->
-                                <TextView
-                                        android:id="@+id/tvReportDate"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:text="Hace 2 días"
-                                        android:textSize="13sp"
-                                        android:textColor="@color/text_tertiary"
-                                        android:layout_marginStart="12dp"
-                                        android:gravity="end" />
+                                        android:text="Ver en Google Maps"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/white" />
 
                             </LinearLayout>
 
                         </LinearLayout>
 
-                    </LinearLayout>
+                    </androidx.cardview.widget.CardView>
 
-                </androidx.cardview.widget.CardView>
-
-                <!-- Description Card -->
-                <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
-                        android:layout_marginBottom="16dp">
-
+                    <!-- Delete Button -->
                     <LinearLayout
+                            android:id="@+id/btnDelete"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
+                            android:orientation="horizontal"
+                            android:background="@drawable/button_danger"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:layout_marginBottom="16dp">
 
-                        <!-- Header with Icon -->
-                        <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginBottom="12dp">
-
-                            <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:src="@drawable/ic_info"
-                                    android:layout_marginEnd="8dp"
-                                    android:contentDescription="Descripción" />
-
-                            <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Descripción"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
+                        <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_delete"
+                                android:layout_marginEnd="8dp"
+                                android:contentDescription="Eliminar" />
 
                         <TextView
-                                android:id="@+id/tvDescription"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Descripción del reporte..."
-                                android:textSize="14sp"
-                                android:textColor="@color/text_secondary"
-                                android:lineSpacingExtra="4dp" />
+                                android:text="Eliminar Reporte"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white" />
 
                     </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- Location Card -->
-                <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
-                        android:layout_marginBottom="16dp">
-
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                        <!-- Header with Icon -->
-                        <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginBottom="12dp">
-
-                            <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:src="@drawable/ic_pin"
-                                    android:layout_marginEnd="8dp"
-                                    android:contentDescription="Ubicación" />
-
-                            <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Ubicación"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
-
-                        <TextView
-                                android:id="@+id/tvLocation"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Lima, Perú"
-                                android:textSize="14sp"
-                                android:textColor="@color/text_secondary"
-                                android:layout_marginBottom="6dp" />
-
-                        <TextView
-                                android:id="@+id/tvCoordinates"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Lat: -12.046374, Lng: -77.042793"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_tertiary"
-                                android:layout_marginBottom="16dp" />
-
-                        <!-- Open Map Button -->
-                        <LinearLayout
-                                android:id="@+id/btnOpenMap"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:background="@drawable/button_primary"
-                                android:gravity="center"
-                                android:padding="14dp"
-                                android:clickable="true"
-                                android:focusable="true">
-
-                            <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:src="@drawable/ic_map"
-                                    android:layout_marginEnd="8dp"
-                                    android:contentDescription="Mapa" />
-
-                            <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Ver en Google Maps"
-                                    android:textSize="15sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/white" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- Delete Button -->
-                <LinearLayout
-                        android:id="@+id/btnDelete"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="@drawable/button_danger"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_marginBottom="16dp">
-
-                    <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_delete"
-                            android:layout_marginEnd="8dp"
-                            android:contentDescription="Eliminar" />
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Eliminar Reporte"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/white" />
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </ScrollView>
 
-        </ScrollView>
+        </FrameLayout>
 
-    </FrameLayout>
-
-</LinearLayout>
+    </LinearLayout>
