@@ -195,7 +195,7 @@ class NavigationHelper(private val activity: Activity) {
 
         // Configurar iconos y textos para Partner
         updateNavItem(R.id.navInicio, R.drawable.ic_adopciones, "Adopciones")
-        updateNavItem(R.id.navMapa, R.drawable.ic_map, "Mapa")
+        updateNavItem(R.id.navMapa, R.drawable.nav_map, "Mapa")
         updateNavItem(R.id.navPerfil, R.drawable.nav_profile, "Perfil")
 
         // Mostrar botón de rol
@@ -221,10 +221,10 @@ class NavigationHelper(private val activity: Activity) {
             }
         }
 
-        // Mapa
+        // Mapa (CORREGIDO: Ahora navega a MapPartnerActivity)
         navMapa?.setOnClickListener {
-            if (activity !is MapActivity) {
-                navigateToActivity(MapActivity::class.java)
+            if (activity !is MapPartnerActivity) {
+                navigateToActivity(MapPartnerActivity::class.java)
             }
         }
 
@@ -336,7 +336,7 @@ class NavigationHelper(private val activity: Activity) {
     private fun getSelectedTabForPartner(): LinearLayout? {
         return when (activity::class.java.simpleName) {
             "PartnerMainActivity" -> activity.findViewById(R.id.navInicio)
-            "MapActivity" -> activity.findViewById(R.id.navMapa)
+            "MapPartnerActivity" -> activity.findViewById(R.id.navMapa) // ✅ CORREGIDO
             "ProfileActivity" -> activity.findViewById(R.id.navPerfil)
             else -> null
         }

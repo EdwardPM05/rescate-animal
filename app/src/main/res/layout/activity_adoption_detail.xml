@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:background="@color/background_light">
+              android:background="#F8F9FA">
 
     <!-- Header -->
     <LinearLayout
@@ -16,15 +16,14 @@
             android:background="@color/white"
             android:elevation="4dp">
 
-        <TextView
+        <ImageView
                 android:id="@+id/btnBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="←"
-                android:textSize="24sp"
-                android:textColor="@color/primary"
-                android:gravity="center"
-                android:background="?attr/selectableItemBackgroundBorderless" />
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_back"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:contentDescription="Volver" />
 
         <TextView
                 android:layout_width="0dp"
@@ -34,7 +33,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
-                android:layout_marginStart="8dp" />
+                android:layout_marginStart="12dp" />
 
     </LinearLayout>
 
@@ -61,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cargando detalles..."
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:textColor="@color/text_secondary"
                     android:layout_marginTop="16dp" />
 
@@ -72,7 +71,8 @@
                 android:id="@+id/contentState"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:fillViewport="true">
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -80,220 +80,184 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                <!-- Pet Header Card -->
+                <!-- Main Card with Photos and Header -->
                 <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp"
+                        app:cardElevation="2dp"
                         android:layout_marginBottom="16dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="20dp">
+                            android:orientation="vertical">
 
-                        <!-- Pet Name and Species -->
-                        <TextView
-                                android:id="@+id/tvPetName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Nombre de la mascota"
-                                android:textSize="28sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_primary" />
-
-                        <TextView
-                                android:id="@+id/tvPetSpecies"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="🐕 Perro"
-                                android:textSize="18sp"
-                                android:textColor="@color/primary"
-                                android:layout_marginTop="4dp" />
-
-                        <!-- Date -->
-                        <TextView
-                                android:id="@+id/tvPetDate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Publicado hace 2 días"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_tertiary"
-                                android:layout_marginTop="8dp" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- Photos Section -->
-                <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp"
-                        android:layout_marginBottom="16dp">
-
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="📸 Fotos"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_primary"
-                                android:layout_marginBottom="12dp" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvPhotos"
+                        <!-- Photos Section -->
+                        <FrameLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:clipToPadding="false"
-                                android:visibility="visible" />
+                                android:layout_height="320dp">
 
-                        <TextView
-                                android:id="@+id/tvNoPhotos"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="No hay fotos disponibles"
-                                android:textSize="14sp"
-                                android:textColor="@color/text_secondary"
-                                android:visibility="gone" />
+                            <!-- Photos ViewPager2 -->
+                            <androidx.viewpager2.widget.ViewPager2
+                                    android:id="@+id/vpPhotos"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:visibility="gone" />
 
-                    </LinearLayout>
+                            <!-- No Photos Placeholder -->
+                            <LinearLayout
+                                    android:id="@+id/llNoPhotos"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:gravity="center"
+                                    android:background="#F5F5F5"
+                                    android:visibility="visible">
 
-                </androidx.cardview.widget.CardView>
+                                <ImageView
+                                        android:layout_width="80dp"
+                                        android:layout_height="80dp"
+                                        android:src="@drawable/ic_pet_placeholder"
+                                        android:alpha="0.3"
+                                        android:contentDescription="Sin fotos" />
 
-                <!-- Basic Info Card -->
-                <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp"
-                        android:layout_marginBottom="16dp">
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Sin fotos"
+                                        android:textSize="14sp"
+                                        android:textColor="@color/text_tertiary"
+                                        android:layout_marginTop="12dp" />
 
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
+                            </LinearLayout>
 
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="ℹ️ Información Básica"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_primary"
-                                android:layout_marginBottom="16dp" />
+                            <!-- Gradient Overlay -->
+                            <View
+                                    android:id="@+id/vPhotoOverlay"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="100dp"
+                                    android:layout_gravity="bottom"
+                                    android:background="@drawable/gradient_overlay"
+                                    android:visibility="gone" />
 
-                        <!-- Breed -->
+                            <!-- Photo Counter -->
+                            <TextView
+                                    android:id="@+id/tvPhotoCounter"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="top|end"
+                                    android:layout_margin="16dp"
+                                    android:background="@drawable/photo_counter_bg"
+                                    android:paddingStart="12dp"
+                                    android:paddingEnd="12dp"
+                                    android:paddingTop="6dp"
+                                    android:paddingBottom="6dp"
+                                    android:text="1/3"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:elevation="4dp"
+                                    android:visibility="gone" />
+
+                        </FrameLayout>
+
+                        <!-- Pet Info Container -->
                         <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginBottom="12dp">
+                                android:orientation="vertical"
+                                android:padding="20dp">
 
-                            <TextView
-                                    android:layout_width="120dp"
+                            <!-- Name with Icon -->
+                            <LinearLayout
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Raza:"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_secondary" />
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_marginBottom="8dp">
 
+                                <ImageView
+                                        android:id="@+id/ivPetTypeIcon"
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:src="@drawable/ic_perro"
+                                        android:layout_marginEnd="8dp"
+                                        android:contentDescription="Tipo" />
+
+                                <TextView
+                                        android:id="@+id/tvPetName"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Nombre de la mascota"
+                                        android:textSize="24sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/text_primary" />
+
+                            </LinearLayout>
+
+                            <!-- Subtitle -->
                             <TextView
-                                    android:id="@+id/tvPetBreed"
-                                    android:layout_width="0dp"
+                                    android:id="@+id/tvPetSubtitle"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Labrador"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
+                                    android:text="Buscando hogar"
+                                    android:textSize="15sp"
+                                    android:textColor="@color/text_secondary"
+                                    android:layout_marginBottom="12dp" />
 
-                        </LinearLayout>
-
-                        <!-- Age -->
-                        <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginBottom="12dp">
-
-                            <TextView
-                                    android:layout_width="120dp"
+                            <!-- Species and Date Row -->
+                            <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Edad:"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_secondary" />
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical">
 
-                            <TextView
-                                    android:id="@+id/tvPetAge"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="2 años"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
+                                <!-- Species Badge -->
+                                <LinearLayout
+                                        android:id="@+id/llSpeciesBadge"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:background="@drawable/status_badge_pending"
+                                        android:paddingStart="8dp"
+                                        android:paddingEnd="10dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:gravity="center_vertical">
 
-                        </LinearLayout>
+                                    <ImageView
+                                            android:id="@+id/ivSpeciesIcon"
+                                            android:layout_width="14dp"
+                                            android:layout_height="14dp"
+                                            android:src="@drawable/ic_adoptions"
+                                            android:layout_marginEnd="4dp"
+                                            android:contentDescription="Especie" />
 
-                        <!-- Gender -->
-                        <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginBottom="12dp">
+                                    <TextView
+                                            android:id="@+id/tvPetSpecies"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Perro"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/white" />
 
-                            <TextView
-                                    android:layout_width="120dp"
-                                    android:layout_height="wrap_content"
-                                    android:text="Género:"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_secondary" />
+                                </LinearLayout>
 
-                            <TextView
-                                    android:id="@+id/tvPetGender"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="♂ Macho"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
+                                <!-- Date -->
+                                <TextView
+                                        android:id="@+id/tvPetDate"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Hace 2 días"
+                                        android:textSize="13sp"
+                                        android:textColor="@color/text_tertiary"
+                                        android:layout_marginStart="12dp"
+                                        android:gravity="end" />
 
-                        </LinearLayout>
-
-                        <!-- Size -->
-                        <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                            <TextView
-                                    android:layout_width="120dp"
-                                    android:layout_height="wrap_content"
-                                    android:text="Tamaño:"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_secondary" />
-
-                            <TextView
-                                    android:id="@+id/tvPetSize"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Mediano"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
+                            </LinearLayout>
 
                         </LinearLayout>
 
@@ -306,7 +270,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp"
+                        app:cardElevation="2dp"
                         android:layout_marginBottom="16dp">
 
                     <LinearLayout
@@ -315,14 +279,30 @@
                             android:orientation="vertical"
                             android:padding="16dp">
 
-                        <TextView
+                        <!-- Header with Icon -->
+                        <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="📝 Descripción"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_primary"
-                                android:layout_marginBottom="8dp" />
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_info"
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Descripción" />
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Descripción"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
 
                         <TextView
                                 android:id="@+id/tvDescription"
@@ -331,7 +311,124 @@
                                 android:text="Descripción de la mascota..."
                                 android:textSize="14sp"
                                 android:textColor="@color/text_secondary"
-                                android:lineSpacingMultiplier="1.3" />
+                                android:lineSpacingExtra="4dp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Basic Info Card -->
+                <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                        <!-- Header with Icon -->
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_info"
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Información" />
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Información Básica"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
+
+                        <!-- Breed -->
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginBottom="10dp">
+
+                            <TextView
+                                    android:layout_width="100dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Raza"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/text_tertiary" />
+
+                            <TextView
+                                    android:id="@+id/tvPetBreed"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Labrador"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_secondary" />
+
+                        </LinearLayout>
+
+                        <!-- Age -->
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginBottom="10dp">
+
+                            <TextView
+                                    android:layout_width="100dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Edad"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/text_tertiary" />
+
+                            <TextView
+                                    android:id="@+id/tvPetAge"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="2 años"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_secondary" />
+
+                        </LinearLayout>
+
+                        <!-- Size -->
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                            <TextView
+                                    android:layout_width="100dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tamaño"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/text_tertiary" />
+
+                            <TextView
+                                    android:id="@+id/tvPetSize"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Mediano"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_secondary" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -342,7 +439,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp"
+                        app:cardElevation="2dp"
                         android:layout_marginBottom="16dp">
 
                     <LinearLayout
@@ -351,28 +448,44 @@
                             android:orientation="vertical"
                             android:padding="16dp">
 
-                        <TextView
+                        <!-- Header with Icon -->
+                        <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="🏥 Información de Salud"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_primary"
-                                android:layout_marginBottom="16dp" />
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_health"
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Salud" />
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Información de Salud"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
 
                         <!-- Health Status -->
                         <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:layout_marginBottom="12dp">
+                                android:layout_marginBottom="10dp">
 
                             <TextView
-                                    android:layout_width="120dp"
+                                    android:layout_width="100dp"
                                     android:layout_height="wrap_content"
-                                    android:text="Estado:"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_secondary" />
+                                    android:text="Estado"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/text_tertiary" />
 
                             <TextView
                                     android:id="@+id/tvHealthStatus"
@@ -381,8 +494,7 @@
                                     android:layout_weight="1"
                                     android:text="Saludable"
                                     android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
+                                    android:textColor="@color/text_secondary" />
 
                         </LinearLayout>
 
@@ -391,24 +503,23 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:layout_marginBottom="12dp">
+                                android:layout_marginBottom="10dp">
 
                             <TextView
-                                    android:layout_width="120dp"
+                                    android:layout_width="100dp"
                                     android:layout_height="wrap_content"
-                                    android:text="Vacunado:"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_secondary" />
+                                    android:text="Vacunado"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/text_tertiary" />
 
                             <TextView
                                     android:id="@+id/tvVaccinated"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="✅ Sí"
+                                    android:text="Sí"
                                     android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
+                                    android:textColor="@color/text_secondary" />
 
                         </LinearLayout>
 
@@ -419,21 +530,20 @@
                                 android:orientation="horizontal">
 
                             <TextView
-                                    android:layout_width="120dp"
+                                    android:layout_width="100dp"
                                     android:layout_height="wrap_content"
-                                    android:text="Esterilizado:"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_secondary" />
+                                    android:text="Esterilizado"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/text_tertiary" />
 
                             <TextView
                                     android:id="@+id/tvSterilized"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="✅ Sí"
+                                    android:text="Sí"
                                     android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
+                                    android:textColor="@color/text_secondary" />
 
                         </LinearLayout>
 
@@ -446,7 +556,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp"
+                        app:cardElevation="2dp"
                         android:layout_marginBottom="16dp">
 
                     <LinearLayout
@@ -455,14 +565,30 @@
                             android:orientation="vertical"
                             android:padding="16dp">
 
-                        <TextView
+                        <!-- Header with Icon -->
+                        <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="📍 Ubicación"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_primary"
-                                android:layout_marginBottom="8dp" />
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_pin"
+                                    android:layout_marginEnd="8dp"
+                                    android:contentDescription="Ubicación" />
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ubicación"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
 
                         <TextView
                                 android:id="@+id/tvLocation"
@@ -476,98 +602,35 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Contact Card -->
-                <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp"
-                        android:layout_marginBottom="16dp">
-
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="📞 Contacto"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_primary"
-                                android:layout_marginBottom="12dp" />
-
-                        <!-- Phone -->
-                        <TextView
-                                android:id="@+id/tvPhone"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="+51 999 999 999"
-                                android:textSize="16sp"
-                                android:textColor="@color/text_primary"
-                                android:layout_marginBottom="12dp" />
-
-                        <!-- Contact Buttons -->
-                        <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center">
-
-                            <!-- Call Button -->
-                            <TextView
-                                    android:id="@+id/btnCallPhone"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="📞 Llamar"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/white"
-                                    android:background="@drawable/button_primary"
-                                    android:gravity="center"
-                                    android:padding="12dp"
-                                    android:layout_marginEnd="8dp"
-                                    android:clickable="true"
-                                    android:focusable="true" />
-
-                            <!-- WhatsApp Button -->
-                            <TextView
-                                    android:id="@+id/btnWhatsApp"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="💬 WhatsApp"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/white"
-                                    android:background="@drawable/button_success"
-                                    android:gravity="center"
-                                    android:padding="12dp"
-                                    android:layout_marginStart="8dp"
-                                    android:clickable="true"
-                                    android:focusable="true" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
                 <!-- Delete Button -->
-                <Button
+                <LinearLayout
                         android:id="@+id/btnDelete"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="🗑️ Eliminar Publicación"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"
+                        android:orientation="horizontal"
                         android:background="@drawable/button_danger"
+                        android:gravity="center"
                         android:padding="16dp"
-                        android:layout_marginBottom="16dp" />
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginBottom="16dp">
+
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_delete"
+                            android:layout_marginEnd="8dp"
+                            android:contentDescription="Eliminar" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Eliminar Publicación"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

@@ -3,9 +3,9 @@
                                    xmlns:app="http://schemas.android.com/apk/res-auto"
                                    android:layout_width="match_parent"
                                    android:layout_height="wrap_content"
-                                   android:layout_marginBottom="16dp"
+                                   android:layout_marginBottom="12dp"
                                    app:cardCornerRadius="16dp"
-                                   app:cardElevation="4dp"
+                                   app:cardElevation="2dp"
                                    android:clickable="true"
                                    android:focusable="true"
                                    android:foreground="?attr/selectableItemBackground">
@@ -16,15 +16,41 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
-        <!-- Pet Photo -->
-        <ImageView
-                android:id="@+id/ivPetPhoto"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop"
-                android:background="@drawable/rounded_corner_16"
-                android:clipToOutline="true"
-                android:src="@drawable/ic_pet_placeholder" />
+        <!-- Pet Photo/Icon Container -->
+        <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+
+            <!-- ImageView for Photo -->
+            <ImageView
+                    android:id="@+id/ivPetPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/rounded_corner_16"
+                    android:clipToOutline="true"
+                    android:contentDescription="Foto de la mascota" />
+
+            <!-- Icon Background (when no photo) -->
+            <View
+                    android:id="@+id/vIconBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_corner_16"
+                    android:backgroundTint="#F5F5F5"
+                    android:visibility="gone" />
+
+            <!-- ImageView for Icon -->
+            <ImageView
+                    android:id="@+id/ivPetIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_pet_placeholder"
+                    android:contentDescription="Icono de mascota"
+                    android:visibility="gone" />
+
+        </FrameLayout>
 
         <!-- Pet Info -->
         <LinearLayout
@@ -32,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginEnd="8dp">
 
             <!-- Pet Name -->
@@ -41,35 +67,67 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nombre de la mascota"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:maxLines="1"
                     android:ellipsize="end" />
 
-            <!-- Pet Details -->
-            <TextView
-                    android:id="@+id/tvPetInfo"
+            <!-- Pet Details with Icon -->
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🐕 Labrador • 2 años • Macho"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
+                    android:orientation="horizontal"
                     android:layout_marginTop="4dp"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
+                    android:gravity="center_vertical">
 
-            <!-- Location -->
-            <TextView
-                    android:id="@+id/tvPetLocation"
-                    android:layout_width="wrap_content"
+                <ImageView
+                        android:id="@+id/ivPetTypeIcon"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_pet_placeholder"
+                        android:layout_marginEnd="4dp"
+                        android:contentDescription="Tipo de mascota" />
+
+                <TextView
+                        android:id="@+id/tvPetInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Perro • 2 años • Macho"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+            </LinearLayout>
+
+            <!-- Location with Icon -->
+            <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📍 Lima, Perú"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary"
+                    android:orientation="horizontal"
                     android:layout_marginTop="4dp"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
+                    android:gravity="center_vertical">
+
+                <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@drawable/ic_pin"
+                        android:layout_marginEnd="4dp"
+                        android:contentDescription="Ubicación" />
+
+                <TextView
+                        android:id="@+id/tvPetLocation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Lima, Perú"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+            </LinearLayout>
 
             <!-- Status and Date Container -->
             <LinearLayout
@@ -79,19 +137,37 @@
                     android:layout_marginTop="8dp"
                     android:gravity="center_vertical">
 
-                <!-- Status Badge -->
-                <TextView
-                        android:id="@+id/tvPetStatus"
+                <!-- Status Badge with Icon -->
+                <LinearLayout
+                        android:id="@+id/llStatusBadge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="✅ Disponible"
-                        android:textSize="11sp"
-                        android:textColor="@color/white"
+                        android:orientation="horizontal"
                         android:background="@drawable/status_badge_available"
-                        android:paddingStart="8dp"
+                        android:paddingStart="6dp"
                         android:paddingEnd="8dp"
                         android:paddingTop="4dp"
-                        android:paddingBottom="4dp" />
+                        android:paddingBottom="4dp"
+                        android:gravity="center_vertical">
+
+                    <ImageView
+                            android:id="@+id/ivStatusIcon"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:src="@drawable/ic_check"
+                            android:layout_marginEnd="4dp"
+                            android:contentDescription="Estado" />
+
+                    <TextView
+                            android:id="@+id/tvPetStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Disponible"
+                            android:textSize="11sp"
+                            android:textColor="@color/white"
+                            android:textStyle="bold" />
+
+                </LinearLayout>
 
                 <!-- Date -->
                 <TextView
@@ -110,15 +186,15 @@
         </LinearLayout>
 
         <!-- Delete Button -->
-        <TextView
+        <ImageView
                 android:id="@+id/btnDeleteAdoption"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="🗑️"
-                android:textSize="20sp"
-                android:gravity="center"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_delete"
+                android:padding="6dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:contentDescription="Eliminar publicación" />
 
     </LinearLayout>
 

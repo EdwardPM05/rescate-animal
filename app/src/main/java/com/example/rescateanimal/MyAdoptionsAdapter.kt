@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -21,29 +23,74 @@ class MyAdoptionsAdapter(
 
     inner class AdoptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivPetPhoto: ImageView = itemView.findViewById(R.id.ivPetPhoto)
+        val vIconBackground: View = itemView.findViewById(R.id.vIconBackground)
+        val ivPetIcon: ImageView = itemView.findViewById(R.id.ivPetIcon)
+        val ivPetTypeIcon: ImageView = itemView.findViewById(R.id.ivPetTypeIcon)
         val tvPetName: TextView = itemView.findViewById(R.id.tvPetName)
         val tvPetInfo: TextView = itemView.findViewById(R.id.tvPetInfo)
         val tvPetDate: TextView = itemView.findViewById(R.id.tvPetDate)
         val tvPetLocation: TextView = itemView.findViewById(R.id.tvPetLocation)
+        val llStatusBadge: LinearLayout = itemView.findViewById(R.id.llStatusBadge)
+        val ivStatusIcon: ImageView = itemView.findViewById(R.id.ivStatusIcon)
         val tvPetStatus: TextView = itemView.findViewById(R.id.tvPetStatus)
-        val btnDelete: TextView = itemView.findViewById(R.id.btnDeleteAdoption)
+        val btnDelete: ImageView = itemView.findViewById(R.id.btnDeleteAdoption)
 
         fun bind(animal: Animal) {
             // Pet name
-            tvPetName.text = animal.name
+            tvPetName.text = animal.name.ifEmpty { "Sin nombre" }
 
-            // Pet info (type, breed, age)
+            // Load photo or show icon
+            if (animal.photoUrl.isNotEmpty()) {
+                // Show photo
+                ivPetPhoto.visibility = View.VISIBLE
+                vIconBackground.visibility = View.GONE
+                ivPetIcon.visibility = View.GONE
+
+                android.util.Log.d("MyAdoptionsAdapter", "Cargando foto: ${animal.photoUrl}")
+
+                Glide.with(itemView.context)
+                    .load(animal.photoUrl)
+                    .transform(CenterCrop(), RoundedCorners(24))
+                    .placeholder(R.drawable.ic_pet_placeholder)
+                    .error(R.drawable.ic_pet_placeholder)
+                    .into(ivPetPhoto)
+            } else {
+                // Show icon
+                ivPetPhoto.visibility = View.GONE
+                vIconBackground.visibility = View.VISIBLE
+                ivPetIcon.visibility = View.VISIBLE
+            }
+
+            // Set icon based on pet type
+            when (animal.type.lowercase()) {
+                "perro", "dog" -> {
+                    ivPetIcon.setImageResource(R.drawable.ic_perro)
+                    ivPetTypeIcon.setImageResource(R.drawable.ic_perro)
+                    vIconBackground.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.dog_light)
+                }
+                "gato", "cat" -> {
+                    ivPetIcon.setImageResource(R.drawable.ic_gato)
+                    ivPetTypeIcon.setImageResource(R.drawable.ic_gato)
+                    vIconBackground.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.cat_light)
+                }
+                else -> {
+                    ivPetIcon.setImageResource(R.drawable.ic_otros)
+                    ivPetTypeIcon.setImageResource(R.drawable.ic_otros)
+                    vIconBackground.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.other_light)
+                }
+            }
+
+            // Pet info (type, breed, age, size)
             val infoText = buildString {
-                append(getSpeciesEmoji(animal.type))
-                append(" ")
-                append(animal.breed)
+                append(animal.type.replaceFirstChar { it.uppercase() })
+                if (animal.breed.isNotEmpty()) {
+                    append(" • ${animal.breed}")
+                }
                 if (animal.age.isNotEmpty()) {
-                    append(" • ")
-                    append(animal.age)
+                    append(" • ${animal.age}")
                 }
                 if (animal.size.isNotEmpty()) {
-                    append(" • ")
-                    append(getSizeText(animal.size))
+                    append(" • ${getSizeText(animal.size)}")
                 }
             }
             tvPetInfo.text = infoText
@@ -53,22 +100,30 @@ class MyAdoptionsAdapter(
 
             // Location (first part of address)
             val locationText = animal.location.split(",").take(2).joinToString(", ").ifEmpty { "Ubicación no disponible" }
-            tvPetLocation.text = "📍 $locationText"
+            tvPetLocation.text = locationText
 
             // Status
-            tvPetStatus.text = "✅ Disponible"
-            tvPetStatus.setBackgroundResource(R.drawable.status_badge_available)
-
-            // Load pet photo
-            if (animal.photoUrl.isNotEmpty()) {
-                Glide.with(itemView.context)
-                    .load(animal.photoUrl)
-                    .transform(CenterCrop(), RoundedCorners(24))
-                    .placeholder(R.drawable.ic_pet_placeholder)
-                    .error(R.drawable.ic_pet_placeholder)
-                    .into(ivPetPhoto)
-            } else {
-                ivPetPhoto.setImageResource(R.drawable.ic_pet_placeholder)
+            when (animal.status) {
+                "available" -> {
+                    ivStatusIcon.setImageResource(R.drawable.ic_check)
+                    tvPetStatus.text = "Disponible"
+                    llStatusBadge.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.status_available)
+                }
+                "adopted" -> {
+                    ivStatusIcon.setImageResource(R.drawable.ic_adoptado)
+                    tvPetStatus.text = "Adoptado"
+                    llStatusBadge.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.status_adopted)
+                }
+                "pending" -> {
+                    ivStatusIcon.setImageResource(R.drawable.ic_pending)
+                    tvPetStatus.text = "Pendiente"
+                    llStatusBadge.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.status_pending)
+                }
+                else -> {
+                    ivStatusIcon.setImageResource(R.drawable.ic_check)
+                    tvPetStatus.text = "Disponible"
+                    llStatusBadge.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.status_available)
+                }
             }
 
             // Delete button
@@ -115,16 +170,6 @@ class MyAdoptionsAdapter(
             hours > 0 -> "Hace ${hours.toInt()} hora${if (hours.toInt() > 1) "s" else ""}"
             minutes > 0 -> "Hace ${minutes.toInt()} minuto${if (minutes.toInt() > 1) "s" else ""}"
             else -> "Hace un momento"
-        }
-    }
-
-    private fun getSpeciesEmoji(type: String): String {
-        return when (type.lowercase()) {
-            "perro", "dog" -> "🐕"
-            "gato", "cat" -> "🐈"
-            "ave", "bird" -> "🐦"
-            "conejo", "rabbit" -> "🐰"
-            else -> "🐾"
         }
     }
 

@@ -1,51 +1,299 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#F5F5F5">
+                android:background="@color/background_gray">
 
-    <!-- Encabezado Naranja -->
+    <!-- Header Simple -->
     <LinearLayout
-            android:id="@+id/headerUsers"
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_orange"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/white"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:elevation="4dp">
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="10dp"
+            android:elevation="3dp">
 
+        <!-- Título -->
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gestión de Usuarios"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="22sp"
+                android:textStyle="bold" />
+
+        <!-- Contador de usuarios -->
+        <TextView
+                android:id="@+id/tvUserCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="0 usuarios registrados"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+    </LinearLayout>
+
+    <!-- Barra de Filtros y Paginación -->
+    <LinearLayout
+            android:id="@+id/filterBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/header"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="10dp"
+            android:elevation="2dp">
+
+        <!-- Filtros por Rol -->
+        <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginBottom="8dp">
+
+            <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupUserFilter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true"
+                    app:chipSpacingHorizontal="6dp">
+
+                <com.google.android.material.chip.Chip
+                        android:id="@+id/chipAllUsers"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Todos"
+                        android:checked="true"
+                        android:textSize="13sp"
+                        android:textColor="@color/chip_text_selector"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="2dp"
+                        app:chipStrokeColor="@color/chip_stroke_selector"
+                        app:chipMinHeight="36dp" />
+
+                <com.google.android.material.chip.Chip
+                        android:id="@+id/chipAdmins"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Admins"
+                        android:textSize="13sp"
+                        android:textColor="@color/chip_text_selector"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="2dp"
+                        app:chipStrokeColor="@color/chip_stroke_selector"
+                        app:chipMinHeight="36dp" />
+
+                <com.google.android.material.chip.Chip
+                        android:id="@+id/chipPartners"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Partners"
+                        android:textSize="13sp"
+                        android:textColor="@color/chip_text_selector"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="2dp"
+                        app:chipStrokeColor="@color/chip_stroke_selector"
+                        app:chipMinHeight="36dp" />
+
+                <com.google.android.material.chip.Chip
+                        android:id="@+id/chipUsers"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Usuarios"
+                        android:textSize="13sp"
+                        android:textColor="@color/chip_text_selector"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="2dp"
+                        app:chipStrokeColor="@color/chip_stroke_selector"
+                        app:chipMinHeight="36dp" />
+
+                <com.google.android.material.chip.Chip
+                        android:id="@+id/chipBlocked"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bloqueados"
+                        android:textSize="13sp"
+                        android:textColor="@color/chip_text_selector"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="2dp"
+                        app:chipStrokeColor="@color/chip_stroke_selector"
+                        app:chipMinHeight="36dp" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+        </HorizontalScrollView>
+
+        <!-- Divisor -->
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_gray"
+                android:layout_marginVertical="6dp" />
+
+        <!-- Selector de Items por Página -->
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mostrar:"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupPageSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true"
+                    app:chipSpacingHorizontal="4dp">
+
+                <com.google.android.material.chip.Chip
+                        android:id="@+id/chip10"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10"
+                        android:checked="true"
+                        android:textSize="12sp"
+                        android:textColor="@color/chip_text_selector"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="2dp"
+                        app:chipStrokeColor="@color/chip_stroke_selector"
+                        app:chipMinHeight="30dp" />
+
+                <com.google.android.material.chip.Chip
+                        android:id="@+id/chip20"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="20"
+                        android:textSize="12sp"
+                        android:textColor="@color/chip_text_selector"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="2dp"
+                        app:chipStrokeColor="@color/chip_stroke_selector"
+                        app:chipMinHeight="30dp" />
+
+                <com.google.android.material.chip.Chip
+                        android:id="@+id/chip50"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50"
+                        android:textSize="12sp"
+                        android:textColor="@color/chip_text_selector"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="2dp"
+                        app:chipStrokeColor="@color/chip_stroke_selector"
+                        app:chipMinHeight="30dp" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Loading State -->
+    <LinearLayout
+            android:id="@+id/loadingState"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/filterBar"
+            android:layout_above="@id/bottomNavigation"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+        <ProgressBar
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:indeterminateTint="@color/primary_orange" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cargando usuarios..."
+                android:textColor="@color/text_secondary"
+                android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <!-- Empty State -->
+    <LinearLayout
+            android:id="@+id/emptyState"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/filterBar"
+            android:layout_above="@id/bottomNavigation"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="👥"
+                android:textSize="64sp"
+                android:alpha="0.3" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="No hay usuarios"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Administra roles y permisos"
-                android:textColor="#F0F0F0"
-                android:textSize="14sp" />
+                android:text="No se encontraron usuarios con los filtros seleccionados"
+                android:textAlignment="center"
+                android:textColor="@color/text_secondary"
+                android:textSize="15sp"
+                android:lineSpacingExtra="4dp" />
+
     </LinearLayout>
 
-    <!-- AQUÍ ESTÁ EL RECYCLERVIEW QUE FALTABA -->
+    <!-- Users List -->
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvAdminUsers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/headerUsers"
+            android:layout_below="@id/filterBar"
             android:layout_above="@id/bottomNavigation"
-            android:padding="8dp"
-            android:clipToPadding="false"/>
+            android:padding="16dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            android:visibility="gone" />
 
-    <!-- Barra de Navegación Inferior -->
+    <!-- Bottom Navigation -->
     <include
             android:id="@+id/bottomNavigation"
-            layout="@layout/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
+            layout="@layout/bottom_navigation" />
 
 </RelativeLayout>

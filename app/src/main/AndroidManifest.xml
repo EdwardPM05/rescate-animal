@@ -128,11 +128,19 @@
         <!-- ACTIVITIES DE USUARIO NORMAL -->
         <!-- ============================================ -->
 
-        <!-- MapActivity -->
+        <!-- MapActivity - Mapa para usuarios normales (reportes) -->
         <activity
                 android:name=".MapActivity"
                 android:exported="false"
                 android:launchMode="singleTop"
+                android:theme="@style/Theme.Rescateanimal.NoAnimation" />
+
+        <!-- MapPartnerActivity - Mapa para partners (negocios afiliados) -->
+        <activity
+                android:name=".MapPartnerActivity"
+                android:exported="false"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"
                 android:theme="@style/Theme.Rescateanimal.NoAnimation" />
 
         <!-- ReportActivity -->
