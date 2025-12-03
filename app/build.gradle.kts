@@ -63,10 +63,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
-
     implementation("androidx.core:core-splashscreen:1.0.1")
-
-
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
     // Jetpack Compose
@@ -116,6 +113,19 @@ dependencies {
     // Google Maps y Location Services
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // ========== NUEVAS DEPENDENCIAS PARA ANIMACIONES AVANZADAS ==========
+
+    // CoordinatorLayout para efectos parallax y scroll avanzado
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+
+    // MPAndroidChart para gráficos interactivos (opcional pero recomendado)
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // Lottie para animaciones avanzadas (opcional)
+    implementation("com.airbnb.android:lottie:6.1.0")
+
+    // ========== FIN NUEVAS DEPENDENCIAS ==========
 
     // Testing
     testImplementation("junit:junit:4.13.2")

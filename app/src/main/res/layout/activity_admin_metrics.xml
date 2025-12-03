@@ -1,354 +1,330 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/background_gray">
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F5F7FA">
 
-    <!-- Header -->
-    <LinearLayout
-            android:id="@+id/headerLayout"
+    <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_orange"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:elevation="4dp">
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Panel de Administración"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Métricas y Estadísticas"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:alpha="0.9" />
-
-    </LinearLayout>
-
-    <!-- ScrollView con Métricas -->
-    <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/bottomNavigation"
-            android:layout_below="@id/headerLayout"
-            android:fillViewport="true">
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:background="#FF6B35"
+                android:padding="20dp"
+                android:paddingBottom="30dp">
 
-            <!-- Título Sección Usuarios -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="👥 Usuarios"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
+                    android:text="Panel de Administración"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-            <!-- Grid de Métricas de Usuarios -->
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Métricas y Estadísticas"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:alpha="0.9" />
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:paddingBottom="80dp"
+                android:clipToPadding="false">
+
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:baselineAligned="false"
                     android:weightSum="2">
 
-                <!-- Total Usuarios -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardTotalUsers"
                         android:layout_width="0dp"
                         android:layout_height="120dp"
                         android:layout_weight="1"
-                        android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_blue">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Total Usuarios"
-                                android:textColor="@android:color/white"
-                                android:textSize="12sp"
-                                android:alpha="0.9" />
+                            android:background="#42A5F5"> <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Usuarios"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
 
                         <TextView
                                 android:id="@+id/tvTotalUsers"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="..."
-                                android:textColor="@android:color/white"
-                                android:textSize="32sp"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
+                                android:textSize="36sp"
                                 android:textStyle="bold" />
-
                     </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                </androidx.cardview.widget.CardView>
-
-                <!-- Partners Activos -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardActivePartners"
                         android:layout_width="0dp"
                         android:layout_height="120dp"
                         android:layout_weight="1"
-                        android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
+                        android:layout_marginStart="8dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_purple">
+                            android:background="#EC407A">
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Partners Activos"
-                                android:textColor="@android:color/white"
-                                android:textSize="12sp"
-                                android:alpha="0.9" />
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp" />
 
                         <TextView
                                 android:id="@+id/tvActivePartners"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="..."
-                                android:textColor="@android:color/white"
-                                android:textSize="32sp"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
+                                android:textSize="36sp"
                                 android:textStyle="bold" />
-
                     </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- Título Sección Reportes -->
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
                     android:text="📋 Reportes"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#333333"/>
 
-            <!-- Grid de Métricas de Reportes -->
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:baselineAligned="false"
                     android:weightSum="2">
 
-                <!-- Total Reportes -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardTotalReports"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="110dp"
                         android:layout_weight="1"
-                        android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_green">
+                            android:background="#26C6DA">
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Total Reportes"
-                                android:textColor="@android:color/white"
-                                android:textSize="12sp"
-                                android:alpha="0.9" />
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp" />
 
                         <TextView
                                 android:id="@+id/tvTotalReports"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="..."
-                                android:textColor="@android:color/white"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
                                 android:textSize="32sp"
                                 android:textStyle="bold" />
-
                     </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                </androidx.cardview.widget.CardView>
-
-                <!-- Reportes Pendientes -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardPendingReports"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="110dp"
                         android:layout_weight="1"
-                        android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
+                        android:layout_marginStart="8dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_orange">
+                            android:background="#FFA726">
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Pendientes"
-                                android:textColor="@android:color/white"
-                                android:textSize="12sp"
-                                android:alpha="0.9" />
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp" />
 
                         <TextView
                                 android:id="@+id/tvPendingReports"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="..."
-                                android:textColor="@android:color/white"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
                                 android:textSize="32sp"
                                 android:textStyle="bold" />
-
                     </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- Título Sección Adopciones y Afiliaciones -->
-            <TextView
-                    android:layout_width="wrap_content"
+            <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="🏠 Adopciones y Afiliaciones"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginTop="20dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="#FFFFFF">
 
-            <!-- Grid de Métricas de Adopciones -->
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Actividad Semanal"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333" />
+
+                    <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/lineChartWeekly"
+                            android:layout_width="match_parent"
+                            android:layout_height="220dp"
+                            android:layout_marginTop="10dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginTop="20dp"
+                    android:baselineAligned="false"
                     android:weightSum="2">
 
-                <!-- Total Adopciones -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="250dp"
                         android:layout_weight="1"
-                        android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
+                        android:layout_marginEnd="6dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_pink">
+                            android:padding="12dp">
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Total Adopciones"
-                                android:textColor="@android:color/white"
-                                android:textSize="12sp"
-                                android:alpha="0.9" />
+                                android:text="Distribución"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="#333333" />
 
-                        <TextView
-                                android:id="@+id/tvTotalAdoptions"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="..."
-                                android:textColor="@android:color/white"
-                                android:textSize="32sp"
-                                android:textStyle="bold" />
-
+                        <com.github.mikephil.charting.charts.PieChart
+                                android:id="@+id/pieChartDistribution"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="8dp"/>
                     </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                </androidx.cardview.widget.CardView>
-
-                <!-- Afiliaciones Pendientes -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="250dp"
                         android:layout_weight="1"
-                        android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
+                        android:layout_marginStart="6dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_red">
+                            android:padding="12dp">
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Afiliaciones Pendientes"
-                                android:textColor="@android:color/white"
-                                android:textSize="11sp"
-                                android:alpha="0.9"
-                                android:gravity="center" />
+                                android:text="Afiliados Top"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="#333333" />
 
-                        <TextView
-                                android:id="@+id/tvPendingAffiliates"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="..."
-                                android:textColor="@android:color/white"
-                                android:textSize="32sp"
-                                android:textStyle="bold" />
-
+                        <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                            <LinearLayout
+                                    android:id="@+id/llTopAffiliates"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:paddingTop="8dp" />
+                        </ScrollView>
                     </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </ScrollView>
-
-    <!-- Bottom Navigation -->
     <include
             android:id="@+id/bottomNavigation"
-            layout="@layout/bottom_navigation" />
+            layout="@layout/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
 
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

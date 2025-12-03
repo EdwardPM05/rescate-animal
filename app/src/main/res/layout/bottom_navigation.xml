@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:id="@+id/bottomNavigation"
               android:layout_width="match_parent"
               android:layout_height="60dp"
-              android:layout_alignParentBottom="true"
               android:background="@android:color/white"
               android:elevation="8dp"
               android:orientation="horizontal"
               android:weightSum="6">
-
-    <!-- Inicio -->
     <LinearLayout
             android:id="@+id/navInicio"
             android:layout_width="0dp"
@@ -19,16 +17,15 @@
             android:focusable="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="?attr/selectableItemBackground"
-            android:paddingVertical="6dp">
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
         <ImageView
                 android:id="@+id/iconInicio"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/nav_home"
-                android:contentDescription="Inicio"
-                android:tint="@color/text_secondary" />
+                android:contentDescription="Inicio" />
 
         <TextView
                 android:id="@+id/textInicio"
@@ -36,12 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Inicio"
-                android:textColor="@color/text_secondary"
                 android:textSize="10sp" />
-
     </LinearLayout>
 
-    <!-- Mapa -->
     <LinearLayout
             android:id="@+id/navMapa"
             android:layout_width="0dp"
@@ -51,16 +45,15 @@
             android:focusable="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="?attr/selectableItemBackground"
-            android:paddingVertical="6dp">
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
         <ImageView
                 android:id="@+id/iconMapa"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/nav_map"
-                android:contentDescription="Mapa"
-                android:tint="@color/text_secondary" />
+                android:contentDescription="Mapa" />
 
         <TextView
                 android:id="@+id/textMapa"
@@ -68,12 +61,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Mapa"
-                android:textColor="@color/text_secondary"
                 android:textSize="10sp" />
-
     </LinearLayout>
 
-    <!-- Reportar -->
     <LinearLayout
             android:id="@+id/navReportar"
             android:layout_width="0dp"
@@ -83,16 +73,15 @@
             android:focusable="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="?attr/selectableItemBackground"
-            android:paddingVertical="6dp">
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
         <ImageView
                 android:id="@+id/iconReportar"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/nav_report"
-                android:contentDescription="Reportar"
-                android:tint="@color/text_secondary" />
+                android:contentDescription="Reportar" />
 
         <TextView
                 android:id="@+id/textReportar"
@@ -100,12 +89,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Reportar"
-                android:textColor="@color/text_secondary"
                 android:textSize="10sp" />
-
     </LinearLayout>
 
-    <!-- Adoptar -->
     <LinearLayout
             android:id="@+id/navAdoptar"
             android:layout_width="0dp"
@@ -115,16 +101,15 @@
             android:focusable="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="?attr/selectableItemBackground"
-            android:paddingVertical="6dp">
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
         <ImageView
                 android:id="@+id/iconAdoptar"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/nav_adopt"
-                android:contentDescription="Adoptar"
-                android:tint="@color/text_secondary" />
+                android:contentDescription="Adoptar" />
 
         <TextView
                 android:id="@+id/textAdoptar"
@@ -132,12 +117,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Adoptar"
-                android:textColor="@color/text_secondary"
                 android:textSize="10sp" />
-
     </LinearLayout>
 
-    <!-- Perfil -->
     <LinearLayout
             android:id="@+id/navPerfil"
             android:layout_width="0dp"
@@ -147,16 +129,15 @@
             android:focusable="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="?attr/selectableItemBackground"
-            android:paddingVertical="6dp">
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
         <ImageView
                 android:id="@+id/iconPerfil"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/nav_profile"
-                android:contentDescription="Perfil"
-                android:tint="@color/text_secondary" />
+                android:contentDescription="Perfil" />
 
         <TextView
                 android:id="@+id/textPerfil"
@@ -164,12 +145,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Perfil"
-                android:textColor="@color/text_secondary"
                 android:textSize="10sp" />
-
     </LinearLayout>
 
-    <!-- Cambiar Rol (OCULTO POR DEFECTO - Solo visible para Partner/Admin) -->
     <LinearLayout
             android:id="@+id/navRol"
             android:layout_width="0dp"
@@ -179,17 +157,16 @@
             android:focusable="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="?attr/selectableItemBackground"
-            android:paddingVertical="6dp"
-            android:visibility="gone">
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
         <ImageView
                 android:id="@+id/iconRol"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_rol"
-                android:contentDescription="Cambiar Rol"
-                android:tint="@color/text_secondary" />
+                android:src="@android:drawable/ic_menu_rotate"
+                app:tint="#757575"
+                android:contentDescription="Cambiar Rol" />
 
         <TextView
                 android:id="@+id/textRol"
@@ -197,9 +174,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Rol"
-                android:textColor="@color/text_secondary"
                 android:textSize="10sp" />
-
     </LinearLayout>
 
 </LinearLayout>
