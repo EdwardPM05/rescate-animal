@@ -16,9 +16,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") } // ⭐ AGREGADO PARA MPAndroidChart
     }
 }
 
 rootProject.name = "Rescateanimal"
 include(":app")
- 

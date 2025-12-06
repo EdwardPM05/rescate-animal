@@ -34,12 +34,16 @@ class NavigationHelper(private val activity: Activity) {
     private fun setupUserNavigation() {
         val bottomNavLayout = activity.findViewById<LinearLayout>(R.id.bottomNavigation)
         val navRol = bottomNavLayout.findViewById<LinearLayout>(R.id.navRol)
+        val navAdopciones = bottomNavLayout.findViewById<LinearLayout>(R.id.navAdopciones)
 
         // Asegurarse que todos los items estén visibles (en caso de venir de otro rol)
         val navReportar = activity.findViewById<LinearLayout>(R.id.navReportar)
         val navAdoptar = activity.findViewById<LinearLayout>(R.id.navAdoptar)
         navReportar?.visibility = View.VISIBLE
         navAdoptar?.visibility = View.VISIBLE
+
+        // Ocultar botón de Adopciones para usuario normal
+        navAdopciones?.visibility = View.GONE
 
         // Restaurar iconos y textos de usuario normal
         updateNavItem(R.id.navInicio, R.drawable.nav_home, "Inicio")
@@ -109,6 +113,7 @@ class NavigationHelper(private val activity: Activity) {
     private fun setupAdminNavigation() {
         val bottomNavLayout = activity.findViewById<LinearLayout>(R.id.bottomNavigation)
         val navRol = bottomNavLayout.findViewById<LinearLayout>(R.id.navRol)
+        val navAdopciones = bottomNavLayout.findViewById<LinearLayout>(R.id.navAdopciones)
 
         // Asegurarse que todos los items estén visibles
         val navReportar = activity.findViewById<LinearLayout>(R.id.navReportar)
@@ -116,17 +121,21 @@ class NavigationHelper(private val activity: Activity) {
         navReportar?.visibility = View.VISIBLE
         navAdoptar?.visibility = View.VISIBLE
 
+        // Mostrar botón de Adopciones solo para admin
+        navAdopciones?.visibility = View.VISIBLE
+
         // Cambiar iconos y textos para modo admin
         updateNavItem(R.id.navInicio, R.drawable.ic_metrics, "Métricas")
         updateNavItem(R.id.navMapa, R.drawable.ic_reports_review, "Reportes")
         updateNavItem(R.id.navReportar, R.drawable.ic_affiliates, "Afiliados")
         updateNavItem(R.id.navAdoptar, R.drawable.ic_usuarios, "Usuarios")
+        updateNavItem(R.id.navAdopciones, R.drawable.ic_adopciones, "Adopciones") // ✅ NUEVO
         updateNavItem(R.id.navPerfil, R.drawable.nav_profile, "Perfil")
 
         // Mostrar botón de rol para poder cambiar
         if (navRol != null) {
             navRol.visibility = View.VISIBLE
-            bottomNavLayout.weightSum = 6f
+            bottomNavLayout.weightSum = 7f // ✅ Ahora son 7 items
 
             navRol.setOnClickListener {
                 showRoleSelectorDialog()
@@ -142,6 +151,7 @@ class NavigationHelper(private val activity: Activity) {
         val navMapa = activity.findViewById<LinearLayout>(R.id.navMapa)
         val navReportar = activity.findViewById<LinearLayout>(R.id.navReportar)
         val navAdoptar = activity.findViewById<LinearLayout>(R.id.navAdoptar)
+        val navAdopciones = activity.findViewById<LinearLayout>(R.id.navAdopciones)
         val navPerfil = activity.findViewById<LinearLayout>(R.id.navPerfil)
 
         // Métricas (Dashboard de Admin)
@@ -172,6 +182,13 @@ class NavigationHelper(private val activity: Activity) {
             }
         }
 
+        // Gestión de Adopciones ✅ NUEVO
+        navAdopciones?.setOnClickListener {
+            if (activity !is AdminAdoptionsActivity) {
+                navigateToActivity(AdminAdoptionsActivity::class.java)
+            }
+        }
+
         // Perfil (mismo para todos)
         navPerfil?.setOnClickListener {
             if (activity !is ProfileActivity) {
@@ -184,14 +201,16 @@ class NavigationHelper(private val activity: Activity) {
     private fun setupPartnerNavigation() {
         val bottomNavLayout = activity.findViewById<LinearLayout>(R.id.bottomNavigation)
         val navRol = bottomNavLayout.findViewById<LinearLayout>(R.id.navRol)
+        val navAdopciones = bottomNavLayout.findViewById<LinearLayout>(R.id.navAdopciones)
 
         // Partner solo usa: Inicio (Mis Adopciones), Mapa, Perfil
-        // Ocultar "Reportar" y "Adoptar"
+        // Ocultar "Reportar", "Adoptar" y "Adopciones"
         val navReportar = activity.findViewById<LinearLayout>(R.id.navReportar)
         val navAdoptar = activity.findViewById<LinearLayout>(R.id.navAdoptar)
 
         navReportar?.visibility = View.GONE
         navAdoptar?.visibility = View.GONE
+        navAdopciones?.visibility = View.GONE
 
         // Configurar iconos y textos para Partner
         updateNavItem(R.id.navInicio, R.drawable.ic_adopciones, "Adopciones")
@@ -221,7 +240,7 @@ class NavigationHelper(private val activity: Activity) {
             }
         }
 
-        // Mapa (CORREGIDO: Ahora navega a MapPartnerActivity)
+        // Mapa
         navMapa?.setOnClickListener {
             if (activity !is MapPartnerActivity) {
                 navigateToActivity(MapPartnerActivity::class.java)
@@ -269,6 +288,7 @@ class NavigationHelper(private val activity: Activity) {
             activity.findViewById<LinearLayout>(R.id.navMapa),
             activity.findViewById<LinearLayout>(R.id.navReportar),
             activity.findViewById<LinearLayout>(R.id.navAdoptar),
+            activity.findViewById<LinearLayout>(R.id.navAdopciones), // ✅ AGREGADO
             activity.findViewById<LinearLayout>(R.id.navPerfil)
         )
 
@@ -328,6 +348,7 @@ class NavigationHelper(private val activity: Activity) {
             "AdminReportsActivity" -> activity.findViewById(R.id.navMapa)
             "AdminAffiliatesActivity" -> activity.findViewById(R.id.navReportar)
             "AdminUsersActivity" -> activity.findViewById(R.id.navAdoptar)
+            "AdminAdoptionsActivity" -> activity.findViewById(R.id.navAdopciones) // ✅ AGREGADO
             "ProfileActivity" -> activity.findViewById(R.id.navPerfil)
             else -> null
         }
@@ -336,7 +357,7 @@ class NavigationHelper(private val activity: Activity) {
     private fun getSelectedTabForPartner(): LinearLayout? {
         return when (activity::class.java.simpleName) {
             "PartnerMainActivity" -> activity.findViewById(R.id.navInicio)
-            "MapPartnerActivity" -> activity.findViewById(R.id.navMapa) // ✅ CORREGIDO
+            "MapPartnerActivity" -> activity.findViewById(R.id.navMapa)
             "ProfileActivity" -> activity.findViewById(R.id.navPerfil)
             else -> null
         }

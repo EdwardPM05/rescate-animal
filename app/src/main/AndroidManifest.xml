@@ -248,6 +248,11 @@
 
         <activity android:name=".AffiliateDetailActivity" />
 
+        <activity
+                android:name=".AdminAdoptionsActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Rescateanimal.NoAnimation" />
+
         <!-- AdminUsersActivity - Gestión de Usuarios -->
         <activity
                 android:name=".AdminUsersActivity"

@@ -3,44 +3,77 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/background_gray">
+                android:background="@drawable/background_gradient">
 
-    <!-- Header -->
+    <!-- Header con Gradiente -->
     <LinearLayout
             android:id="@+id/headerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_orange"
+            android:background="@drawable/header_gradient"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:elevation="4dp">
+            android:padding="24dp"
+            android:elevation="12dp">
 
-        <TextView
-                android:layout_width="wrap_content"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Panel de Administración"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Métricas y Estadísticas"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:alpha="0.9" />
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dashboard Admin"
+                        android:textColor="@android:color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.02"
+                        android:fontFamily="sans-serif-medium" />
+
+                <TextView
+                        android:id="@+id/tvLastUpdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Actualizado ahora"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        android:alpha="0.95" />
+
+            </LinearLayout>
+
+            <ImageView
+                    android:id="@+id/btnRefresh"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_refresh"
+                    android:padding="10dp"
+                    android:background="@drawable/ripple_circle_white_elevated"
+                    android:tint="@android:color/white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:elevation="4dp"
+                    android:contentDescription="Actualizar" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <!-- ScrollView con Métricas -->
+    <!-- ScrollView con Gráficas -->
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/bottomNavigation"
             android:layout_below="@id/headerLayout"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:scrollbars="none">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -48,47 +81,57 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-            <!-- Título Sección Usuarios -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="👥 Usuarios"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
-
-            <!-- Grid de Métricas de Usuarios -->
+            <!-- ========== CARDS DE MÉTRICAS CON GRADIENTES ========== -->
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                <!-- Total Usuarios -->
+                <!-- Card: Total Usuarios con Gradiente -->
                 <androidx.cardview.widget.CardView
+                        android:id="@+id/cardUsers"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="170dp"
                         android:layout_weight="1"
                         android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="10dp"
+                        app:cardMaxElevation="16dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/gradient_blue_purple"
                             android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_blue">
+                            android:padding="18dp">
 
-                        <TextView
-                                android:layout_width="wrap_content"
+                        <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Total Usuarios"
-                                android:textColor="@android:color/white"
-                                android:textSize="12sp"
-                                android:alpha="0.9" />
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                            <ImageView
+                                    android:id="@+id/iconUsers"
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:src="@drawable/ic_usuarios"
+                                    android:tint="@android:color/white"
+                                    android:elevation="2dp" />
+
+                            <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginStart="10dp"
+                                    android:text="Usuarios"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold"
+                                    android:alpha="0.95" />
+
+                        </LinearLayout>
 
                         <TextView
                                 android:id="@+id/tvTotalUsers"
@@ -97,96 +140,65 @@
                                 android:layout_marginTop="8dp"
                                 android:text="..."
                                 android:textColor="@android:color/white"
-                                android:textSize="32sp"
-                                android:textStyle="bold" />
+                                android:textSize="52sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium"
+                                android:letterSpacing="0.01" />
+
+                        <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/chartUsers"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="4dp" />
 
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Partners Activos -->
+                <!-- Card: Total Reportes -->
                 <androidx.cardview.widget.CardView
+                        android:id="@+id/cardReports"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="170dp"
                         android:layout_weight="1"
                         android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="10dp"
+                        app:cardMaxElevation="16dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/gradient_blue_sky"
                             android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_purple">
+                            android:padding="18dp">
 
-                        <TextView
-                                android:layout_width="wrap_content"
+                        <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Partners Activos"
-                                android:textColor="@android:color/white"
-                                android:textSize="12sp"
-                                android:alpha="0.9" />
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
 
-                        <TextView
-                                android:id="@+id/tvActivePartners"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="..."
-                                android:textColor="@android:color/white"
-                                android:textSize="32sp"
-                                android:textStyle="bold" />
+                            <ImageView
+                                    android:id="@+id/iconReports"
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:src="@drawable/ic_reports_review"
+                                    android:tint="@android:color/white"
+                                    android:elevation="2dp" />
 
-                    </LinearLayout>
+                            <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginStart="10dp"
+                                    android:text="Reportes"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold"
+                                    android:alpha="0.95" />
 
-                </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
-
-            <!-- Título Sección Reportes -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="📋 Reportes"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
-
-            <!-- Grid de Métricas de Reportes -->
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                <!-- Total Reportes -->
-                <androidx.cardview.widget.CardView
-                        android:layout_width="0dp"
-                        android:layout_height="120dp"
-                        android:layout_weight="1"
-                        android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
-
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_green">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Total Reportes"
-                                android:textColor="@android:color/white"
-                                android:textSize="12sp"
-                                android:alpha="0.9" />
+                        </LinearLayout>
 
                         <TextView
                                 android:id="@+id/tvTotalReports"
@@ -195,47 +207,16 @@
                                 android:layout_marginTop="8dp"
                                 android:text="..."
                                 android:textColor="@android:color/white"
-                                android:textSize="32sp"
-                                android:textStyle="bold" />
+                                android:textSize="52sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium"
+                                android:letterSpacing="0.01" />
 
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- Reportes Pendientes -->
-                <androidx.cardview.widget.CardView
-                        android:layout_width="0dp"
-                        android:layout_height="120dp"
-                        android:layout_weight="1"
-                        android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
-
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_orange">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Pendientes"
-                                android:textColor="@android:color/white"
-                                android:textSize="12sp"
-                                android:alpha="0.9" />
-
-                        <TextView
-                                android:id="@+id/tvPendingReports"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="..."
-                                android:textColor="@android:color/white"
-                                android:textSize="32sp"
-                                android:textStyle="bold" />
+                        <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/chartReports"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="4dp" />
 
                     </LinearLayout>
 
@@ -243,48 +224,123 @@
 
             </LinearLayout>
 
-            <!-- Título Sección Adopciones y Afiliaciones -->
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="🏠 Adopciones y Afiliaciones"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
-
-            <!-- Grid de Métricas de Adopciones -->
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                <!-- Total Adopciones -->
+                <!-- Card: Partners -->
                 <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPartners"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="170dp"
                         android:layout_weight="1"
                         android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="10dp"
+                        app:cardMaxElevation="16dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/gradient_turquoise_pink"
                             android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_pink">
+                            android:padding="18dp">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                            <ImageView
+                                    android:id="@+id/iconPartners"
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:src="@drawable/ic_affiliates"
+                                    android:tint="@android:color/white"
+                                    android:elevation="2dp" />
+
+                            <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginStart="10dp"
+                                    android:text="Partners"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold"
+                                    android:alpha="0.95" />
+
+                        </LinearLayout>
 
                         <TextView
+                                android:id="@+id/tvActivePartners"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Total Adopciones"
+                                android:layout_marginTop="8dp"
+                                android:text="..."
                                 android:textColor="@android:color/white"
-                                android:textSize="12sp"
-                                android:alpha="0.9" />
+                                android:textSize="52sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium"
+                                android:letterSpacing="0.01" />
+
+                        <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/chartPartners"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="4dp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Card: Adopciones -->
+                <androidx.cardview.widget.CardView
+                        android:id="@+id/cardAdoptions"
+                        android:layout_width="0dp"
+                        android:layout_height="170dp"
+                        android:layout_weight="1"
+                        android:layout_margin="6dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="10dp"
+                        app:cardMaxElevation="16dp">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/gradient_pink_yellow"
+                            android:orientation="vertical"
+                            android:padding="18dp">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                            <ImageView
+                                    android:id="@+id/iconAdoptions"
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:src="@drawable/ic_adopciones"
+                                    android:tint="@android:color/white"
+                                    android:elevation="2dp" />
+
+                            <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginStart="10dp"
+                                    android:text="Adopciones"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold"
+                                    android:alpha="0.95" />
+
+                        </LinearLayout>
 
                         <TextView
                                 android:id="@+id/tvTotalAdoptions"
@@ -293,54 +349,171 @@
                                 android:layout_marginTop="8dp"
                                 android:text="..."
                                 android:textColor="@android:color/white"
-                                android:textSize="32sp"
-                                android:textStyle="bold" />
+                                android:textSize="52sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium"
+                                android:letterSpacing="0.01" />
 
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- Afiliaciones Pendientes -->
-                <androidx.cardview.widget.CardView
-                        android:layout_width="0dp"
-                        android:layout_height="120dp"
-                        android:layout_weight="1"
-                        android:layout_margin="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp">
-
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="16dp"
-                            android:background="@drawable/gradient_red">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Afiliaciones Pendientes"
-                                android:textColor="@android:color/white"
-                                android:textSize="11sp"
-                                android:alpha="0.9"
-                                android:gravity="center" />
-
-                        <TextView
-                                android:id="@+id/tvPendingAffiliates"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="..."
-                                android:textColor="@android:color/white"
-                                android:textSize="32sp"
-                                android:textStyle="bold" />
+                        <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/chartAdoptions"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="4dp" />
 
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
+
+            <!-- ========== GRÁFICA GRANDE: REPORTES POR ESTADO ========== -->
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="📊 Reportes por Estado"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="sans-serif-medium" />
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="10dp"
+                    app:cardMaxElevation="14dp"
+                    android:backgroundTint="@android:color/white">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                    <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/chartReportsByStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ========== GRÁFICA: ACTIVIDAD SEMANAL ========== -->
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="📈 Actividad de los Últimos 7 Días"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="sans-serif-medium" />
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="320dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="10dp"
+                    app:cardMaxElevation="14dp"
+                    android:backgroundTint="@android:color/white">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                    <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/chartWeeklyActivity"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ========== GRÁFICA: DISTRIBUCIÓN DE ADOPCIONES ========== -->
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="🐾 Distribución de Adopciones"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="sans-serif-medium" />
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="340dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="10dp"
+                    app:cardMaxElevation="14dp"
+                    android:backgroundTint="@android:color/white">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/chartAdoptionDistribution"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ========== GRÁFICA: CRECIMIENTO MENSUAL ========== -->
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="📅 Crecimiento Mensual"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="sans-serif-medium" />
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="320dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="10dp"
+                    app:cardMaxElevation="14dp"
+                    android:backgroundTint="@android:color/white">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                    <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/chartMonthlyGrowth"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Espacio extra -->
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp" />
 
         </LinearLayout>
 
