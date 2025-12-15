@@ -156,6 +156,7 @@ class AnimalDetailActivity : AppCompatActivity() {
         }
     }
 
+
     private fun contactShelter() {
         val currentUser = auth.currentUser
         if (currentUser == null) {
@@ -164,30 +165,42 @@ class AnimalDetailActivity : AppCompatActivity() {
             return
         }
 
-        showContactOptions()
+        // Obtener el número de teléfono del albergue/partner desde Firebase
+        getShelterPhoneAndOpenWhatsApp()
     }
 
-    private fun showContactOptions() {
-        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-        builder.setTitle("Contactar")
-        builder.setMessage("¿Estás interesado en adoptar a ${animal.name}?\n\nSe enviará tu información de contacto al albergue.")
-        builder.setPositiveButton("Sí, estoy interesado") { dialog, _ ->
-            sendAdoptionRequest()
-            dialog.dismiss()
-        }
-        builder.setNegativeButton("Cancelar") { dialog, _ ->
-            dialog.dismiss()
-        }
-        builder.show()
-    }
+    private fun getShelterPhoneAndOpenWhatsApp() {
+        val shelterPhone = animal.shelterPhone
 
-    private fun sendAdoptionRequest() {
-        Toast.makeText(
-            this,
-            "¡Solicitud enviada! El albergue se pondrá en contacto contigo pronto",
-            Toast.LENGTH_LONG
-        ).show()
-        finish()
+        if (shelterPhone.isNullOrEmpty()) {
+            Toast.makeText(this, "No hay número de contacto disponible", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Limpiar el número (quitar espacios, guiones, etc.)
+        val cleanPhone = shelterPhone.replace(Regex("[^0-9+]"), "")
+
+        // Mensaje predeterminado para WhatsApp
+        val message = "Hola, estoy interesado/a en adoptar a ${animal.name}. ¿Podríamos hablar sobre el proceso de adopción?"
+
+        try {
+            // Crear intent para WhatsApp
+            val whatsappIntent = Intent(Intent.ACTION_VIEW)
+            val url = "https://wa.me/$cleanPhone?text=${android.net.Uri.encode(message)}"
+            whatsappIntent.data = android.net.Uri.parse(url)
+            whatsappIntent.setPackage("com.whatsapp")
+
+            startActivity(whatsappIntent)
+        } catch (e: Exception) {
+            // Si WhatsApp no está instalado, abrir en el navegador
+            try {
+                val url = "https://wa.me/$cleanPhone?text=${android.net.Uri.encode(message)}"
+                val browserIntent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))
+                startActivity(browserIntent)
+            } catch (ex: Exception) {
+                Toast.makeText(this, "Error al abrir WhatsApp", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun shareAnimal() {
